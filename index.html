@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1115">
+<title>Fionn's Game Time Tracker</title>
+<style>
+  :root{--bg:#0f1115;--card:#1a1d24;--ink:#fff;--muted:#9aa3b2;--red:#ff3b3b;--green:#22e07a;--line:#2a2f3a}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:520px;margin:0 auto;padding:14px 14px 40px}
+  .title{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1.05rem;color:var(--muted);margin:4px 2px 12px}
+  .hero{border-radius:24px;padding:22px 16px;text-align:center;margin-bottom:12px;background:#0d2a1b;border:3px solid var(--green)}
+  .hero .icon{font-size:2.4rem}
+  .hero .num{font-size:clamp(5.5rem,30vw,9.5rem);font-weight:900;line-height:.95;color:var(--green);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+  .hero .unit{font-size:1.4rem;font-weight:800;color:var(--green);opacity:.85}
+  .hero.zero{background:#2a0f0f;border-color:var(--red)}
+  .hero.zero .num,.hero.zero .unit{color:var(--red)}
+  .hero .sub{margin-top:8px;font-size:1.15rem;font-weight:700}
+  .pen{border-radius:24px;padding:16px;display:flex;align-items:center;justify-content:space-between;background:#2a0f0f;border:3px solid var(--red);margin-bottom:12px}
+  .pen .num{font-size:clamp(3.5rem,18vw,5rem);font-weight:900;color:var(--red);line-height:1;font-variant-numeric:tabular-nums}
+  .pen .num small{font-size:1.2rem}
+  .pen .lbl{font-size:2.2rem}
+  button{font:inherit;border:0;border-radius:18px;min-height:56px;min-width:56px;cursor:pointer;font-weight:800;color:#fff}
+  button:active{transform:scale(.97)}
+  .bigbtn{width:100%;min-height:84px;font-size:1.9rem;margin-bottom:12px}
+  .red{background:var(--red)} .green{background:var(--green);color:#06210f} .grey{background:#2d323d}
+  .row{display:flex;gap:10px;margin-bottom:12px}
+  .row>*{flex:1}
+  input{font:inherit;width:100%;min-height:56px;padding:0 16px;border-radius:16px;border:2px solid var(--line);background:var(--card);color:#fff;font-size:1.1rem;margin-bottom:10px}
+  .card{background:var(--card);border-radius:22px;padding:14px;margin-bottom:12px}
+  .seg{display:flex;gap:10px;margin-bottom:10px}
+  .seg button{flex:1;min-height:64px;background:#2d323d;font-size:1.05rem;border:3px solid transparent}
+  .seg button.on{border-color:#fff;background:#3a4150}
+  .stepper{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .stepper button{width:64px;min-height:64px;font-size:2rem;background:#2d323d}
+  .stepper .val{flex:1;text-align:center;font-size:3rem;font-weight:900;font-variant-numeric:tabular-nums}
+  .stepper .val small{font-size:1rem;color:var(--muted)}
+  .calc{text-align:center;font-size:1.3rem;font-weight:800;margin:6px 0 12px}
+  .calc .r{color:var(--red)} .calc .g{color:var(--green)}
+  details{background:var(--card);border-radius:22px;padding:4px 14px;margin-bottom:12px}
+  summary{min-height:56px;display:flex;align-items:center;font-weight:800;font-size:1.1rem;cursor:pointer;list-style:none}
+  ul{list-style:none;padding:0;margin:0 0 8px}
+  li{padding:10px 0;border-top:1px solid var(--line);font-size:1rem}
+  .meta{color:var(--muted);font-size:.85rem}
+  .used{opacity:.45}
+  .hero.warn2{background:#3a2600;border-color:#ffb020;animation:pulse 1.4s ease-in-out infinite}
+  .hero.warn2 .num,.hero.warn2 .unit{color:#ffb020}
+  .hero.warn1{background:#3a0000;border-color:var(--red);animation:flash .6s steps(2) infinite}
+  .hero.warn1 .num,.hero.warn1 .unit{color:#ff3b3b}
+  .hero.warn1 .num{font-size:clamp(6.5rem,36vw,11rem)}
+  .banner{display:none;border-radius:20px;padding:16px;margin-bottom:12px;text-align:center;font-weight:900;font-size:clamp(1.8rem,9vw,2.6rem);line-height:1.1}
+  .banner.b2{display:block;background:#ffb020;color:#1a1000;animation:pulse 1.4s ease-in-out infinite}
+  .banner.b1{display:block;background:var(--red);color:#fff;font-size:clamp(2.2rem,11vw,3.2rem);animation:flash .6s steps(2) infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+  @keyframes flash{0%{filter:brightness(1)}100%{filter:brightness(1.6)}}
+  .over{position:fixed;inset:0;background:var(--red);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:10;padding:24px}
+  .over.on{display:flex}
+  .over .big{font-size:clamp(4rem,22vw,8rem);font-weight:900;line-height:.95;color:#fff}
+  .over .e{font-size:6rem}
+  .over button{margin-top:28px;background:#fff;color:#b00;min-height:72px;font-size:1.5rem;padding:0 32px}
+  .snd{background:#2d323d;min-height:48px;min-width:48px;font-size:1.3rem;border-radius:14px}
+</style>
+</head>
+<body>
+<div class="over" id="over"><div class="e">🛑</div><div class="big">TIME'S UP</div><div style="font-size:1.4rem;font-weight:800;margin-top:12px;color:#fff">Save and switch off 🎮</div><button id="overBtn">✓ DONE</button></div>
+<div class="wrap">
+  <div class="title"><span>🎮 Fionn's Game Time</span><span><span id="liveTag"></span> <button class="snd" id="sndBtn" aria-label="Sound on or off">🔇</button></span></div>
+
+  <div class="banner" id="banner"></div>
+
+  <div class="hero" id="hero">
+    <div class="icon" id="heroIcon">⏱️</div>
+    <div class="num" id="heroNum">0</div>
+    <div class="unit" id="heroUnit">MIN</div>
+    <div class="sub" id="heroSub"></div>
+  </div>
+
+  <div class="pen">
+    <div class="lbl">⚠️</div>
+    <div class="num" id="penNum">0<small> min</small></div>
+    <button class="grey" id="undoPen" aria-label="Undo last penalty" style="font-size:1.6rem;width:64px">↩︎</button>
+  </div>
+
+  <input id="note" placeholder="📝 What was missed? (optional)">
+  <button class="bigbtn red" id="addPen">➕ 5 MIN</button>
+
+  <div id="setup" class="card">
+    <div class="seg" id="gameSeg"><button data-v="Fortnite" class="on">🪂 Fortnite</button><button data-v="Wobbly Life">🧸 Wobbly Life</button></div>
+    <div class="seg" id="platSeg"><button data-v="Switch" class="on">🔴 Switch</button><button data-v="PS5">🎮 PS5</button></div>
+    <div class="stepper">
+      <button id="minus" aria-label="Less time">−</button>
+      <div class="val"><span id="allowed">60</span><small> min</small></div>
+      <button id="plus" aria-label="More time">+</button>
+    </div>
+    <div class="calc"><span id="cA">60</span> − <span class="r" id="cP">0</span> = <span class="g" id="cE">60</span></div>
+    <button class="bigbtn green" id="startBtn" style="margin:0">▶ START</button>
+  </div>
+
+  <button class="bigbtn grey" id="endBtn" style="display:none">⏹ END SESSION</button>
+
+  <details><summary>⚠️ Penalty history</summary><ul id="penList"></ul></details>
+  <details><summary>📅 Session history</summary><ul id="sesList"></ul></details>
+
+  <button class="grey" id="resetBtn" style="width:100%;font-size:1rem">🧹 Clear waiting penalties</button>
+  <p class="meta" style="text-align:center;margin-top:14px">Saved on this device only.</p>
+</div>
+
+<script>
+const KEY='fionnTracker.v1';
+let S=JSON.parse(localStorage.getItem(KEY)||'null')||{penalties:[],sessions:[],live:null};
+if(!S.allowed)S.allowed=60;
+let game='Fortnite',plat='Switch',tick=null;
+const $=id=>document.getElementById(id);
+const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+const fmt=t=>new Date(t).toLocaleString([], {weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pending=()=>S.penalties.filter(p=>!p.applied);
+const penMins=()=>pending().length*5;
+const eff=()=>Math.max(0,S.allowed-penMins());
+
+function render(){
+  $('penNum').innerHTML=penMins()+'<small> min</small>';
+  $('allowed').textContent=S.allowed;
+  $('cA').textContent=S.allowed;$('cP').textContent=penMins();$('cE').textContent=eff();
+  $('penList').innerHTML=S.penalties.length?S.penalties.slice().reverse().map(p=>
+    `<li class="${p.applied?'used':''}">⚠️ 5 min${p.note?' · '+esc(p.note):''}<div class="meta">${fmt(p.t)}${p.applied?' · used':''}</div></li>`).join(''):'<li class="meta">None yet 👍</li>';
+  $('sesList').innerHTML=S.sessions.length?S.sessions.slice().reverse().map(s=>
+    `<li>${esc(s.game)} · ${esc(s.plat)} · <b>${s.effective}</b>/${s.allowed} min<div class="meta">${fmt(s.t)}${s.pen?' · −'+s.pen+' min penalties':''}</div></li>`).join(''):'<li class="meta">None yet</li>';
+  renderHero();
+}
+function renderHero(){
+  clearInterval(tick);
+  const live=!!S.live;
+  if(!live){$('banner').className='banner';$('over').classList.remove('on');$('hero').classList.remove('warn1','warn2')}
+  $('setup').style.display=live?'none':'block';
+  $('endBtn').style.display=live?'block':'none';
+  $('liveTag').textContent=live?'🟢 PLAYING':'';
+  if(!live){
+    const e=eff();
+    $('hero').classList.toggle('zero',e===0);
+    $('heroIcon').textContent=e===0?'🚫':'⏱️';
+    $('heroNum').textContent=e;$('heroUnit').textContent='MIN NEXT SESSION';
+    $('heroSub').textContent='';
+    return;
+  }
+  const step=()=>{
+    const left=Math.max(0,S.live.end-Date.now());
+    const m=Math.floor(left/60000),s=Math.floor(left%60000/1000);
+    const ms=left;
+    $('hero').classList.toggle('zero',ms===0);
+    $('hero').classList.toggle('warn2',ms>60000&&ms<=120000);
+    $('hero').classList.toggle('warn1',ms>0&&ms<=60000);
+    const b=$('banner');b.className='banner';
+    if(ms>60000&&ms<=120000){b.classList.add('b2');b.textContent='⚠️ 2 MINUTES LEFT'}
+    else if(ms>0&&ms<=60000){b.classList.add('b1');b.textContent='🚨 1 MINUTE!'}
+    if(ms<=120000&&ms>60000&&!S.live.a2){S.live.a2=1;save();alertCue(1)}
+    if(ms<=60000&&ms>0&&!S.live.a1){S.live.a1=1;save();alertCue(2)}
+    if(ms===0){$('over').classList.add('on');if(!S.live.a0){S.live.a0=1;save();alertCue(3)}}
+    $('heroIcon').textContent=left?'🎮':'🛑';
+    $('heroNum').textContent=left?`${m}:${String(s).padStart(2,'0')}`:'0:00';
+    $('heroUnit').textContent=left?'LEFT':"TIME'S UP";
+    $('heroSub').textContent=`${S.live.game} · ${S.live.plat}`;
+  };
+  step();tick=setInterval(step,1000);
+}
+function seg(id,set){$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');set(b.dataset.v);})}
+seg('gameSeg',v=>game=v);seg('platSeg',v=>plat=v);
+$('minus').onclick=()=>{S.allowed=Math.max(5,S.allowed-5);save();render()};
+$('plus').onclick=()=>{S.allowed=Math.min(300,S.allowed+5);save();render()};
+$('addPen').onclick=()=>{S.penalties.push({t:Date.now(),note:$('note').value.trim()});$('note').value='';save();render();if(navigator.vibrate)navigator.vibrate(80)};
+$('undoPen').onclick=()=>{const i=S.penalties.map(p=>!p.applied).lastIndexOf(true);if(i>-1){S.penalties.splice(i,1);save();render()}};
+$('startBtn').onclick=()=>{
+  const pen=penMins(),e=eff();
+  if(!confirm(`▶ ${game} on ${plat}\n${S.allowed} − ${pen} = ${e} min`))return;
+  pending().forEach(p=>p.applied=true);
+  S.sessions.push({t:Date.now(),game,plat,allowed:S.allowed,pen,effective:e});
+  S.live={game,plat,mins:e,end:Date.now()+e*60000};
+  save();render();
+};
+$('endBtn').onclick=()=>{if(confirm('End this session?')){S.live=null;save();render()}};
+$('resetBtn').onclick=()=>{if(!pending().length)return;if(confirm('Clear all waiting penalties?')){S.penalties=S.penalties.filter(p=>p.applied);save();render()}};
+let ctx=null;
+function beep(f,d,at){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=f;o.type='square';g.gain.setValueAtTime(.0001,ctx.currentTime+at);g.gain.exponentialRampToValueAtTime(.4,ctx.currentTime+at+.02);g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+at+d);o.connect(g).connect(ctx.destination);o.start(ctx.currentTime+at);o.stop(ctx.currentTime+at+d+.05)}
+function alertCue(n){if(navigator.vibrate)navigator.vibrate(n===3?[400,200,400,200,400]:n===2?[200,100,200]:[200]);if(!S.sound||!ctx)return;try{ctx.resume();for(let i=0;i<n*2;i++)beep(n===3?520:880,.18,i*.3)}catch(e){}}
+function sndLabel(){$('sndBtn').textContent=S.sound?'🔊':'🔇'}
+$('sndBtn').onclick=()=>{S.sound=!S.sound;save();sndLabel();if(S.sound){ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();ctx.resume();beep(880,.12,0)}};
+document.addEventListener('click',()=>{if(S.sound&&!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)()}},{once:true});
+$('overBtn').onclick=()=>{S.live=null;save();render()};
+sndLabel();
+render();
+</script>
+</body>
+</html>
