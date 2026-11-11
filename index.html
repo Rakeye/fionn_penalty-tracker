@@ -94,7 +94,7 @@
   <button class="bigbtn red" id="addPen">➕ 5 MIN</button>
 
   <div id="setup" class="card">
-    <div class="seg" id="gameSeg"><button data-v="Fortnite" class="on">🪂 Fortnite</button><button data-v="Wobbly Life">🧸 Wobbly Life</button></div>
+    <div class="seg" id="gameSeg"><button data-v="Fortnite">🪂 Fortnite</button><button data-v="Wobbly Life" class="on">🧸 Wobbly Life</button></div>
     <div class="seg" id="platSeg"><button data-v="Switch" class="on">🔴 Switch</button><button data-v="PS5">🎮 PS5</button></div>
     <div class="stepper">
       <button id="minus" aria-label="Less time">−</button>
@@ -155,7 +155,7 @@ if(!stored){
   try{stored=JSON.parse(localStorage.getItem(PREV)||'null')}catch(e){stored=null}
 }
 let S=normAll(stored);
-let game='Fortnite',plat='Switch',tick=null;
+let game='Wobbly Life',plat='Switch',tick=null;
 const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
 if(!hadV2)save();
 function penLeft(p){
