@@ -3,64 +3,253 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f1115">
+<meta name="theme-color" content="#2f6bff">
 <title>Fionn's Game Time Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Passion+One:wght@700;900&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0f1115;--card:#1a1d24;--ink:#fff;--muted:#9aa3b2;--red:#ff3b3b;--green:#22e07a;--line:#2a2f3a}
+  :root{
+    --ink:#fff;
+    --yellow:#ffe14a;
+    --yellow-deep:#f5b400;
+    --storm:#b45cff;
+    --epic:#9b4dff;
+    --rare:#3aa0ff;
+    --uncommon:#5dff4a;
+    --legend:#ffb020;
+    --panel:#140a32;
+    --ink-dim:#d5d0ea;
+    --display:"Passion One","Arial Narrow","Helvetica Neue Condensed Bold",Impact,Haettenschweiler,sans-serif;
+    --timer:"Anton","Arial Narrow",Impact,Haettenschweiler,sans-serif;
+  }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-  .wrap{max-width:520px;margin:0 auto;padding:14px 14px 40px}
-  .title{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1.05rem;color:var(--muted);margin:4px 2px 12px}
-  .hero{border-radius:24px;padding:18px 12px 20px;text-align:center;margin-bottom:12px;background:#2a0f0f;border:3px solid var(--red)}
-  .hero .icon{font-size:2.2rem}
-  .hero .num{font-size:clamp(6.5rem,36vw,11rem);font-weight:900;line-height:.88;color:var(--red);font-variant-numeric:tabular-nums;letter-spacing:-.04em;white-space:nowrap}
-  .hero.timing .num{font-size:clamp(4.2rem,20vw,8rem)}
-  .hero .unit{font-size:1.5rem;font-weight:800;color:var(--red);letter-spacing:.04em}
-  .hero .sub{margin-top:6px;font-size:1.05rem;font-weight:700;color:var(--muted)}
-  button{font:inherit;border:0;border-radius:18px;min-height:56px;min-width:56px;cursor:pointer;font-weight:800;color:#fff}
-  button:active{transform:scale(.97)}
-  .bigbtn{width:100%;min-height:84px;font-size:1.8rem;margin-bottom:12px}
-  .red{background:var(--red)} .green{background:var(--green);color:#06210f} .grey{background:#2d323d}
+  html,body{margin:0;min-height:100%}
+  body{
+    color:var(--ink);
+    font-family:var(--display);
+    background:
+      repeating-linear-gradient(-18deg, transparent 0 22px, rgba(120,40,255,.13) 22px 24px),
+      radial-gradient(circle at 50% -8%, rgba(255,225,74,.22), transparent 42%),
+      radial-gradient(circle at 50% 8%, transparent 0 120px, rgba(180,92,255,.55) 126px 142px, transparent 150px),
+      linear-gradient(180deg, #49c4ff 0%, #2f6bff 26%, #6a2bff 58%, #24105f 100%);
+    background-attachment:fixed;
+  }
+  .storm{
+    position:fixed;z-index:0;pointer-events:none;
+    width:150vw;height:150vw;left:50%;top:-28vw;transform:translateX(-50%);
+    border-radius:50%;
+    border:16px solid rgba(176,80,255,.42);
+    box-shadow:0 0 0 10px rgba(70,20,160,.28), inset 0 0 60px rgba(150,70,255,.2);
+  }
+  .wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:14px 14px calc(28px + env(safe-area-inset-bottom))}
+  .title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 2px 12px}
+  .brand{
+    font-size:clamp(1.35rem,6vw,1.7rem);letter-spacing:.04em;text-transform:uppercase;line-height:1;
+    color:var(--yellow);
+    text-shadow:0 3px 0 #1a0a40, 0 0 12px rgba(255,225,74,.35);
+  }
+  .hero{
+    position:relative;
+    text-align:center;
+    margin-bottom:14px;
+    padding:16px 12px 18px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.08), transparent 28%),
+      linear-gradient(180deg, #1b1464 0%, #12082e 100%);
+    border:3px solid var(--yellow);
+    border-radius:18px;
+    box-shadow:
+      0 0 0 5px rgba(110,40,200,.45),
+      0 10px 0 rgba(16,4,40,.45),
+      inset 0 0 36px rgba(120,60,255,.4);
+  }
+  .kicker{
+    font-size:.95rem;letter-spacing:.18em;text-transform:uppercase;color:var(--yellow);
+    text-shadow:0 2px 0 #1a0a40;
+  }
+  .hero .icon{font-size:1.8rem;line-height:1;margin-top:2px}
+  .hero .num{
+    font-family:var(--timer);
+    font-size:clamp(6.2rem,34vw,10.5rem);
+    font-weight:400;line-height:.84;letter-spacing:-.03em;
+    color:#fff;white-space:nowrap;
+    text-shadow:
+      0 1px 0 #12081f, 0 4px 0 #12081f, 0 7px 0 #2a1468,
+      3px 0 0 #12081f, -3px 0 0 #12081f, 0 -3px 0 #12081f,
+      0 10px 18px rgba(0,0,0,.45);
+  }
+  .hero.timing .num{font-size:clamp(4rem,18vw,7.4rem);letter-spacing:-.02em}
+  .hero .unit{
+    font-size:1.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--yellow);
+    text-shadow:0 3px 0 #1a0a40;
+  }
+  .hero .sub{margin-top:4px;min-height:1.2em;font-size:1.05rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
+  button{
+    font-family:inherit;border:0;cursor:pointer;color:#fff;font-weight:900;
+    min-height:56px;min-width:56px;background:transparent;position:relative;
+    letter-spacing:.04em;text-transform:uppercase;
+  }
+  .bigbtn,#clearBtn{width:100%;min-height:84px;font-size:1.7rem;margin-bottom:12px;padding:0 12px 8px;position:relative;z-index:0}
+  #clearBtn{min-height:64px;font-size:1.2rem;letter-spacing:.08em}
+  .bigbtn::before,#clearBtn::before{
+    content:"";position:absolute;z-index:-1;left:0;right:0;top:0;bottom:8px;
+    clip-path:polygon(7% 0,100% 0,93% 100%,0 100%);
+    transition:transform .08s ease;
+  }
+  .bigbtn:active::before,#clearBtn:active::before{transform:translateY(5px)}
+  .face{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:.9;pointer-events:none}
+  .face b{font-size:1.85rem;font-weight:900}
+  .face small{font-size:clamp(.78rem,3.2vw,1rem);letter-spacing:.08em;margin-top:2px}
+  #addPen{color:#fff}
+  #addPen::before{background:linear-gradient(180deg,#ff5d8a 0%,#e2185a 48%,#7a2bff 100%);box-shadow:inset 0 2px 0 rgba(255,255,255,.4)}
+  #subPen{color:#06210a}
+  #subPen::before{background:linear-gradient(180deg,#d6ff6a 0%,#5dff4a 42%,#1fae32 100%);box-shadow:inset 0 2px 0 rgba(255,255,255,.55)}
+  #startBtn.green{color:#1a1200}
+  #startBtn.green::before{background:linear-gradient(180deg,#fff6a0 0%,#ffe14a 46%,#f5b400 100%);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
+  #startBtn.grey{color:#fff}
+  #startBtn.grey::before{background:linear-gradient(180deg,#8d5cff 0%,#6428e0 52%,#3a12a4 100%);box-shadow:inset 0 2px 0 rgba(255,255,255,.35)}
   .row{display:flex;gap:10px;margin-bottom:12px}
-  .row>*{flex:1}
-  .row .bigbtn{margin-bottom:0;font-size:1.35rem;padding:0 8px}
-  input{font:inherit;width:100%;min-height:56px;padding:0 16px;border-radius:16px;border:2px solid var(--line);background:var(--card);color:#fff;font-size:1.1rem;margin-bottom:10px}
-  details{background:var(--card);border-radius:22px;padding:4px 14px;margin-bottom:12px}
-  summary{min-height:56px;display:flex;align-items:center;font-weight:800;font-size:1.1rem;cursor:pointer;list-style:none}
+  .row>*{flex:1;min-width:0}
+  .row .bigbtn{margin-bottom:0}
+  input{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    width:100%;min-height:56px;padding:0 12px;margin-bottom:10px;
+    border-radius:14px;border:3px solid #7d5cff;
+    background:rgba(10,6,28,.78);color:#fff;font-size:16px;font-weight:700;
+  }
+  input::placeholder{color:#c8c0e4}
+  input:focus{outline:none;border-color:var(--yellow)}
+  details{
+    background:rgba(10,6,28,.78);
+    border:3px solid rgba(255,225,74,.7);
+    border-radius:16px;padding:4px 12px;margin-bottom:12px;
+    box-shadow:0 6px 0 rgba(16,4,40,.35);
+  }
+  summary{
+    min-height:56px;display:flex;align-items:center;
+    font-size:1.25rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;list-style:none;color:var(--yellow);
+  }
   summary::-webkit-details-marker{display:none}
   ul{list-style:none;padding:0;margin:0 0 8px}
-  li{padding:10px 0;border-top:1px solid var(--line);font-size:1rem;overflow-wrap:anywhere}
-  .meta{color:var(--muted);font-size:.85rem}
-  .used{opacity:.55}
-  .over{position:fixed;inset:0;background:var(--red);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:20;padding:24px}
+  li.loot{
+    position:relative;
+    margin:0 0 8px;padding:12px 12px 10px 16px;
+    background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.28));
+    border:2px solid rgba(255,255,255,.16);
+    border-radius:10px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:1rem;font-weight:800;letter-spacing:0;text-transform:none;
+    overflow-wrap:anywhere;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.35);
+  }
+  li.loot::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:8px;border-radius:8px 0 0 8px;
+    background:var(--rarity,#b1b1b1);
+  }
+  li.loot-add{--rarity:#ff3b6b}
+  li.loot-remove{--rarity:#5dff4a}
+  li.loot-served{--rarity:#ffb020}
+  li.loot-clear{--rarity:#3aa0ff}
+  li.meta{
+    border:0;background:none;box-shadow:none;padding:8px 4px;
+    color:var(--ink-dim);font-weight:700;
+  }
+  li.meta::before{display:none}
+  .meta{color:#c8c0e4;font-size:.85rem;font-weight:700;margin-top:2px}
+  .used{opacity:.8}
+  #clearBtn{color:#fff}
+  #clearBtn::before{background:linear-gradient(180deg,#6e63ff 0%,#3a2ad4 100%);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
+  .fine{position:relative;z-index:1;text-align:center;margin-top:14px;color:#efeaff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:.85rem;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+  .snd{
+    min-height:52px;min-width:52px;font-size:1.35rem;border-radius:14px;
+    background:#1a0d3d;border:3px solid var(--yellow);
+    box-shadow:0 4px 0 #12081f;text-transform:none;
+  }
+  .snd:active{transform:translateY(3px);box-shadow:0 1px 0 #12081f}
+  .over{
+    position:fixed;inset:0;z-index:20;display:none;
+    flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    padding:24px;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255,225,74,.28), transparent 34%),
+      repeating-linear-gradient(-18deg, transparent 0 18px, rgba(255,255,255,.05) 18px 20px),
+      linear-gradient(180deg, #49c4ff 0%, #5a2bff 46%, #1a0a4a 100%);
+  }
   .over.on{display:flex}
-  .over .big{font-size:clamp(1.9rem,8vw,3.1rem);font-weight:900;line-height:1.08;color:#fff;max-width:14em}
-  .over button{margin-top:28px;background:#fff;color:#b00;min-height:72px;font-size:1.5rem;padding:0 32px}
-  .snd{background:#2d323d;min-height:48px;min-width:48px;font-size:1.3rem;border-radius:14px}
+  .confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .confetti i{
+    position:absolute;top:-12px;width:10px;height:16px;border-radius:2px;opacity:.9;
+    animation:fall 2.8s linear infinite;
+  }
+  .confetti i:nth-child(1){left:8%;background:var(--yellow);animation-delay:-.2s}
+  .confetti i:nth-child(2){left:18%;background:var(--uncommon);width:8px;height:8px;border-radius:50%;animation-delay:-1s}
+  .confetti i:nth-child(3){left:30%;background:var(--rare);animation-delay:-1.6s}
+  .confetti i:nth-child(4){left:42%;background:var(--legend);animation-delay:-.6s}
+  .confetti i:nth-child(5){left:55%;background:#ff5d8a;width:8px;height:8px;border-radius:50%;animation-delay:-2s}
+  .confetti i:nth-child(6){left:66%;background:var(--yellow);animation-delay:-1.2s}
+  .confetti i:nth-child(7){left:76%;background:var(--storm);animation-delay:-.4s}
+  .confetti i:nth-child(8){left:88%;background:var(--uncommon);width:8px;height:8px;border-radius:50%;animation-delay:-1.8s}
+  @keyframes fall{to{transform:translateY(110vh) rotate(200deg)}}
+  .vic{
+    position:relative;z-index:1;margin:0 0 12px;
+    font-size:clamp(2.7rem,13vw,4.6rem);line-height:.88;letter-spacing:.02em;text-transform:uppercase;
+    color:var(--yellow);
+    -webkit-text-stroke:2px #1a0a30;
+    text-shadow:0 6px 0 #4a1cae, 0 0 22px rgba(255,225,74,.55);
+  }
+  .over .big{
+    position:relative;z-index:1;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:clamp(1.25rem,5.4vw,1.7rem);font-weight:800;line-height:1.2;color:#fff;
+    max-width:16em;text-transform:none;letter-spacing:0;
+    text-shadow:0 2px 0 rgba(0,0,0,.4);
+  }
+  .over button{
+    position:relative;z-index:0;margin-top:26px;min-height:72px;min-width:180px;
+    padding:0 28px 8px;font-size:1.55rem;color:#1a1200;letter-spacing:.06em;
+  }
+  .over button::before{
+    content:"";position:absolute;z-index:-1;left:0;right:0;top:0;bottom:8px;
+    clip-path:polygon(6% 0,100% 0,94% 100%,0 100%);
+    background:linear-gradient(180deg,#fff6a0,#ffe14a 50%,#f5b400);
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.75);
+  }
+  .over button:active::before{transform:translateY(5px)}
+  @media (prefers-reduced-motion:reduce){
+    .confetti i,.bigbtn::before,#clearBtn::before,.over button::before{animation:none;transition:none}
+  }
 </style>
 </head>
 <body>
-<div class="over" id="over"><div class="big" id="overMsg">⏰ Penalty done — add 5 min on parental controls</div><button id="doneBtn">✓ DONE</button></div>
+<div class="storm" aria-hidden="true"></div>
+<div class="over" id="over">
+  <div class="confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="vic">Victory Royale</p>
+  <div class="big" id="overMsg">⏰ Penalty done — add 5 min on parental controls</div>
+  <button id="doneBtn">✓ DONE</button>
+</div>
 <div class="wrap">
-  <div class="title"><span>⚠️ Fionn's Penalties</span><button class="snd" id="sndBtn" aria-label="Sound on or off">🔇</button></div>
+  <div class="title"><span class="brand">Fionn's Penalties</span><button class="snd" id="sndBtn" aria-label="Sound on or off">🔇</button></div>
 
   <div class="hero" id="hero">
+    <div class="kicker">Storm timer</div>
     <div class="icon" id="heroIcon">👍</div>
     <div class="num" id="heroNum">0</div>
     <div class="unit" id="heroUnit">MIN</div>
     <div class="sub" id="heroSub">No penalties</div>
   </div>
 
-  <input id="note" placeholder="📝 What was missed? (optional)" autocomplete="off">
+  <input id="note" placeholder="What was missed? (optional)" autocomplete="off">
   <div class="row">
-    <button class="bigbtn red" id="addPen" aria-label="Add 5 minutes">➕ 5 MIN</button>
-    <button class="bigbtn grey" id="subPen" aria-label="Remove 5 minutes">➖ 5 MIN</button>
+    <button class="bigbtn red" id="addPen" aria-label="Add 5 minutes"><span class="face"><b>+5</b><small>PENALTY</small></span></button>
+    <button class="bigbtn grey" id="subPen" aria-label="Remove 5 minutes"><span class="face"><b>−5</b><small>EARNED BACK</small></span></button>
   </div>
   <button class="bigbtn green" id="startBtn" style="display:none">▶ START</button>
 
-  <details><summary>⚠️ History</summary><ul id="logList"></ul></details>
-  <button class="grey" id="clearBtn" style="width:100%;min-height:64px;font-size:1.15rem">🧹 Clear to zero</button>
-  <p class="meta" style="text-align:center;margin-top:14px">Saved on this device only.</p>
+  <details><summary>History</summary><ul id="logList"></ul></details>
+  <button id="clearBtn">Clear to zero</button>
+  <p class="fine">Saved on this device only.</p>
 </div>
 
 <script>
@@ -157,8 +346,8 @@ function logLine(e){
   else if(e.kind==='clear')label='🧹 Cleared '+minsLabel(e.ms);
   else return '';
   const note=e.note?' · '+esc(e.note):'';
-  const dim=e.kind==='served'||e.kind==='clear'?' class="used"':'';
-  return `<li${dim}>${label}${note}<div class="meta">${fmt(e.t)}</div></li>`;
+  const used=e.kind==='served'||e.kind==='clear'?' used':'';
+  return `<li class="loot loot-${esc(e.kind)}${used}">${label}${note}<div class="meta">${fmt(e.t)}</div></li>`;
 }
 function render(){
   paintHero();
