@@ -61,10 +61,21 @@
   .over .e{font-size:6rem}
   .over button{margin-top:28px;background:#fff;color:#b00;min-height:72px;font-size:1.5rem;padding:0 32px}
   .snd{background:#2d323d;min-height:48px;min-width:48px;font-size:1.3rem;border-radius:14px}
+  .pcount{text-align:center;font-weight:800;color:var(--red);font-size:1.15rem;margin:2px 2px 8px}
+  .pcard{border-radius:24px;padding:16px;text-align:center;margin-bottom:12px;background:#2a0f0f;border:3px solid var(--red);overflow-wrap:anywhere}
+  .pcard .plbl{font-weight:800;font-size:1.2rem}
+  .pcard .clock{font-size:clamp(4.5rem,28vw,7.5rem);font-weight:900;line-height:.9;color:var(--red);font-variant-numeric:tabular-nums;letter-spacing:-.03em;margin:4px 0 8px}
+  .pcard .prow{display:flex;gap:10px}
+  .pcard .prow button{flex:1;min-height:64px;font-size:1.2rem}
+  .pcard .bigbtn{margin-bottom:10px}
+  .pcard .undo{width:100%;min-height:64px;font-size:1.2rem}
+  .over.pen{z-index:20}
+  .over.pen .big{font-size:clamp(1.9rem,8vw,3.1rem);max-width:14em;line-height:1.08}
 </style>
 </head>
 <body>
 <div class="over" id="over"><div class="e">🛑</div><div class="big">TIME'S UP</div><div style="font-size:1.4rem;font-weight:800;margin-top:12px;color:#fff">Save and switch off 🎮</div><button id="overBtn">✓ DONE</button></div>
+<div class="over pen" id="penOver"><div class="big" id="penOverMsg">⏰ Penalty done — add 5 min on parental controls</div><div id="penOverCount" style="font-weight:800;font-size:1.2rem;margin-top:12px"></div><button id="penDoneBtn">✓ DONE</button></div>
 <div class="wrap">
   <div class="title"><span>🎮 Fionn's Game Time</span><span><span id="liveTag"></span> <button class="snd" id="sndBtn" aria-label="Sound on or off">🔇</button></span></div>
 
@@ -77,11 +88,7 @@
     <div class="sub" id="heroSub"></div>
   </div>
 
-  <div class="pen">
-    <div class="lbl">⚠️</div>
-    <div class="num" id="penNum">0<small> min</small></div>
-    <button class="grey" id="undoPen" aria-label="Undo last penalty" style="font-size:1.6rem;width:64px">↩︎</button>
-  </div>
+  <div id="penBox"></div>
 
   <input id="note" placeholder="📝 What was missed? (optional)">
   <button class="bigbtn red" id="addPen">➕ 5 MIN</button>
@@ -94,7 +101,7 @@
       <div class="val"><span id="allowed">60</span><small> min</small></div>
       <button id="plus" aria-label="More time">+</button>
     </div>
-    <div class="calc"><span id="cA">60</span> − <span class="r" id="cP">0</span> = <span class="g" id="cE">60</span></div>
+    <div class="calc">Session <span class="g" id="cE">60</span> min · penalties stay separate</div>
     <button class="bigbtn green" id="startBtn" style="margin:0">▶ START</button>
   </div>
 
@@ -108,24 +115,100 @@
 </div>
 
 <script>
-const KEY='fionnTracker.v1';
-let S=JSON.parse(localStorage.getItem(KEY)||'null')||{penalties:[],sessions:[],live:null};
-if(!S.allowed)S.allowed=60;
-let game='Fortnite',plat='Switch',tick=null;
+const KEY='fionnTracker.v2';
+const PREV='fionnTracker.v1';
+const PEN_MS=5*60*1000;
 const $=id=>document.getElementById(id);
-const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
 const fmt=t=>new Date(t).toLocaleString([], {weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const pending=()=>S.penalties.filter(p=>!p.applied);
-const penMins=()=>pending().length*5;
-const eff=()=>Math.max(0,S.allowed-penMins());
-
+function fresh(){return {penalties:[],sessions:[],live:null,allowed:60};}
+function normAll(o){
+  const base=fresh();
+  if(!o||typeof o!=='object')return base;
+  base.allowed=o.allowed||60;
+  base.sound=!!o.sound;
+  base.live=o.live||null;
+  base.sessions=Array.isArray(o.sessions)?o.sessions:[];
+  const known={waiting:1,running:1,paused:1,done:1,complete:1};
+  base.penalties=(Array.isArray(o.penalties)?o.penalties:[]).map((p,i)=>{
+    let status=p.status||(p.applied?'complete':'waiting');
+    if(!known[status])status='waiting';
+    const endsAt=typeof p.endsAt==='number'?p.endsAt:null;
+    if(status==='running'&&endsAt==null)status='paused';
+    return {
+      id:String(p.id||('p'+(p.t||0)+'-'+i)),
+      t:p.t||Date.now(),
+      note:p.note||'',
+      status,
+      remainingMs:typeof p.remainingMs==='number'?p.remainingMs:PEN_MS,
+      endsAt,
+      alerted:p.alerted!=null?!!p.alerted:!!(p.applied||status==='complete'),
+      completedAt:p.completedAt||null
+    };
+  });
+  return base;
+}
+let hadV2=true,stored=null;
+try{stored=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){stored=null}
+if(!stored){
+  hadV2=false;
+  try{stored=JSON.parse(localStorage.getItem(PREV)||'null')}catch(e){stored=null}
+}
+let S=normAll(stored);
+let game='Fortnite',plat='Switch',tick=null;
+const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+if(!hadV2)save();
+function penLeft(p){
+  if(p.status==='done'||p.status==='complete')return 0;
+  if(p.status==='running'&&p.endsAt)return Math.max(0,p.endsAt-Date.now());
+  return Math.max(0,p.remainingMs==null?PEN_MS:p.remainingMs);
+}
+function clockText(p){
+  const sec=Math.ceil(penLeft(p)/1000);
+  return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
+}
+function finishPen(p){
+  if(p.status==='done'||p.status==='complete')return false;
+  p.status='done';p.remainingMs=0;p.endsAt=null;
+  if(p.alerted)return false;
+  p.alerted=true;
+  return true;
+}
+function penHint(p){
+  if(p.status==='complete')return ' · done';
+  if(p.status==='done')return ' · add 5 min on parental controls';
+  if(p.status==='running')return ' · counting';
+  if(p.status==='paused')return ' · paused';
+  return ' · not started';
+}
+function renderPens(){
+  const active=S.penalties.filter(p=>p.status!=='complete').sort((a,b)=>a.t-b.t);
+  if(!active.length)$('penBox').innerHTML='';
+  else{
+    const head=active.length>1?`<div class="pcount">${active.length} penalties</div>`:'';
+    $('penBox').innerHTML=head+active.map(p=>{
+      const note=p.note?`<div class="meta">${esc(p.note)}</div>`:'';
+      let extra='';
+      if(p.status==='paused')extra='<div class="meta">Paused</div>';
+      else if(p.status==='waiting')extra='<div class="meta">Not started</div>';
+      let btns;
+      if(p.status==='running')btns='<div class="prow"><button class="grey" data-act="pause">⏸ PAUSE</button><button class="grey" data-act="reset">↺ RESET</button></div>';
+      else if(p.status==='done')btns='<div class="plbl">Add 5 min on parental controls</div>';
+      else if(p.status==='paused')btns='<button class="bigbtn green" data-act="start">▶ START</button><div class="prow"><button class="grey" data-act="reset">↺ RESET</button><button class="grey" data-act="undo">↩︎ UNDO</button></div>';
+      else btns='<button class="bigbtn green" data-act="start">▶ START</button><button class="grey undo" data-act="undo">↩︎ UNDO</button>';
+      return `<div class="pcard" data-pen="${esc(p.id)}"><div class="plbl">⚠️ 5 min penalty</div>${note}${extra}<div class="clock">${clockText(p)}</div>${btns}</div>`;
+    }).join('');
+  }
+  const done=S.penalties.filter(p=>p.status==='done').sort((a,b)=>a.t-b.t);
+  $('penOver').classList.toggle('on',done.length>0);
+  $('penOverCount').textContent=done.length>1?`${done.length} ready — tap DONE for each 5 min`:'';
+}
 function render(){
-  $('penNum').innerHTML=penMins()+'<small> min</small>';
   $('allowed').textContent=S.allowed;
-  $('cA').textContent=S.allowed;$('cP').textContent=penMins();$('cE').textContent=eff();
+  $('cE').textContent=S.allowed;
+  renderPens();
   $('penList').innerHTML=S.penalties.length?S.penalties.slice().reverse().map(p=>
-    `<li class="${p.applied?'used':''}">⚠️ 5 min${p.note?' · '+esc(p.note):''}<div class="meta">${fmt(p.t)}${p.applied?' · used':''}</div></li>`).join(''):'<li class="meta">None yet 👍</li>';
+    `<li class="${p.status==='complete'?'used':''}">⚠️ 5 min${p.note?' · '+esc(p.note):''}<div class="meta">${fmt(p.t)}${penHint(p)}</div></li>`).join(''):'<li class="meta">None yet 👍</li>';
   $('sesList').innerHTML=S.sessions.length?S.sessions.slice().reverse().map(s=>
     `<li>${esc(s.game)} · ${esc(s.plat)} · <b>${s.effective}</b>/${s.allowed} min<div class="meta">${fmt(s.t)}${s.pen?' · −'+s.pen+' min penalties':''}</div></li>`).join(''):'<li class="meta">None yet</li>';
   renderHero();
@@ -138,7 +221,7 @@ function renderHero(){
   $('endBtn').style.display=live?'block':'none';
   $('liveTag').textContent=live?'🟢 PLAYING':'';
   if(!live){
-    const e=eff();
+    const e=S.allowed;
     $('hero').classList.toggle('zero',e===0);
     $('heroIcon').textContent=e===0?'🚫':'⏱️';
     $('heroNum').textContent=e;$('heroUnit').textContent='MIN NEXT SESSION';
@@ -165,23 +248,81 @@ function renderHero(){
   };
   step();tick=setInterval(step,1000);
 }
+function tickPens(){
+  let changed=false,alert=false;
+  S.penalties.forEach(p=>{
+    if(p.status==='running'&&p.endsAt&&Date.now()>=p.endsAt){
+      changed=true;
+      if(finishPen(p))alert=true;
+    }else if(p.status==='done'&&!p.alerted){
+      p.alerted=true;changed=true;alert=true;
+    }
+  });
+  if(!changed){
+    document.querySelectorAll('.pcard').forEach(el=>{
+      const p=S.penalties.find(x=>x.id===el.dataset.pen);
+      const c=el.querySelector('.clock');
+      if(p&&c)c.textContent=clockText(p);
+    });
+    return;
+  }
+  save();
+  render();
+  if(alert)alertCue(3);
+}
+function onWake(){tickPens();if(S.live)renderHero()}
 function seg(id,set){$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
   $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');set(b.dataset.v);})}
 seg('gameSeg',v=>game=v);seg('platSeg',v=>plat=v);
 $('minus').onclick=()=>{S.allowed=Math.max(5,S.allowed-5);save();render()};
 $('plus').onclick=()=>{S.allowed=Math.min(300,S.allowed+5);save();render()};
-$('addPen').onclick=()=>{S.penalties.push({t:Date.now(),note:$('note').value.trim()});$('note').value='';save();render();if(navigator.vibrate)navigator.vibrate(80)};
-$('undoPen').onclick=()=>{const i=S.penalties.map(p=>!p.applied).lastIndexOf(true);if(i>-1){S.penalties.splice(i,1);save();render()}};
+$('addPen').onclick=()=>{
+  const id='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  S.penalties.push({id,t:Date.now(),note:$('note').value.trim(),status:'waiting',remainingMs:PEN_MS,endsAt:null,alerted:false,completedAt:null});
+  $('note').value='';
+  save();render();
+  const el=document.querySelector('.pcard[data-pen="'+id+'"]');
+  if(el&&el.scrollIntoView)el.scrollIntoView({block:'center'});
+  if(navigator.vibrate)navigator.vibrate(80);
+};
+$('penBox').onclick=ev=>{
+  const btn=ev.target.closest('button');
+  if(!btn)return;
+  const card=btn.closest('.pcard');
+  if(!card)return;
+  const p=S.penalties.find(x=>x.id===card.dataset.pen);
+  if(!p)return;
+  const act=btn.dataset.act;
+  if(act==='start'){
+    if(p.status==='running'||p.status==='done'||p.status==='complete')return;
+    const rem=p.status==='paused'?Math.max(0,p.remainingMs):PEN_MS;
+    if(rem<=0){if(finishPen(p))alertCue(3)}
+    else{p.status='running';p.remainingMs=rem;p.endsAt=Date.now()+rem}
+  }else if(act==='pause'){
+    if(p.status!=='running')return;
+    const left=Math.max(0,(p.endsAt||0)-Date.now());
+    if(left<=0){if(finishPen(p))alertCue(3)}
+    else{p.remainingMs=left;p.endsAt=null;p.status='paused'}
+  }else if(act==='reset'){
+    p.status='waiting';p.remainingMs=PEN_MS;p.endsAt=null;p.alerted=false;
+  }else if(act==='undo'){
+    if(p.status==='running'||p.status==='done'||p.status==='complete')return;
+    S.penalties=S.penalties.filter(x=>x.id!==p.id);
+  }else return;
+  save();render();
+};
 $('startBtn').onclick=()=>{
-  const pen=penMins(),e=eff();
-  if(!confirm(`▶ ${game} on ${plat}\n${S.allowed} − ${pen} = ${e} min`))return;
-  pending().forEach(p=>p.applied=true);
-  S.sessions.push({t:Date.now(),game,plat,allowed:S.allowed,pen,effective:e});
+  const e=S.allowed;
+  if(!confirm(`▶ ${game} on ${plat}\n${e} min`))return;
+  S.sessions.push({t:Date.now(),game,plat,allowed:S.allowed,pen:0,effective:e});
   S.live={game,plat,mins:e,end:Date.now()+e*60000};
   save();render();
 };
 $('endBtn').onclick=()=>{if(confirm('End this session?')){S.live=null;save();render()}};
-$('resetBtn').onclick=()=>{if(!pending().length)return;if(confirm('Clear all waiting penalties?')){S.penalties=S.penalties.filter(p=>p.applied);save();render()}};
+$('resetBtn').onclick=()=>{
+  if(!S.penalties.some(p=>p.status==='waiting'))return;
+  if(confirm('Clear all waiting penalties?')){S.penalties=S.penalties.filter(p=>p.status!=='waiting');save();render()}
+};
 let ctx=null;
 function beep(f,d,at){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=f;o.type='square';g.gain.setValueAtTime(.0001,ctx.currentTime+at);g.gain.exponentialRampToValueAtTime(.4,ctx.currentTime+at+.02);g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+at+d);o.connect(g).connect(ctx.destination);o.start(ctx.currentTime+at);o.stop(ctx.currentTime+at+d+.05)}
 function alertCue(n){if(navigator.vibrate)navigator.vibrate(n===3?[400,200,400,200,400]:n===2?[200,100,200]:[200]);if(!S.sound||!ctx)return;try{ctx.resume();for(let i=0;i<n*2;i++)beep(n===3?520:880,.18,i*.3)}catch(e){}}
@@ -189,8 +330,18 @@ function sndLabel(){$('sndBtn').textContent=S.sound?'🔊':'🔇'}
 $('sndBtn').onclick=()=>{S.sound=!S.sound;save();sndLabel();if(S.sound){ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();ctx.resume();beep(880,.12,0)}};
 document.addEventListener('click',()=>{if(S.sound&&!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)()}},{once:true});
 $('overBtn').onclick=()=>{S.live=null;save();render()};
+$('penDoneBtn').onclick=()=>{
+  const p=S.penalties.filter(x=>x.status==='done').sort((a,b)=>a.t-b.t)[0];
+  if(p){p.status='complete';p.completedAt=Date.now();p.remainingMs=0;p.endsAt=null}
+  save();render();
+};
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')onWake()});
+window.addEventListener('pageshow',onWake);
+window.addEventListener('focus',onWake);
 sndLabel();
 render();
+tickPens();
+setInterval(tickPens,250);
 </script>
 </body>
 </html>
