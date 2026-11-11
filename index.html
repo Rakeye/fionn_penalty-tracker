@@ -11,337 +11,298 @@
   html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
   .wrap{max-width:520px;margin:0 auto;padding:14px 14px 40px}
   .title{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1.05rem;color:var(--muted);margin:4px 2px 12px}
-  .hero{border-radius:24px;padding:22px 16px;text-align:center;margin-bottom:12px;background:#0d2a1b;border:3px solid var(--green)}
-  .hero .icon{font-size:2.4rem}
-  .hero .num{font-size:clamp(5.5rem,30vw,9.5rem);font-weight:900;line-height:.95;color:var(--green);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
-  .hero .unit{font-size:1.4rem;font-weight:800;color:var(--green);opacity:.85}
-  .hero.zero{background:#2a0f0f;border-color:var(--red)}
-  .hero.zero .num,.hero.zero .unit{color:var(--red)}
-  .hero .sub{margin-top:8px;font-size:1.15rem;font-weight:700}
-  .pen{border-radius:24px;padding:16px;display:flex;align-items:center;justify-content:space-between;background:#2a0f0f;border:3px solid var(--red);margin-bottom:12px}
-  .pen .num{font-size:clamp(3.5rem,18vw,5rem);font-weight:900;color:var(--red);line-height:1;font-variant-numeric:tabular-nums}
-  .pen .num small{font-size:1.2rem}
-  .pen .lbl{font-size:2.2rem}
+  .hero{border-radius:24px;padding:18px 12px 20px;text-align:center;margin-bottom:12px;background:#2a0f0f;border:3px solid var(--red)}
+  .hero .icon{font-size:2.2rem}
+  .hero .num{font-size:clamp(6.5rem,36vw,11rem);font-weight:900;line-height:.88;color:var(--red);font-variant-numeric:tabular-nums;letter-spacing:-.04em;white-space:nowrap}
+  .hero.timing .num{font-size:clamp(4.2rem,20vw,8rem)}
+  .hero .unit{font-size:1.5rem;font-weight:800;color:var(--red);letter-spacing:.04em}
+  .hero .sub{margin-top:6px;font-size:1.05rem;font-weight:700;color:var(--muted)}
   button{font:inherit;border:0;border-radius:18px;min-height:56px;min-width:56px;cursor:pointer;font-weight:800;color:#fff}
   button:active{transform:scale(.97)}
-  .bigbtn{width:100%;min-height:84px;font-size:1.9rem;margin-bottom:12px}
+  .bigbtn{width:100%;min-height:84px;font-size:1.8rem;margin-bottom:12px}
   .red{background:var(--red)} .green{background:var(--green);color:#06210f} .grey{background:#2d323d}
   .row{display:flex;gap:10px;margin-bottom:12px}
   .row>*{flex:1}
+  .row .bigbtn{margin-bottom:0;font-size:1.35rem;padding:0 8px}
   input{font:inherit;width:100%;min-height:56px;padding:0 16px;border-radius:16px;border:2px solid var(--line);background:var(--card);color:#fff;font-size:1.1rem;margin-bottom:10px}
-  .card{background:var(--card);border-radius:22px;padding:14px;margin-bottom:12px}
-  .seg{display:flex;gap:10px;margin-bottom:10px}
-  .seg button{flex:1;min-height:64px;background:#2d323d;font-size:1.05rem;border:3px solid transparent}
-  .seg button.on{border-color:#fff;background:#3a4150}
-  .stepper{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-  .stepper button{width:64px;min-height:64px;font-size:2rem;background:#2d323d}
-  .stepper .val{flex:1;text-align:center;font-size:3rem;font-weight:900;font-variant-numeric:tabular-nums}
-  .stepper .val small{font-size:1rem;color:var(--muted)}
-  .calc{text-align:center;font-size:1.3rem;font-weight:800;margin:6px 0 12px}
-  .calc .r{color:var(--red)} .calc .g{color:var(--green)}
   details{background:var(--card);border-radius:22px;padding:4px 14px;margin-bottom:12px}
   summary{min-height:56px;display:flex;align-items:center;font-weight:800;font-size:1.1rem;cursor:pointer;list-style:none}
+  summary::-webkit-details-marker{display:none}
   ul{list-style:none;padding:0;margin:0 0 8px}
-  li{padding:10px 0;border-top:1px solid var(--line);font-size:1rem}
+  li{padding:10px 0;border-top:1px solid var(--line);font-size:1rem;overflow-wrap:anywhere}
   .meta{color:var(--muted);font-size:.85rem}
-  .used{opacity:.45}
-  .hero.warn2{background:#3a2600;border-color:#ffb020;animation:pulse 1.4s ease-in-out infinite}
-  .hero.warn2 .num,.hero.warn2 .unit{color:#ffb020}
-  .hero.warn1{background:#3a0000;border-color:var(--red);animation:flash .6s steps(2) infinite}
-  .hero.warn1 .num,.hero.warn1 .unit{color:#ff3b3b}
-  .hero.warn1 .num{font-size:clamp(6.5rem,36vw,11rem)}
-  .banner{display:none;border-radius:20px;padding:16px;margin-bottom:12px;text-align:center;font-weight:900;font-size:clamp(1.8rem,9vw,2.6rem);line-height:1.1}
-  .banner.b2{display:block;background:#ffb020;color:#1a1000;animation:pulse 1.4s ease-in-out infinite}
-  .banner.b1{display:block;background:var(--red);color:#fff;font-size:clamp(2.2rem,11vw,3.2rem);animation:flash .6s steps(2) infinite}
-  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
-  @keyframes flash{0%{filter:brightness(1)}100%{filter:brightness(1.6)}}
-  .over{position:fixed;inset:0;background:var(--red);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:10;padding:24px}
+  .used{opacity:.55}
+  .over{position:fixed;inset:0;background:var(--red);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:20;padding:24px}
   .over.on{display:flex}
-  .over .big{font-size:clamp(4rem,22vw,8rem);font-weight:900;line-height:.95;color:#fff}
-  .over .e{font-size:6rem}
+  .over .big{font-size:clamp(1.9rem,8vw,3.1rem);font-weight:900;line-height:1.08;color:#fff;max-width:14em}
   .over button{margin-top:28px;background:#fff;color:#b00;min-height:72px;font-size:1.5rem;padding:0 32px}
   .snd{background:#2d323d;min-height:48px;min-width:48px;font-size:1.3rem;border-radius:14px}
-  .pcount{text-align:center;font-weight:800;color:var(--red);font-size:1.15rem;margin:2px 2px 8px}
-  .pcard{border-radius:24px;padding:16px;text-align:center;margin-bottom:12px;background:#2a0f0f;border:3px solid var(--red);overflow-wrap:anywhere}
-  .pcard .plbl{font-weight:800;font-size:1.2rem}
-  .pcard .clock{font-size:clamp(4.5rem,28vw,7.5rem);font-weight:900;line-height:.9;color:var(--red);font-variant-numeric:tabular-nums;letter-spacing:-.03em;margin:4px 0 8px}
-  .pcard .prow{display:flex;gap:10px}
-  .pcard .prow button{flex:1;min-height:64px;font-size:1.2rem}
-  .pcard .bigbtn{margin-bottom:10px}
-  .pcard .undo{width:100%;min-height:64px;font-size:1.2rem}
-  .over.pen{z-index:20}
-  .over.pen .big{font-size:clamp(1.9rem,8vw,3.1rem);max-width:14em;line-height:1.08}
 </style>
 </head>
 <body>
-<div class="over" id="over"><div class="e">🛑</div><div class="big">TIME'S UP</div><div style="font-size:1.4rem;font-weight:800;margin-top:12px;color:#fff">Save and switch off 🎮</div><button id="overBtn">✓ DONE</button></div>
-<div class="over pen" id="penOver"><div class="big" id="penOverMsg">⏰ Penalty done — add 5 min on parental controls</div><div id="penOverCount" style="font-weight:800;font-size:1.2rem;margin-top:12px"></div><button id="penDoneBtn">✓ DONE</button></div>
+<div class="over" id="over"><div class="big" id="overMsg">⏰ Penalty done — add 5 min on parental controls</div><button id="doneBtn">✓ DONE</button></div>
 <div class="wrap">
-  <div class="title"><span>🎮 Fionn's Game Time</span><span><span id="liveTag"></span> <button class="snd" id="sndBtn" aria-label="Sound on or off">🔇</button></span></div>
-
-  <div class="banner" id="banner"></div>
+  <div class="title"><span>⚠️ Fionn's Penalties</span><button class="snd" id="sndBtn" aria-label="Sound on or off">🔇</button></div>
 
   <div class="hero" id="hero">
-    <div class="icon" id="heroIcon">⏱️</div>
+    <div class="icon" id="heroIcon">👍</div>
     <div class="num" id="heroNum">0</div>
     <div class="unit" id="heroUnit">MIN</div>
-    <div class="sub" id="heroSub"></div>
+    <div class="sub" id="heroSub">No penalties</div>
   </div>
 
-  <div id="penBox"></div>
-
-  <input id="note" placeholder="📝 What was missed? (optional)">
-  <button class="bigbtn red" id="addPen">➕ 5 MIN</button>
-
-  <div id="setup" class="card">
-    <div class="seg" id="gameSeg"><button data-v="Fortnite">🪂 Fortnite</button><button data-v="Wobbly Life" class="on">🧸 Wobbly Life</button></div>
-    <div class="seg" id="platSeg"><button data-v="Switch" class="on">🔴 Switch</button><button data-v="PS5">🎮 PS5</button></div>
-    <div class="stepper">
-      <button id="minus" aria-label="Less time">−</button>
-      <div class="val"><span id="allowed">60</span><small> min</small></div>
-      <button id="plus" aria-label="More time">+</button>
-    </div>
-    <div class="calc">Session <span class="g" id="cE">60</span> min · penalties stay separate</div>
-    <button class="bigbtn green" id="startBtn" style="margin:0">▶ START</button>
+  <input id="note" placeholder="📝 What was missed? (optional)" autocomplete="off">
+  <div class="row">
+    <button class="bigbtn red" id="addPen" aria-label="Add 5 minutes">➕ 5 MIN</button>
+    <button class="bigbtn grey" id="subPen" aria-label="Remove 5 minutes">➖ 5 MIN</button>
   </div>
+  <button class="bigbtn green" id="startBtn" style="display:none">▶ START</button>
 
-  <button class="bigbtn grey" id="endBtn" style="display:none">⏹ END SESSION</button>
-
-  <details><summary>⚠️ Penalty history</summary><ul id="penList"></ul></details>
-  <details><summary>📅 Session history</summary><ul id="sesList"></ul></details>
-
-  <button class="grey" id="resetBtn" style="width:100%;font-size:1rem">🧹 Clear waiting penalties</button>
+  <details><summary>⚠️ History</summary><ul id="logList"></ul></details>
+  <button class="grey" id="clearBtn" style="width:100%;min-height:64px;font-size:1.15rem">🧹 Clear to zero</button>
   <p class="meta" style="text-align:center;margin-top:14px">Saved on this device only.</p>
 </div>
 
 <script>
-const KEY='fionnTracker.v2';
-const PREV='fionnTracker.v1';
-const PEN_MS=5*60*1000;
+const KEY='fionnTracker.v3';
+const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
 const fmt=t=>new Date(t).toLocaleString([], {weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function fresh(){return {penalties:[],sessions:[],live:null,allowed:60};}
-function normAll(o){
-  const base=fresh();
-  if(!o||typeof o!=='object')return base;
-  base.allowed=o.allowed||60;
-  base.sound=!!o.sound;
-  base.live=o.live||null;
-  base.sessions=Array.isArray(o.sessions)?o.sessions:[];
-  const known={waiting:1,running:1,paused:1,done:1,complete:1};
-  base.penalties=(Array.isArray(o.penalties)?o.penalties:[]).map((p,i)=>{
-    let status=p.status||(p.applied?'complete':'waiting');
-    if(!known[status])status='waiting';
-    const endsAt=typeof p.endsAt==='number'?p.endsAt:null;
-    if(status==='running'&&endsAt==null)status='paused';
-    return {
-      id:String(p.id||('p'+(p.t||0)+'-'+i)),
-      t:p.t||Date.now(),
-      note:p.note||'',
-      status,
-      remainingMs:typeof p.remainingMs==='number'?p.remainingMs:PEN_MS,
-      endsAt,
-      alerted:p.alerted!=null?!!p.alerted:!!(p.applied||status==='complete'),
-      completedAt:p.completedAt||null
-    };
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[]};}
+function norm(o){
+  const S=blank();
+  if(!o||typeof o!=='object')return S;
+  S.sound=!!o.sound;
+  S.totalMs=Math.max(0,Number(o.totalMs)||0);
+  const modes={idle:1,running:1,paused:1,done:1};
+  S.mode=modes[o.mode]?o.mode:'idle';
+  S.endsAt=typeof o.endsAt==='number'?o.endsAt:null;
+  S.remainingMs=Math.max(0,Number(o.remainingMs)||0);
+  S.runMs=Math.max(0,Number(o.runMs)||0);
+  S.servedMs=Math.max(0,Number(o.servedMs)||0);
+  S.alerted=!!o.alerted;
+  S.log=Array.isArray(o.log)?o.log.filter(e=>e&&e.t&&e.kind).map(e=>({t:e.t,kind:e.kind,ms:Math.max(0,Number(e.ms)||0),note:e.note||''})):[];
+  if(S.mode==='running'&&typeof S.endsAt!=='number')S.mode='paused';
+  if(S.mode==='paused'&&S.remainingMs<=0){S.mode='idle';S.totalMs=0}
+  if(S.mode==='done'&&S.servedMs<=0)S.servedMs=S.runMs||STEP;
+  return S;
+}
+function fromOld(o){
+  const S=blank();
+  S.sound=!!(o&&o.sound);
+  const pens=(o&&Array.isArray(o.penalties))?o.penalties:[];
+  pens.forEach(p=>{
+    if(p.status==='complete'||p.applied===true){
+      S.log.push({t:p.completedAt||p.t||Date.now(),kind:'served',ms:STEP,note:p.note||''});
+      return;
+    }
+    let ms=STEP;
+    if(p.status==='paused'&&typeof p.remainingMs==='number')ms=Math.max(0,p.remainingMs);
+    else if(p.status==='running'&&typeof p.endsAt==='number'){
+      const left=p.endsAt-Date.now();
+      ms=left>0?left:STEP;
+    }
+    if(ms<=0)return;
+    ms=Math.ceil(ms/60000)*60000;
+    S.totalMs+=ms;
+    S.log.push({t:p.t||Date.now(),kind:'add',ms,note:p.note||''});
   });
-  return base;
+  return norm(S);
 }
-let hadV2=true,stored=null;
-try{stored=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){stored=null}
-if(!stored){
-  hadV2=false;
-  try{stored=JSON.parse(localStorage.getItem(PREV)||'null')}catch(e){stored=null}
-}
-let S=normAll(stored);
-let game='Wobbly Life',plat='Switch',tick=null;
+function readKey(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+const existing=readKey(KEY);
+let S=existing?norm(existing):fromOld(readKey('fionnTracker.v2')||readKey('fionnTracker.v1'));
 const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
-if(!hadV2)save();
-function penLeft(p){
-  if(p.status==='done'||p.status==='complete')return 0;
-  if(p.status==='running'&&p.endsAt)return Math.max(0,p.endsAt-Date.now());
-  return Math.max(0,p.remainingMs==null?PEN_MS:p.remainingMs);
+if(!existing)save();
+function owed(){
+  if(S.mode==='running'&&typeof S.endsAt==='number')return Math.max(0,S.endsAt-Date.now());
+  if(S.mode==='paused')return Math.max(0,S.remainingMs);
+  if(S.mode==='done')return 0;
+  return Math.max(0,S.totalMs);
 }
-function clockText(p){
-  const sec=Math.ceil(penLeft(p)/1000);
+function clock(ms){
+  const sec=Math.max(0,Math.ceil(ms/1000));
   return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
 }
-function finishPen(p){
-  if(p.status==='done'||p.status==='complete')return false;
-  p.status='done';p.remainingMs=0;p.endsAt=null;
-  if(p.alerted)return false;
-  p.alerted=true;
-  return true;
+function minsLabel(ms){
+  const whole=Math.round(ms/60000);
+  if(Math.abs(ms-whole*60000)<1500)return whole+' min';
+  const sec=Math.max(0,Math.round(ms/1000));
+  return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
 }
-function penHint(p){
-  if(p.status==='complete')return ' · done';
-  if(p.status==='done')return ' · add 5 min on parental controls';
-  if(p.status==='running')return ' · counting';
-  if(p.status==='paused')return ' · paused';
-  return ' · not started';
-}
-function renderPens(){
-  const active=S.penalties.filter(p=>p.status!=='complete').sort((a,b)=>a.t-b.t);
-  if(!active.length)$('penBox').innerHTML='';
-  else{
-    const head=active.length>1?`<div class="pcount">${active.length} penalties</div>`:'';
-    $('penBox').innerHTML=head+active.map(p=>{
-      const note=p.note?`<div class="meta">${esc(p.note)}</div>`:'';
-      let extra='';
-      if(p.status==='paused')extra='<div class="meta">Paused</div>';
-      else if(p.status==='waiting')extra='<div class="meta">Not started</div>';
-      let btns;
-      if(p.status==='running')btns='<div class="prow"><button class="grey" data-act="pause">⏸ PAUSE</button><button class="grey" data-act="reset">↺ RESET</button></div>';
-      else if(p.status==='done')btns='<div class="plbl">Add 5 min on parental controls</div>';
-      else if(p.status==='paused')btns='<button class="bigbtn green" data-act="start">▶ START</button><div class="prow"><button class="grey" data-act="reset">↺ RESET</button><button class="grey" data-act="undo">↩︎ UNDO</button></div>';
-      else btns='<button class="bigbtn green" data-act="start">▶ START</button><button class="grey undo" data-act="undo">↩︎ UNDO</button>';
-      return `<div class="pcard" data-pen="${esc(p.id)}"><div class="plbl">⚠️ 5 min penalty</div>${note}${extra}<div class="clock">${clockText(p)}</div>${btns}</div>`;
-    }).join('');
-  }
-  const done=S.penalties.filter(p=>p.status==='done').sort((a,b)=>a.t-b.t);
-  $('penOver').classList.toggle('on',done.length>0);
-  $('penOverCount').textContent=done.length>1?`${done.length} ready — tap DONE for each 5 min`:'';
-}
-function render(){
-  $('allowed').textContent=S.allowed;
-  $('cE').textContent=S.allowed;
-  renderPens();
-  $('penList').innerHTML=S.penalties.length?S.penalties.slice().reverse().map(p=>
-    `<li class="${p.status==='complete'?'used':''}">⚠️ 5 min${p.note?' · '+esc(p.note):''}<div class="meta">${fmt(p.t)}${penHint(p)}</div></li>`).join(''):'<li class="meta">None yet 👍</li>';
-  $('sesList').innerHTML=S.sessions.length?S.sessions.slice().reverse().map(s=>
-    `<li>${esc(s.game)} · ${esc(s.plat)} · <b>${s.effective}</b>/${s.allowed} min<div class="meta">${fmt(s.t)}${s.pen?' · −'+s.pen+' min penalties':''}</div></li>`).join(''):'<li class="meta">None yet</li>';
-  renderHero();
-}
-function renderHero(){
-  clearInterval(tick);
-  const live=!!S.live;
-  if(!live){$('banner').className='banner';$('over').classList.remove('on');$('hero').classList.remove('warn1','warn2')}
-  $('setup').style.display=live?'none':'block';
-  $('endBtn').style.display=live?'block':'none';
-  $('liveTag').textContent=live?'🟢 PLAYING':'';
-  if(!live){
-    const e=S.allowed;
-    $('hero').classList.toggle('zero',e===0);
-    $('heroIcon').textContent=e===0?'🚫':'⏱️';
-    $('heroNum').textContent=e;$('heroUnit').textContent='MIN NEXT SESSION';
+function pushLog(e){S.log.push(e);if(S.log.length>400)S.log.splice(0,S.log.length-400)}
+function paintHero(){
+  const timing=S.mode==='running'||S.mode==='paused';
+  $('hero').classList.toggle('timing',timing);
+  if(timing){
+    const left=S.mode==='running'?Math.max(0,S.endsAt-Date.now()):Math.max(0,S.remainingMs);
+    $('heroIcon').textContent=S.mode==='paused'?'⏸':'⏱️';
+    $('heroNum').textContent=clock(left);
+    $('heroUnit').textContent=S.mode==='paused'?'PAUSED':'LEFT';
     $('heroSub').textContent='';
     return;
   }
-  const step=()=>{
-    const left=Math.max(0,S.live.end-Date.now());
-    const m=Math.floor(left/60000),s=Math.floor(left%60000/1000);
-    const ms=left;
-    $('hero').classList.toggle('zero',ms===0);
-    $('hero').classList.toggle('warn2',ms>60000&&ms<=120000);
-    $('hero').classList.toggle('warn1',ms>0&&ms<=60000);
-    const b=$('banner');b.className='banner';
-    if(ms>60000&&ms<=120000){b.classList.add('b2');b.textContent='⚠️ 2 MINUTES LEFT'}
-    else if(ms>0&&ms<=60000){b.classList.add('b1');b.textContent='🚨 1 MINUTE!'}
-    if(ms<=120000&&ms>60000&&!S.live.a2){S.live.a2=1;save();alertCue(1)}
-    if(ms<=60000&&ms>0&&!S.live.a1){S.live.a1=1;save();alertCue(2)}
-    if(ms===0){$('over').classList.add('on');if(!S.live.a0){S.live.a0=1;save();alertCue(3)}}
-    $('heroIcon').textContent=left?'🎮':'🛑';
-    $('heroNum').textContent=left?`${m}:${String(s).padStart(2,'0')}`:'0:00';
-    $('heroUnit').textContent=left?'LEFT':"TIME'S UP";
-    $('heroSub').textContent=`${S.live.game} · ${S.live.plat}`;
-  };
-  step();tick=setInterval(step,1000);
+  const m=Math.max(0,Math.round(S.totalMs/60000));
+  $('heroIcon').textContent=m?'⚠️':'👍';
+  $('heroNum').textContent=String(m);
+  $('heroUnit').textContent='MIN';
+  $('heroSub').textContent=m?'Penalty time':'No penalties';
 }
-function tickPens(){
-  let changed=false,alert=false;
-  S.penalties.forEach(p=>{
-    if(p.status==='running'&&p.endsAt&&Date.now()>=p.endsAt){
-      changed=true;
-      if(finishPen(p))alert=true;
-    }else if(p.status==='done'&&!p.alerted){
-      p.alerted=true;changed=true;alert=true;
+function logLine(e){
+  let label='';
+  if(e.kind==='add')label='➕ '+minsLabel(e.ms);
+  else if(e.kind==='remove')label='➖ '+minsLabel(e.ms);
+  else if(e.kind==='served')label='✓ Served '+minsLabel(e.ms);
+  else if(e.kind==='clear')label='🧹 Cleared '+minsLabel(e.ms);
+  else return '';
+  const note=e.note?' · '+esc(e.note):'';
+  const dim=e.kind==='served'||e.kind==='clear'?' class="used"':'';
+  return `<li${dim}>${label}${note}<div class="meta">${fmt(e.t)}</div></li>`;
+}
+function render(){
+  paintHero();
+  const start=$('startBtn');
+  const showStart=S.mode==='running'||S.mode==='paused'||(S.mode==='idle'&&S.totalMs>0);
+  start.style.display=showStart?'block':'none';
+  if(S.mode==='running'){start.textContent='⏸ PAUSE';start.className='bigbtn grey'}
+  else{start.textContent='▶ START';start.className='bigbtn green'}
+  const done=S.mode==='done';
+  $('over').classList.toggle('on',done);
+  if(done){
+    const m=Math.max(1,Math.round(S.servedMs/60000));
+    $('overMsg').textContent=`⏰ Penalty done — add ${m} min on parental controls`;
+  }
+  const lines=S.log.slice().reverse().map(logLine).filter(Boolean).join('');
+  $('logList').innerHTML=lines||'<li class="meta">None yet 👍</li>';
+}
+function finishRun(){
+  if(S.mode==='done')return false;
+  S.servedMs=S.runMs||S.totalMs||owed();
+  S.mode='done';
+  S.totalMs=0;
+  S.remainingMs=0;
+  S.endsAt=null;
+  const first=!S.alerted;
+  S.alerted=true;
+  return first;
+}
+function catchUp(){
+  if(S.mode==='running'&&typeof S.endsAt==='number'&&Date.now()>=S.endsAt){
+    const alert=finishRun();
+    save();render();
+    if(alert)alertCue(3);
+    return true;
+  }
+  if(S.mode==='done'&&!S.alerted){
+    S.alerted=true;save();render();alertCue(3);return true;
+  }
+  return false;
+}
+function tick(){
+  if(catchUp())return;
+  if(S.mode==='running')paintHero();
+}
+function addFive(){
+  if(catchUp())return;
+  const note=$('note').value.trim();
+  $('note').value='';
+  if(S.mode==='running'){
+    S.endsAt+=STEP;
+    S.runMs=(S.runMs||0)+STEP;
+    S.totalMs=Math.max(0,S.endsAt-Date.now());
+  }else if(S.mode==='paused'){
+    S.remainingMs+=STEP;
+    S.totalMs=S.remainingMs;
+    S.runMs=(S.runMs||0)+STEP;
+  }else{
+    S.mode='idle';
+    S.totalMs+=STEP;
+  }
+  pushLog({t:Date.now(),kind:'add',ms:STEP,note});
+  save();render();
+  if(navigator.vibrate)navigator.vibrate(80);
+}
+function subFive(){
+  if(catchUp())return;
+  const have=owed();
+  if(have<=0)return;
+  const cut=Math.min(STEP,have);
+  if(S.mode==='running'){
+    S.endsAt-=cut;
+    S.runMs=Math.max(0,(S.runMs||0)-cut);
+    S.totalMs=Math.max(0,have-cut);
+    if(S.totalMs<=0||S.endsAt<=Date.now()){
+      S.mode='idle';S.endsAt=null;S.totalMs=0;S.remainingMs=0;S.runMs=0;S.alerted=false;
     }
-  });
-  if(!changed){
-    document.querySelectorAll('.pcard').forEach(el=>{
-      const p=S.penalties.find(x=>x.id===el.dataset.pen);
-      const c=el.querySelector('.clock');
-      if(p&&c)c.textContent=clockText(p);
-    });
+  }else if(S.mode==='paused'){
+    S.remainingMs=Math.max(0,S.remainingMs-cut);
+    S.totalMs=S.remainingMs;
+    S.runMs=Math.max(0,(S.runMs||0)-cut);
+    if(S.remainingMs<=0){S.mode='idle';S.runMs=0;S.alerted=false}
+  }else S.totalMs=Math.max(0,S.totalMs-cut);
+  pushLog({t:Date.now(),kind:'remove',ms:cut,note:''});
+  save();render();
+}
+function startRun(){
+  if(catchUp())return;
+  if(S.mode==='running'){
+    const left=Math.max(0,(S.endsAt||0)-Date.now());
+    if(left<=0){const alert=finishRun();save();render();if(alert)alertCue(3);return}
+    S.mode='paused';
+    S.remainingMs=left;
+    S.totalMs=left;
+    S.endsAt=null;
+    save();render();
     return;
   }
-  save();
-  render();
-  if(alert)alertCue(3);
+  const resuming=S.mode==='paused'&&S.remainingMs>0;
+  const left=resuming?S.remainingMs:S.totalMs;
+  if(left<=0)return;
+  if(!resuming||!(S.runMs>0))S.runMs=left;
+  S.mode='running';
+  S.endsAt=Date.now()+left;
+  S.totalMs=left;
+  S.remainingMs=left;
+  S.alerted=false;
+  save();render();
 }
-function onWake(){tickPens();if(S.live)renderHero()}
-function seg(id,set){$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
-  $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');set(b.dataset.v);})}
-seg('gameSeg',v=>game=v);seg('platSeg',v=>plat=v);
-$('minus').onclick=()=>{S.allowed=Math.max(5,S.allowed-5);save();render()};
-$('plus').onclick=()=>{S.allowed=Math.min(300,S.allowed+5);save();render()};
-$('addPen').onclick=()=>{
-  const id='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-  S.penalties.push({id,t:Date.now(),note:$('note').value.trim(),status:'waiting',remainingMs:PEN_MS,endsAt:null,alerted:false,completedAt:null});
-  $('note').value='';
+function clearAll(){
+  if(S.mode==='done')return;
+  const left=owed();
+  if(left<=0)return;
+  if(!confirm('Clear all penalty time?'))return;
+  pushLog({t:Date.now(),kind:'clear',ms:left,note:''});
+  S.mode='idle';
+  S.totalMs=0;S.remainingMs=0;S.endsAt=null;S.runMs=0;S.servedMs=0;S.alerted=false;
   save();render();
-  const el=document.querySelector('.pcard[data-pen="'+id+'"]');
-  if(el&&el.scrollIntoView)el.scrollIntoView({block:'center'});
-  if(navigator.vibrate)navigator.vibrate(80);
-};
-$('penBox').onclick=ev=>{
-  const btn=ev.target.closest('button');
-  if(!btn)return;
-  const card=btn.closest('.pcard');
-  if(!card)return;
-  const p=S.penalties.find(x=>x.id===card.dataset.pen);
-  if(!p)return;
-  const act=btn.dataset.act;
-  if(act==='start'){
-    if(p.status==='running'||p.status==='done'||p.status==='complete')return;
-    const rem=p.status==='paused'?Math.max(0,p.remainingMs):PEN_MS;
-    if(rem<=0){if(finishPen(p))alertCue(3)}
-    else{p.status='running';p.remainingMs=rem;p.endsAt=Date.now()+rem}
-  }else if(act==='pause'){
-    if(p.status!=='running')return;
-    const left=Math.max(0,(p.endsAt||0)-Date.now());
-    if(left<=0){if(finishPen(p))alertCue(3)}
-    else{p.remainingMs=left;p.endsAt=null;p.status='paused'}
-  }else if(act==='reset'){
-    p.status='waiting';p.remainingMs=PEN_MS;p.endsAt=null;p.alerted=false;
-  }else if(act==='undo'){
-    if(p.status==='running'||p.status==='done'||p.status==='complete')return;
-    S.penalties=S.penalties.filter(x=>x.id!==p.id);
-  }else return;
+}
+function markServed(){
+  if(S.mode!=='done')return;
+  if(S.servedMs>0)pushLog({t:Date.now(),kind:'served',ms:S.servedMs,note:''});
+  S.mode='idle';
+  S.totalMs=0;S.remainingMs=0;S.endsAt=null;S.runMs=0;S.servedMs=0;S.alerted=false;
   save();render();
-};
-$('startBtn').onclick=()=>{
-  const e=S.allowed;
-  if(!confirm(`▶ ${game} on ${plat}\n${e} min`))return;
-  S.sessions.push({t:Date.now(),game,plat,allowed:S.allowed,pen:0,effective:e});
-  S.live={game,plat,mins:e,end:Date.now()+e*60000};
-  save();render();
-};
-$('endBtn').onclick=()=>{if(confirm('End this session?')){S.live=null;save();render()}};
-$('resetBtn').onclick=()=>{
-  if(!S.penalties.some(p=>p.status==='waiting'))return;
-  if(confirm('Clear all waiting penalties?')){S.penalties=S.penalties.filter(p=>p.status!=='waiting');save();render()}
-};
+}
 let ctx=null;
 function beep(f,d,at){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=f;o.type='square';g.gain.setValueAtTime(.0001,ctx.currentTime+at);g.gain.exponentialRampToValueAtTime(.4,ctx.currentTime+at+.02);g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+at+d);o.connect(g).connect(ctx.destination);o.start(ctx.currentTime+at);o.stop(ctx.currentTime+at+d+.05)}
 function alertCue(n){if(navigator.vibrate)navigator.vibrate(n===3?[400,200,400,200,400]:n===2?[200,100,200]:[200]);if(!S.sound||!ctx)return;try{ctx.resume();for(let i=0;i<n*2;i++)beep(n===3?520:880,.18,i*.3)}catch(e){}}
 function sndLabel(){$('sndBtn').textContent=S.sound?'🔊':'🔇'}
+$('addPen').onclick=addFive;
+$('subPen').onclick=subFive;
+$('startBtn').onclick=startRun;
+$('clearBtn').onclick=clearAll;
+$('doneBtn').onclick=markServed;
 $('sndBtn').onclick=()=>{S.sound=!S.sound;save();sndLabel();if(S.sound){ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();ctx.resume();beep(880,.12,0)}};
 document.addEventListener('click',()=>{if(S.sound&&!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)()}},{once:true});
-$('overBtn').onclick=()=>{S.live=null;save();render()};
-$('penDoneBtn').onclick=()=>{
-  const p=S.penalties.filter(x=>x.status==='done').sort((a,b)=>a.t-b.t)[0];
-  if(p){p.status='complete';p.completedAt=Date.now();p.remainingMs=0;p.endsAt=null}
-  save();render();
-};
+function onWake(){tick()}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')onWake()});
 window.addEventListener('pageshow',onWake);
 window.addEventListener('focus',onWake);
 sndLabel();
 render();
-tickPens();
-setInterval(tickPens,250);
+tick();
+setInterval(tick,250);
 </script>
 </body>
 </html>
