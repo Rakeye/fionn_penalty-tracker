@@ -85,6 +85,23 @@
     text-shadow:0 3px 0 #1a0a40;
   }
   .hero .sub{margin-top:4px;min-height:1.2em;font-size:1.05rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
+  .hero.credit{
+    border-color:#5dff4a;
+    box-shadow:
+      0 0 0 5px rgba(93,255,74,.38),
+      0 10px 0 rgba(16,4,40,.45),
+      inset 0 0 36px rgba(80,255,120,.28);
+  }
+  .hero.credit .kicker,.hero.credit .unit{color:#5dff4a}
+  .hero.credit .num{
+    color:#ffe14a;
+    text-shadow:
+      0 1px 0 #06210a, 0 4px 0 #06210a, 0 7px 0 #146828,
+      3px 0 0 #06210a, -3px 0 0 #06210a, 0 -3px 0 #06210a,
+      0 10px 18px rgba(0,0,0,.45);
+  }
+  .hero.credit .sub{color:#e7ffd4}
+  .questTotal.credit{color:#5dff4a}
   button{
     font-family:inherit;border:0;cursor:pointer;color:#fff;font-weight:900;
     min-height:56px;min-width:56px;background:transparent;position:relative;
@@ -321,7 +338,7 @@
   <div id="viewTimer" role="tabpanel">
 
   <div class="hero" id="hero">
-    <div class="kicker">Storm timer</div>
+    <div class="kicker" id="heroKicker">Storm timer</div>
     <div class="icon" id="heroIcon">👍</div>
     <div class="num" id="heroNum">0</div>
     <div class="unit" id="heroUnit">MIN</div>
@@ -367,7 +384,8 @@ function norm(o){
   S.quests=normQuests(o);
   if(!o||typeof o!=='object')return S;
   S.sound=!!o.sound;
-  S.totalMs=Math.max(0,Number(o.totalMs)||0);
+  const totalN=Number(o.totalMs);
+  S.totalMs=Number.isFinite(totalN)?totalN:0;
   const modes={idle:1,running:1,paused:1,done:1};
   S.mode=modes[o.mode]?o.mode:'idle';
   S.endsAt=typeof o.endsAt==='number'?o.endsAt:null;
@@ -377,7 +395,7 @@ function norm(o){
   S.alerted=!!o.alerted;
   S.log=Array.isArray(o.log)?o.log.filter(e=>e&&e.t&&e.kind).map(e=>({t:e.t,kind:e.kind,ms:Math.max(0,Number(e.ms)||0),note:e.note||'',rarity:e.rarity||''})):[];
   if(S.mode==='running'&&typeof S.endsAt!=='number')S.mode='paused';
-  if(S.mode==='paused'&&S.remainingMs<=0){S.mode='idle';S.totalMs=0}
+  if(S.mode==='paused'&&S.remainingMs<=0){S.mode='idle';if(S.totalMs>0)S.totalMs=0}
   if(S.mode==='done'&&S.servedMs<=0)S.servedMs=S.runMs||STEP;
   return S;
 }
@@ -430,22 +448,45 @@ function prettyDur(ms){
   if(n%60000===0)return (n/60000)+' min';
   return clock(n);
 }
+function creditText(ms){
+  const n=Math.abs(ms);
+  if(n%60000===0)return '+'+(n/60000);
+  return '+'+clock(n);
+}
 function totalLabel(){
   if(S.mode==='running'||S.mode==='paused')return clock(owed());
+  if(S.totalMs<0){
+    const n=Math.abs(S.totalMs);
+    return n%60000===0?creditText(S.totalMs)+' min':creditText(S.totalMs);
+  }
   return prettyDur(S.totalMs);
 }
 function paintHero(){
   const timing=S.mode==='running'||S.mode==='paused';
-  const idleClock=!timing&&S.totalMs%60000!==0;
-  $('hero').classList.toggle('timing',timing||idleClock);
+  const credit=!timing&&S.totalMs<0;
+  const idleClock=!timing&&!credit&&S.totalMs%60000!==0;
+  const creditClock=credit&&Math.abs(S.totalMs)%60000!==0;
+  $('hero').classList.toggle('timing',timing||idleClock||creditClock);
+  $('hero').classList.toggle('credit',credit);
+  $('heroKicker').textContent=credit?'Shield':'Storm timer';
   const qt=$('questTotal');
-  if(qt)qt.textContent='Penalty '+totalLabel();
+  if(qt){
+    qt.classList.toggle('credit',credit);
+    qt.textContent=(credit?'Credit ':'Penalty ')+totalLabel();
+  }
   if(timing){
     const left=S.mode==='running'?Math.max(0,S.endsAt-Date.now()):Math.max(0,S.remainingMs);
     $('heroIcon').textContent=S.mode==='paused'?'⏸':'⏱️';
     $('heroNum').textContent=clock(left);
     $('heroUnit').textContent=S.mode==='paused'?'PAUSED':'LEFT';
     $('heroSub').textContent='';
+    return;
+  }
+  if(credit){
+    $('heroIcon').textContent='🛡️';
+    $('heroNum').textContent=creditText(S.totalMs);
+    $('heroUnit').textContent='CREDIT';
+    $('heroSub').textContent='Banked time, not a penalty';
     return;
   }
   if(idleClock){
@@ -479,6 +520,7 @@ function render(){
   const start=$('startBtn');
   const showStart=S.mode==='running'||S.mode==='paused'||(S.mode==='idle'&&S.totalMs>0);
   start.style.display=showStart?'block':'none';
+  start.disabled=!showStart;
   if(S.mode==='running'){start.textContent='⏸ PAUSE';start.className='bigbtn grey'}
   else{start.textContent='▶ START';start.className='bigbtn green'}
   const done=S.mode==='done';
@@ -493,7 +535,8 @@ function render(){
 }
 function finishRun(){
   if(S.mode==='done')return false;
-  S.servedMs=S.runMs||S.totalMs||owed();
+  const served=S.runMs>0?S.runMs:(S.totalMs>0?S.totalMs:owed());
+  S.servedMs=Math.max(0,served||0);
   S.mode='done';
   S.totalMs=0;
   S.remainingMs=0;
@@ -503,6 +546,7 @@ function finishRun(){
   return first;
 }
 function catchUp(){
+  if(spinning)return false;
   if(S.mode==='running'&&typeof S.endsAt==='number'&&Date.now()>=S.endsAt){
     const alert=finishRun();
     save();render();
@@ -557,6 +601,38 @@ function reduceOwed(ms){
   }else S.totalMs=Math.max(0,S.totalMs-cut);
   return cut;
 }
+function applyReward(ms){
+  if(!(ms>0)||S.mode==='done')return 0;
+  if(S.mode==='running'){
+    const have=Math.max(0,S.endsAt-Date.now());
+    const next=have-ms;
+    if(next>0){
+      S.endsAt-=ms;
+      S.runMs=Math.max(0,(S.runMs||0)-ms);
+      S.totalMs=next;
+      return ms;
+    }
+    S.mode='idle';S.endsAt=null;S.remainingMs=0;S.runMs=0;S.alerted=false;
+    S.totalMs=next;
+    return ms;
+  }
+  if(S.mode==='paused'){
+    const have=Math.max(0,S.remainingMs);
+    const next=have-ms;
+    if(next>0){
+      S.remainingMs=next;
+      S.totalMs=next;
+      S.runMs=Math.max(0,(S.runMs||0)-ms);
+      return ms;
+    }
+    S.mode='idle';S.remainingMs=0;S.runMs=0;S.alerted=false;
+    S.totalMs=next;
+    return ms;
+  }
+  S.mode='idle';
+  S.totalMs-=ms;
+  return ms;
+}
 function subFive(){
   if(catchUp())return;
   const cut=reduceOwed(STEP);
@@ -590,10 +666,12 @@ function startRun(){
 }
 function clearAll(){
   if(S.mode==='done')return;
-  const left=owed();
-  if(left<=0)return;
-  if(!confirm('Clear all penalty time?'))return;
-  pushLog({t:Date.now(),kind:'clear',ms:left,note:''});
+  const credit=S.mode!=='running'&&S.mode!=='paused'&&S.totalMs<0;
+  const left=credit?S.totalMs:owed();
+  if(!credit&&left<=0)return;
+  if(credit&&left===0)return;
+  if(!confirm(credit?'Clear banked time?':'Clear all penalty time?'))return;
+  pushLog({t:Date.now(),kind:'clear',ms:Math.abs(left),note:''});
   S.mode='idle';
   S.totalMs=0;S.remainingMs=0;S.endsAt=null;S.runMs=0;S.servedMs=0;S.alerted=false;
   save();render();
@@ -929,7 +1007,7 @@ function openSpin(questName){
     if(gen!==spinGen||!spinning)return;
     spinning=false;
     clearCues();
-    const cut=reduceOwed(prize.ms);
+    const cut=applyReward(prize.ms);
     pushLog({t:Date.now(),kind:'quest',ms:cut,note:questName,rarity:prize.name});
     save();
     render();
