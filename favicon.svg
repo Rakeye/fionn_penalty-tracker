@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Penalty timer">
+  <defs>
+    <linearGradient id="sky" x1="56" y1="0" x2="456" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#49c4ff"/>
+      <stop offset="0.42" stop-color="#2f6bff"/>
+      <stop offset="1" stop-color="#5a2bff"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#sky)"/>
+  <circle cx="256" cy="300" r="198" fill="none" stroke="#c084fc" stroke-width="18" opacity="0.9"/>
+  <circle cx="256" cy="312" r="168" fill="#1a0a40"/>
+  <rect x="220" y="78" width="72" height="58" rx="16" fill="#ffe14a"/>
+  <rect x="232" y="58" width="48" height="36" rx="12" fill="#fff6a0"/>
+  <circle cx="256" cy="300" r="156" fill="#140a32" stroke="#ffe14a" stroke-width="34"/>
+  <rect x="244" y="168" width="24" height="36" rx="6" fill="#ffe14a"/>
+  <rect x="244" y="396" width="24" height="36" rx="6" fill="#ffe14a"/>
+  <rect x="168" y="288" width="36" height="24" rx="6" fill="#ffe14a"/>
+  <rect x="308" y="288" width="36" height="24" rx="6" fill="#ffe14a"/>
+  <path d="M256 300 V198" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round"/>
+  <path d="M256 300 L332 344" fill="none" stroke="#ffe14a" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="256" cy="300" r="18" fill="#ffe14a"/>
+  <circle cx="256" cy="300" r="8" fill="#1a1200"/>
+</svg>
