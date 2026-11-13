@@ -236,14 +236,16 @@
   .dockside .docktab{flex:1;min-width:0}
   .dockside.right .docktab{flex:0 1 auto;font-size:.62rem;letter-spacing:.03em}
   .docktab span{white-space:nowrap}
-  .daycard{margin-top:12px;padding:12px 12px 4px;border-radius:16px;background:linear-gradient(180deg,#2a1468,#14082e);border:3px solid rgba(255,225,74,.75);box-shadow:0 6px 0 rgba(16,4,40,.35)}
+  .daycard{margin-top:12px;padding:12px;border-radius:16px;background:linear-gradient(180deg,#2a1468,#14082e);border:3px solid rgba(255,225,74,.75);box-shadow:0 6px 0 rgba(16,4,40,.35)}
+  .daycard .bigbtn{margin:8px 0 0}
   .daycard.done{border-color:#5dff4a}
   .daytop{display:flex;align-items:center;justify-content:space-between;gap:8px}
   .daytop b{font-size:1.25rem;letter-spacing:.04em}
   .dayflame{color:var(--yellow);font-size:1.35rem;letter-spacing:.04em}
   .daybadge{display:inline-block;margin-left:6px;padding:1px 8px 0;background:#ffe14a;color:#1a1200;border-radius:999px;font-size:.72rem;letter-spacing:.04em;vertical-align:2px}
   .daytask{margin:8px 0 4px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:1.08rem;font-weight:800;line-height:1.25}
-  .daystatus,.dayreward,.daybest{margin:0 0 6px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:700;color:#efeaff;font-size:.95rem}
+  .daystatus,.dayreward{margin:0 0 6px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:700;color:#efeaff;font-size:.95rem}
+  .daybest{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:700;color:#efeaff;font-size:.95rem}
   .daystatus.done{color:#5dff4a}
   .dayweek{display:flex;justify-content:space-between;gap:4px;margin:4px 0 8px}
   .daydot{flex:1;text-align:center;font-size:.72rem;letter-spacing:.04em;color:#efeaff}
@@ -2109,10 +2111,7 @@ function paintDay(){
   }else if(t.id==='focus'){
     go.hidden=false;
     go.textContent=S.focusRun?'Continue':'Start the '+t.table+'s';
-  }else if(t.id==='questAny'||(t.id==='questOne'&&S.quests.some(q=>q.id===t.questId))){
-    go.hidden=false;
-    go.textContent='Go to quests';
-  }else mark.hidden=false;
+  }else if(!(t.id==='questAny'||(t.id==='questOne'&&S.quests.some(q=>q.id===t.questId))))mark.hidden=false;
 }
 function maybeDayPop(){
   const pop=$('dayPop');
@@ -2213,7 +2212,6 @@ $('dayGo').onclick=()=>{
   if(!t)return;
   if(t.id==='quiz13'||t.id==='quiz15')openQuiz();
   else if(t.id==='focus')openFocus();
-  else showTab('quests');
 };
 $('dayMark').onclick=()=>{
   syncDaily();
