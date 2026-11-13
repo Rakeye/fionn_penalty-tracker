@@ -124,14 +124,13 @@
     min-height:56px;min-width:56px;background:transparent;position:relative;
     letter-spacing:.04em;text-transform:uppercase;
   }
-  .bigbtn,#clearBtn{width:100%;min-height:84px;font-size:1.7rem;margin-bottom:12px;padding:0 12px 8px;position:relative;z-index:0}
-  #clearBtn{min-height:64px;font-size:1.2rem;letter-spacing:.08em}
-  .bigbtn::before,#clearBtn::before{
+  .bigbtn{width:100%;min-height:84px;font-size:1.7rem;margin-bottom:12px;padding:0 12px 8px;position:relative;z-index:0}
+  .bigbtn::before{
     content:"";position:absolute;z-index:-1;left:0;right:0;top:0;bottom:8px;
     clip-path:polygon(7% 0,100% 0,93% 100%,0 100%);
     transition:transform .08s ease;
   }
-  .bigbtn:active::before,#clearBtn:active::before{transform:translateY(5px)}
+  .bigbtn:active::before{transform:translateY(5px)}
   .face{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:.9;pointer-events:none}
   .face b{font-size:1.85rem;font-weight:900}
   .face small{font-size:clamp(.78rem,3.2vw,1rem);letter-spacing:.08em;margin-top:2px}
@@ -190,8 +189,6 @@
   li.meta::before{display:none}
   .meta{color:#c8c0e4;font-size:.85rem;font-weight:700;margin-top:2px}
   .used{opacity:.8}
-  #clearBtn{color:#fff}
-  #clearBtn::before{background:linear-gradient(180deg,#6e63ff 0%,#3a2ad4 100%);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
   .snd{
     min-height:52px;min-width:52px;font-size:1.35rem;border-radius:14px;
     background:#1a0d3d;border:3px solid var(--yellow);
@@ -236,7 +233,7 @@
   .dockside .docktab{flex:1;min-width:0}
   .dockside.right .docktab{flex:0 1 auto;font-size:.62rem;letter-spacing:.03em}
   .docktab span{white-space:nowrap}
-  .daycard{margin-top:12px;padding:12px;border-radius:16px;background:linear-gradient(180deg,#2a1468,#14082e);border:3px solid rgba(255,225,74,.75);box-shadow:0 6px 0 rgba(16,4,40,.35)}
+  .daycard{margin-top:4px;padding:12px;border-radius:16px;background:linear-gradient(180deg,#2a1468,#14082e);border:3px solid rgba(255,225,74,.75);box-shadow:0 6px 0 rgba(16,4,40,.35)}
   .daycard .bigbtn{margin:8px 0 0}
   .daycard.done{border-color:#5dff4a}
   .daytop{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -493,7 +490,7 @@
   #quizDone::before{background:linear-gradient(180deg,#6e63ff,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
   li.loot-quiz{--rarity:#3aa0ff}
   @media (prefers-reduced-motion:reduce){
-    .confetti i,.bigbtn::before,#clearBtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup{animation:none;transition:none}
+    .confetti i,.bigbtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup{animation:none;transition:none}
   }
 </style>
 </head>
@@ -563,7 +560,6 @@
   <input id="note" placeholder="What was missed? (optional)" autocomplete="off">
   <button class="bigbtn green" id="startBtn" style="display:none">▶ START</button>
 
-  <button id="clearBtn">Clear to zero</button>
   <section class="daycard" id="dayCard" aria-label="Daily challenge">
     <div class="daytop"><b>Daily challenge</b><span class="dayflame" id="dayFlame">🔥 0</span></div>
     <p class="daytask" id="dayTask"></p>
@@ -1082,18 +1078,6 @@ function startRun(){
   victoryPlayed=false;
   save();render();
 }
-function clearAll(){
-  if(S.mode==='done')return;
-  const credit=S.mode!=='running'&&S.mode!=='paused'&&S.totalMs<0;
-  const left=credit?S.totalMs:owed();
-  if(!credit&&left<=0)return;
-  if(credit&&left===0)return;
-  if(!confirm(credit?'Clear banked time?':'Clear all penalty time?'))return;
-  pushLog({t:Date.now(),kind:'clear',ms:Math.abs(left),note:''});
-  S.mode='idle';
-  S.totalMs=0;S.remainingMs=0;S.endsAt=null;S.runMs=0;S.servedMs=0;S.alerted=false;
-  save();render();
-}
 function markServed(){
   if(S.mode!=='done')return;
   if(S.servedMs>0)pushLog({t:Date.now(),kind:'served',ms:S.servedMs,note:''});
@@ -1563,7 +1547,6 @@ $('addPen').onclick=addFive;
 $('nudgePlus').onclick=nudgePlus;
 $('nudgeMinus').onclick=nudgeMinus;
 $('startBtn').onclick=startRun;
-$('clearBtn').onclick=clearAll;
 $('doneBtn').onclick=markServed;
 $('tabTimer').onclick=()=>showTab('timer');
 $('tabQuests').onclick=()=>showTab('quests');
