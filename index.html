@@ -299,12 +299,31 @@
   .quses{flex:none;min-height:28px;padding:2px 9px 0;background:linear-gradient(180deg,#fff6a0,#ffe14a);color:#1a1200;font-size:1rem;letter-spacing:.04em;border-radius:999px;line-height:1.35;text-transform:none;box-shadow:0 3px 0 #1a0a40}
   .qhot{display:inline-block;margin-left:8px;padding:1px 8px 0;background:#5dff4a;color:#06210a;font-size:.72rem;letter-spacing:.08em;border-radius:999px;vertical-align:2px}
   .qcard.hot{border-color:#fff6a0;box-shadow:0 6px 0 rgba(16,4,40,.35),0 0 0 3px rgba(255,225,74,.4)}
+  .qmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .qdiff{
+    flex:none;min-width:0;min-height:44px;padding:0 12px;border-radius:999px;
+    font-size:.95rem;letter-spacing:.04em;
+  }
+  .qdiff.easy{background:#5dff4a;color:#06210a}
+  .qdiff.medium{background:linear-gradient(180deg,#8eb6ff,#5b4dff);color:#fff}
+  .qdiff.hard{background:linear-gradient(180deg,#ffe14a,#ff9a1a);color:#1a1200}
+  .qtoday,.qreward{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;letter-spacing:0;text-transform:none}
+  .qtoday{font-size:.95rem;color:#efeaff}
+  .qreward{font-size:1.02rem;color:#ffe14a}
+  .adddiffs{display:flex;gap:8px;margin:0 0 10px}
+  .adddiffs .qdiff{flex:1}
+  .adddiffs .qdiff.on{box-shadow:0 0 0 3px #fff,0 4px 0 #12081f}
+  .chrow .qdiff{min-height:0;padding:2px 10px;font-size:.85rem}
+  .chlab{flex:1;min-width:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;font-size:.95rem;letter-spacing:0;text-transform:none;color:#efeaff}
   .qrow{display:flex;justify-content:center}
   .slab{position:relative;z-index:0;min-height:56px;padding:0 10px 6px}
   .slab::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;bottom:6px;clip-path:polygon(8% 0,100% 0,92% 100%,0 100%)}
   .slab:active::before{transform:translateY(4px)}
   .claim{width:100%;color:#06210a;font-size:1.25rem}
   .claim::before{background:linear-gradient(180deg,#d6ff6a,#5dff4a 45%,#1fae32);box-shadow:inset 0 2px 0 rgba(255,255,255,.55)}
+  .claim:disabled{opacity:.42}
+  .qspin{width:100%;color:#1a1200;font-size:1.15rem}
+  .qspin::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
   .qempty{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#efeaff;font-weight:700}
   #addQuest{color:#fff}
   #addQuest::before{background:linear-gradient(180deg,#7ec8ff,#2f6bff 55%,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.4)}
@@ -551,6 +570,11 @@
     <button type="button" class="quizcard" id="quizBtn"><b id="quizTitle">Times Table Quiz</b><small id="quizSub">15 questions · up to 3 spins</small></button>
     <div id="questList"></div>
     <input id="questName" placeholder="Add a quest" autocomplete="off" maxlength="60">
+    <div class="adddiffs" id="addDiffs" role="group" aria-label="Difficulty">
+      <button type="button" class="qdiff easy" data-add-diff="easy">Easy</button>
+      <button type="button" class="qdiff medium on" data-add-diff="medium">Medium</button>
+      <button type="button" class="qdiff hard" data-add-diff="hard">Hard</button>
+    </div>
     <button class="bigbtn" id="addQuest">Add quest</button>
     <details id="history"><summary>History</summary><ul id="logList"></ul></details>
   </div>
@@ -560,6 +584,8 @@
     <div id="chalPool"></div>
     <input id="customName" placeholder="Custom challenge" maxlength="60" autocomplete="off">
     <button type="button" class="bigbtn" id="addCustom">Add challenge</button>
+    <p class="chh">Quest rewards</p>
+    <div id="chalRules"></div>
     <p class="chh">Daily reward</p>
     <div id="chalDaily"></div>
     <p class="chh">Streak bonuses</p>
@@ -606,6 +632,34 @@ const $=id=>document.getElementById(id);
 const fmt=t=>new Date(t).toLocaleString([], {weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const QUEST_NAMES=['Tidy your bedroom','Read a book for 15 minutes','Help set or clear the table','Put your laundry away','Do 20 star jumps','Draw a picture for someone','Help with the dishes','Make your bed','Feed or help with a pet','Write a thank-you or sorry note','Practise spelling or times tables','Sort your toys or Lego'];
+const DIFFS=['easy','medium','hard'];
+function normDiff(v){return DIFFS.indexOf(v)>=0?v:''}
+function guessDiff(name){
+  const n=String(name||'').trim().toLowerCase();
+  if(n==='do 20 star jumps'||n==='make your bed'||n==='write a thank-you or sorry note')return 'easy';
+  if(n==='tidy your bedroom'||n==='read a book for 15 minutes'||n==='help with the dishes'||n==='practise spelling or times tables')return 'hard';
+  if(/\b(star jumps?|make your bed|thank-you|sorry note)\b/.test(n))return 'easy';
+  if(/\b(read|reading|book|spell|times tables?|homework|tidy|bedroom|dishes)\b/.test(n))return 'hard';
+  return 'medium';
+}
+function diffName(d){return d==='hard'?'Hard':d==='easy'?'Easy':'Medium'}
+function defaultQuestRules(){return {easy:{max:3,spins:1},medium:{max:2,spins:1},hard:{max:1,spins:2}}}
+function clampInt(n,min,max,fb){
+  n=Math.floor(Number(n));
+  if(!Number.isFinite(n))n=fb;
+  return Math.max(min,Math.min(max,n));
+}
+function normQuestRules(o){
+  const d=defaultQuestRules();
+  const src=o&&o.questRules;
+  if(!src||typeof src!=='object')return d;
+  DIFFS.forEach(k=>{
+    const r=src[k]||{};
+    d[k].max=clampInt(r.max,1,10,d[k].max);
+    d[k].spins=clampInt(r.spins,1,5,d[k].spins);
+  });
+  return d;
+}
 const BUILTINS=[
   {id:'quiz13',title:'Quiz score 13 or more',detail:'The 15-question times table quiz. Done at 13 or higher.'},
   {id:'quiz15',title:'Perfect quiz, 15 out of 15',detail:'Every answer right on the times table quiz.'},
@@ -613,16 +667,26 @@ const BUILTINS=[
   {id:'questOne',title:'Claim one chosen quest',detail:'One quest from the list, the same all day.'},
   {id:'focus',title:'Focus quiz, one times table',detail:'10 questions. 8 or more to pass.'}
 ];
-function defaultQuests(){return QUEST_NAMES.map((name,i)=>({id:'qd'+i,name,uses:0}));}
+function defaultQuests(){return QUEST_NAMES.map((name,i)=>({id:'qd'+i,name,uses:0,diff:guessDiff(name),claimDay:'',claimN:0}));}
 function questUses(q){
   const n=Math.floor(Number(q&&q.uses)||0);
   return n>0?Math.min(9999,n):0;
 }
 function normQuests(o){
-  if(o&&Array.isArray(o.quests))return o.quests.filter(q=>q&&String(q.name||'').trim()).map((q,i)=>({id:String(q.id||('q'+i)),name:String(q.name).trim().slice(0,60),uses:questUses(q)}));
+  if(o&&Array.isArray(o.quests))return o.quests.filter(q=>q&&String(q.name||'').trim()).map((q,i)=>{
+    const name=String(q.name).trim().slice(0,60);
+    const claimDay=/^\d{4}-\d{2}-\d{2}$/.test(q.claimDay)?q.claimDay:'';
+    return {id:String(q.id||('q'+i)).slice(0,40),name,uses:questUses(q),diff:normDiff(q.diff)||guessDiff(name),claimDay,claimN:Math.max(0,Math.min(20,Math.floor(Number(q.claimN)||0)))};
+  });
   return defaultQuests();
 }
-function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),quizRun:null,quizSpins:0,quizRight:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null};}
+function normQuestQueue(o,quests){
+  const ids={};
+  quests.forEach(q=>{ids[q.id]=1});
+  if(!o||!Array.isArray(o.questQueue))return [];
+  return o.questQueue.filter(x=>x&&ids[x.id]&&String(x.name||'').trim()).slice(-40).map(x=>({id:String(x.id).slice(0,40),name:String(x.name).trim().slice(0,60),diff:normDiff(x.diff)||'medium'}));
+}
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],quizRun:null,quizSpins:0,quizRight:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null};}
 function normQuizRun(o){
   const q=o&&o.quizRun;
   if(!q||!Array.isArray(q.qs)||q.qs.length!==15)return null;
@@ -644,6 +708,8 @@ function normQuizRun(o){
 function norm(o){
   const S=blank();
   S.quests=normQuests(o);
+  S.questRules=normQuestRules(o);
+  S.questQueue=normQuestQueue(o,S.quests);
   S.quizRun=normQuizRun(o);
   S.quizSpins=Math.max(0,Math.min(3,Math.floor(Number(o&&o.quizSpins)||0)));
   S.quizRight=Math.max(0,Math.min(15,Math.floor(Number(o&&o.quizRight)||0)));
@@ -1169,11 +1235,26 @@ const PRIZES=[
   {name:'LEGENDARY',ms:240000,w:4,color:'#ff9a1a',ink:'#1a1200'},
   {name:'MYTHIC',ms:300000,w:1,color:'#ffe14a',ink:'#1a1200'}
 ];
-const QUIZ_W={COMMON:25,UNCOMMON:30,RARE:20,EPIC:13,LEGENDARY:8,MYTHIC:4};
+const QUIZ_W={COMMON:35,UNCOMMON:30,RARE:18,EPIC:10,LEGENDARY:5,MYTHIC:2};
+const HARD_W={COMMON:30,UNCOMMON:30,RARE:20,EPIC:12,LEGENDARY:6,MYTHIC:2};
 let wheelRot=0,spinning=false,spinGen=0,cueTimers=[];
 function weightsFor(kind){
-  if(kind==='quiz'||kind==='daily')return PRIZES.map(p=>({...p,w:QUIZ_W[p.name]}));
+  if(kind==='quiz'||kind==='daily'||kind==='medium')return PRIZES.map(p=>({...p,w:QUIZ_W[p.name]}));
+  if(kind==='hard')return PRIZES.map(p=>({...p,w:HARD_W[p.name]}));
   return PRIZES;
+}
+function wheelMode(kind){
+  if(kind==='hard')return 'hard';
+  if(kind==='quiz'||kind==='daily'||kind==='medium')return 'quiz';
+  return 'normal';
+}
+function boostTitle(kind){
+  if(kind==='daily')return 'Daily boost';
+  if(kind==='quiz')return 'Quiz boost';
+  if(kind==='medium')return 'Medium boost';
+  if(kind==='hard')return 'Hard boost';
+  if(kind==='easy')return 'Easy';
+  return '';
 }
 function prizeLayout(list){
   const rows=list||PRIZES;
@@ -1187,14 +1268,14 @@ function prizeLayout(list){
 }
 function paintBoost(kind,table){
   const boost=$('quizBoost');
-  const on=kind==='quiz'||kind==='daily';
-  $('wheelBox').classList.toggle('boosted',on);
-  boost.hidden=!on;
-  if(!on)return;
-  boost.innerHTML='<b>'+(kind==='daily'?'Daily boost':'Quiz boost')+'</b><span class="qodds">'+table.map(p=>'<i style="color:'+p.color+'">'+p.w+'%</i>').join('')+'</span>';
+  const title=boostTitle(kind);
+  $('wheelBox').classList.toggle('boosted',kind==='quiz'||kind==='daily'||kind==='medium'||kind==='hard');
+  boost.hidden=!title;
+  if(!title)return;
+  boost.innerHTML='<b>'+title+'</b><span class="qodds">'+table.map(p=>'<i style="color:'+p.color+'">'+p.w+'%</i>').join('')+'</span>';
 }
 function buildWheel(kind){
-  const mode=kind==='quiz'||kind==='daily'?'quiz':'normal';
+  const mode=wheelMode(kind);
   const table=weightsFor(kind);
   paintBoost(kind,table);
   const wheel=$('wheel');
@@ -1229,8 +1310,37 @@ function renderQuests(){
     const hot=n===0&&topUses>0;
     const badge=questUses(q)?`<span class="quses" aria-label="Claimed ${questUses(q)} times">x${questUses(q)}</span>`:'';
     const mark=hot?'<span class="qhot">Top</span>':'';
-    return `<article class="qcard${hot?' hot':''}" data-qid="${esc(q.id)}"><div class="qtop"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${badge}</div></div><div class="qrow"><button class="slab claim" data-claim>Claim</button></div></article>`;
+    const rule=S.questRules[q.diff]||S.questRules.medium;
+    const today=claimsToday(q);
+    const maxed=today>=rule.max;
+    const pending=S.questQueue.filter(x=>x.id===q.id).length;
+    const spin=pending?'<div class="qrow"><button type="button" class="slab qspin" data-qspin>'+(pending===1?'Spin the reward':'Spin · '+pending+' left')+'</button></div>':'';
+    return `<article class="qcard${hot?' hot':''}" data-qid="${esc(q.id)}"><div class="qtop"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${badge}</div></div><div class="qmeta"><button type="button" class="qdiff ${q.diff}" data-cycle aria-label="Difficulty ${diffName(q.diff)}, tap to change">${diffName(q.diff)}</button><span class="qtoday">${today}/${rule.max} today</span></div><p class="qreward">${esc(rewardLine(q.diff))}</p><div class="qrow"><button type="button" class="slab claim" data-claim${maxed?' disabled':''}>${maxed?'Done for today':'Claim'}</button></div>${spin}</article>`;
   }).join('');
+}
+function claimsToday(q){return q.claimDay===londonDay()?(q.claimN||0):0}
+function rewardLine(diff){
+  const r=S.questRules[diff]||S.questRules.medium;
+  const word=r.spins===1?'spin':'spins';
+  if(diff==='easy')return 'Easy: '+r.spins+' normal '+word;
+  return diffName(diff)+': '+r.spins+' boosted '+word;
+}
+function claimQuest(q){
+  if(S.mode==='done'||spinning)return;
+  const rule=S.questRules[q.diff]||S.questRules.medium;
+  const n=claimsToday(q);
+  if(n>=rule.max)return;
+  q.claimDay=londonDay();
+  q.claimN=n+1;
+  q.uses=questUses(q)+1;
+  for(let i=0;i<rule.spins&&S.questQueue.length<40;i++)S.questQueue.push({id:q.id,name:q.name,diff:q.diff});
+  save();
+  render();
+}
+function openQuestSpin(q){
+  const item=S.questQueue.find(x=>x.id===q.id);
+  if(!item||spinning)return;
+  openSpin(item.name,q.id,item.diff);
 }
 function showTab(which){
   const quests=which==='quests';
@@ -1313,6 +1423,8 @@ function showReveal(prize,questName,cut){
 function openSpin(questName,questId,logKind){
   if(logKind==='quiz'&&!(S.quizSpins>0))return;
   if(logKind==='daily'&&!(S.dailySpins>0))return;
+  const questSpin=logKind==='easy'||logKind==='medium'||logKind==='hard';
+  if(questSpin&&!S.questQueue.some(x=>x.id===questId&&x.diff===logKind))return;
   if(spinning||S.mode==='done')return;
   if(catchUp())return;
   spinning=true;
@@ -1344,22 +1456,25 @@ function openSpin(questName,questId,logKind){
     spinning=false;
     clearCues();
     const cut=applyReward(prize.ms);
-    if(questId){
-      const used=S.quests.find(x=>x.id===questId);
-      if(used)used.uses=questUses(used)+1;
-    }
     let note=questName;
+    if(questSpin){
+      const i=S.questQueue.findIndex(x=>x.id===questId&&x.diff===logKind);
+      if(i>=0){
+        const item=S.questQueue.splice(i,1)[0];
+        note=item.name+' ('+diffName(item.diff)+')';
+      }
+    }
     if(logKind==='quiz'&&S.quizSpins>0)S.quizSpins--;
     if(logKind==='daily'&&S.dailySpins>0){
       S.dailySpins--;
       if(S.dailyQueue&&S.dailyQueue.length)note=S.dailyQueue.shift();
     }
-    pushLog({t:Date.now(),kind:logKind||'quest',ms:cut,note,rarity:prize.name});
+    pushLog({t:Date.now(),kind:questSpin?'quest':(logKind||'quest'),ms:cut,note,rarity:prize.name});
     if(questId)noteDailyQuest(questId);
     save();
     render();
     if($('quizBox').classList.contains('on'))paintQuiz();
-    showReveal(prize,questName,cut);
+    showReveal(prize,note,cut);
     raritySting(prize);
     const vib={COMMON:[35],UNCOMMON:[45,30,55],RARE:[50,30,55,30,90],EPIC:[60,35,70,35,120,40,160],LEGENDARY:[70,40,80,40,90,40,180,50,240],MYTHIC:[90,40,90,40,100,40,160,50,240,60,320]}[prize.name]||[40];
     if(navigator.vibrate)navigator.vibrate(vib);
@@ -1400,10 +1515,20 @@ $('doneBtn').onclick=markServed;
 $('tabTimer').onclick=()=>showTab('timer');
 $('tabQuests').onclick=()=>showTab('quests');
 $('tabChallenges').onclick=()=>showTab('challenges');
+let addDiff='medium';
+function paintAddDiff(){
+  $('addDiffs').querySelectorAll('[data-add-diff]').forEach(b=>b.classList.toggle('on',b.dataset.addDiff===addDiff));
+}
+$('addDiffs').onclick=ev=>{
+  const b=ev.target.closest('[data-add-diff]');
+  if(!b)return;
+  addDiff=normDiff(b.dataset.addDiff)||'medium';
+  paintAddDiff();
+};
 $('addQuest').onclick=()=>{
   const name=$('questName').value.trim();
   if(!name)return;
-  S.quests.push({id:'q'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:name.slice(0,60),uses:0});
+  S.quests.push({id:'q'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:name.slice(0,60),uses:0,diff:addDiff,claimDay:'',claimN:0});
   $('questName').value='';
   save();
   renderQuests();
@@ -1548,11 +1673,20 @@ $('questList').onclick=ev=>{
   if(!q)return;
   if(btn.hasAttribute('data-del')){
     S.quests=S.quests.filter(x=>x.id!==q.id);
+    S.questQueue=S.questQueue.filter(x=>x.id!==q.id);
     save();
     renderQuests();
     return;
   }
-  if(btn.hasAttribute('data-claim'))openSpin(q.name,q.id);
+  if(btn.hasAttribute('data-cycle')){
+    const i=DIFFS.indexOf(q.diff);
+    q.diff=DIFFS[(i+1)%DIFFS.length];
+    save();
+    renderQuests();
+    return;
+  }
+  if(btn.hasAttribute('data-claim'))claimQuest(q);
+  else if(btn.hasAttribute('data-qspin'))openQuestSpin(q);
 };
 $('wheelClose').onclick=()=>{
   if(spinning)return;
@@ -1931,6 +2065,21 @@ function paintChallenges(){
     +set.custom.map(c=>chRow(c.name,'A parent taps Mark done.',c.on,'data-toggle-c="'+esc(c.id)+'"',c.id)).join('');
   $('chalDaily').innerHTML=rewardEditor('daily',set.daily);
   $('chalMiles').innerHTML=set.miles.map((m,i)=>mileEditor(m,i)).join('')||'<p class="daybest">No streak bonuses yet.</p>';
+  if($('chalRules'))$('chalRules').innerHTML=DIFFS.map(ruleEditor).join('');
+}
+function oddsBits(kind){return weightsFor(kind).map(p=>p.w).join(' / ')}
+function ruleEditor(diff){
+  const r=S.questRules[diff];
+  const odds=diff==='easy'?'Normal odds · '+oddsBits('easy'):diff==='medium'?'Quiz boost · '+oddsBits('medium'):'Hard boost · '+oddsBits('hard');
+  return '<div class="chrow"><div class="txt"><b><span class="qdiff '+diff+'">'+diffName(diff)+'</span></b><small>'+esc(odds)+'</small></div></div>'
+    +'<div class="chreward"><span class="chlab">Claims a day</span>'+stepBtn('qrule','max',-1,diff)+'<span class="chnum">'+r.max+'</span>'+stepBtn('qrule','max',1,diff)+'</div>'
+    +'<div class="chreward"><span class="chlab">Spins each</span>'+stepBtn('qrule','spins',-1,diff)+'<span class="chnum">'+r.spins+'</span>'+stepBtn('qrule','spins',1,diff)+'</div>';
+}
+function bumpRule(diff,field,dir){
+  const r=S.questRules[diff];
+  if(!r)return;
+  if(field==='max')r.max=clampInt(r.max+dir,1,10,r.max);
+  else r.spins=clampInt(r.spins+dir,1,5,r.spins);
 }
 function chRow(title,detail,on,attr,id){
   const x=id?'<button type="button" class="chx" data-del-c="'+esc(id)+'" aria-label="Remove '+esc(title)+'">×</button>':'';
@@ -2018,6 +2167,8 @@ $('viewChallenges').onclick=ev=>{
     S.dailySet.custom=S.dailySet.custom.filter(c=>c.id!==t.dataset.delC);
   }else if(t.dataset.delM!=null){
     S.dailySet.miles.splice(+t.dataset.delM,1);
+  }else if(t.dataset.scope==='qrule'){
+    bumpRule(t.dataset.i,t.dataset.field,+t.dataset.dir);
   }else if(t.dataset.scope){
     bumpReward(t.dataset.scope,t.dataset.field,+t.dataset.dir,t.dataset.i==null?null:+t.dataset.i);
   }else return;
