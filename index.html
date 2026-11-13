@@ -198,7 +198,24 @@
   .tab:active::before{transform:translateY(3px)}
   .questLead{margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:1rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
   .questTotal{margin:0 0 12px;color:var(--yellow);letter-spacing:.08em;text-transform:uppercase;font-size:1.15rem;text-shadow:0 2px 0 #1a0a40}
-  .qcard{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(0,0,0,.3));border:3px solid rgba(255,225,74,.75);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 6px 0 rgba(16,4,40,.35)}
+  .qcard{display:flex;align-items:flex-start;gap:14px;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(0,0,0,.3));border:3px solid rgba(255,225,74,.75);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 6px 0 rgba(16,4,40,.35)}
+  .qbody{flex:1;min-width:0}
+  .qx{
+    position:relative;z-index:0;flex:none;
+    width:44px;height:44px;min-width:44px;min-height:44px;
+    margin:0;padding:0;border:0;border-radius:50%;
+    background:transparent;color:rgba(239,234,255,.9);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:1.2rem;font-weight:600;line-height:1;
+    letter-spacing:0;text-transform:none;
+  }
+  .qx::before{
+    content:"";position:absolute;z-index:-1;left:50%;top:50%;
+    width:28px;height:28px;transform:translate(-50%,-50%);
+    border-radius:50%;border:2px solid rgba(232,224,255,.5);
+    background:rgba(10,6,28,.4);
+  }
+  .qx:active::before{background:rgba(255,255,255,.2)}
   .qhead{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
   .qname{flex:1;min-width:0;font-size:1.28rem;letter-spacing:.03em;text-transform:uppercase;line-height:1.05}
   .quses{flex:none;min-height:28px;padding:2px 9px 0;background:linear-gradient(180deg,#fff6a0,#ffe14a);color:#1a1200;font-size:1rem;letter-spacing:.04em;border-radius:999px;line-height:1.35;text-transform:none;box-shadow:0 3px 0 #1a0a40}
@@ -210,8 +227,6 @@
   .slab:active::before{transform:translateY(4px)}
   .claim{flex:1;color:#06210a;font-size:1.25rem}
   .claim::before{background:linear-gradient(180deg,#d6ff6a,#5dff4a 45%,#1fae32);box-shadow:inset 0 2px 0 rgba(255,255,255,.55)}
-  .del{min-width:96px;color:#fff;font-size:1rem}
-  .del::before{background:linear-gradient(180deg,#8d5cff,#3a12a4);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
   .qempty{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#efeaff;font-weight:700}
   #addQuest{color:#fff}
   #addQuest::before{background:linear-gradient(180deg,#7ec8ff,#2f6bff 55%,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.4)}
@@ -926,7 +941,7 @@ function renderQuests(){
     const hot=n===0&&topUses>0;
     const badge=questUses(q)?`<span class="quses" aria-label="Claimed ${questUses(q)} times">x${questUses(q)}</span>`:'';
     const mark=hot?'<span class="qhot">Top</span>':'';
-    return `<article class="qcard${hot?' hot':''}" data-qid="${esc(q.id)}"><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${badge}</div><div class="qrow"><button class="slab claim" data-claim>Claim</button><button class="slab del" data-del aria-label="Remove ${esc(q.name)}">Remove</button></div></article>`;
+    return `<article class="qcard${hot?' hot':''}" data-qid="${esc(q.id)}"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qbody"><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${badge}</div><div class="qrow"><button class="slab claim" data-claim>Claim</button></div></div></article>`;
   }).join('');
 }
 function showTab(which){
