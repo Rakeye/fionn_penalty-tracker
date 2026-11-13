@@ -198,8 +198,8 @@
   .tab:active::before{transform:translateY(3px)}
   .questLead{margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:1rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
   .questTotal{margin:0 0 12px;color:var(--yellow);letter-spacing:.08em;text-transform:uppercase;font-size:1.15rem;text-shadow:0 2px 0 #1a0a40}
-  .qcard{display:flex;align-items:flex-start;gap:14px;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(0,0,0,.3));border:3px solid rgba(255,225,74,.75);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 6px 0 rgba(16,4,40,.35)}
-  .qbody{flex:1;min-width:0}
+  .qcard{display:flex;flex-direction:column;align-items:stretch;gap:8px;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(0,0,0,.3));border:3px solid rgba(255,225,74,.75);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 6px 0 rgba(16,4,40,.35)}
+  .qtop{display:flex;align-items:flex-start;gap:14px}
   .qx{
     position:relative;z-index:0;flex:none;
     width:44px;height:44px;min-width:44px;min-height:44px;
@@ -216,16 +216,16 @@
     background:rgba(10,6,28,.4);
   }
   .qx:active::before{background:rgba(255,255,255,.2)}
-  .qhead{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+  .qhead{display:flex;align-items:flex-start;gap:8px;flex:1;min-width:0;margin-bottom:0}
   .qname{flex:1;min-width:0;font-size:1.28rem;letter-spacing:.03em;text-transform:uppercase;line-height:1.05}
   .quses{flex:none;min-height:28px;padding:2px 9px 0;background:linear-gradient(180deg,#fff6a0,#ffe14a);color:#1a1200;font-size:1rem;letter-spacing:.04em;border-radius:999px;line-height:1.35;text-transform:none;box-shadow:0 3px 0 #1a0a40}
   .qhot{display:inline-block;margin-left:8px;padding:1px 8px 0;background:#5dff4a;color:#06210a;font-size:.72rem;letter-spacing:.08em;border-radius:999px;vertical-align:2px}
   .qcard.hot{border-color:#fff6a0;box-shadow:0 6px 0 rgba(16,4,40,.35),0 0 0 3px rgba(255,225,74,.4)}
-  .qrow{display:flex;gap:8px}
+  .qrow{display:flex;justify-content:center}
   .slab{position:relative;z-index:0;min-height:56px;padding:0 10px 6px}
   .slab::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;bottom:6px;clip-path:polygon(8% 0,100% 0,92% 100%,0 100%)}
   .slab:active::before{transform:translateY(4px)}
-  .claim{flex:1;color:#06210a;font-size:1.25rem}
+  .claim{width:100%;color:#06210a;font-size:1.25rem}
   .claim::before{background:linear-gradient(180deg,#d6ff6a,#5dff4a 45%,#1fae32);box-shadow:inset 0 2px 0 rgba(255,255,255,.55)}
   .qempty{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#efeaff;font-weight:700}
   #addQuest{color:#fff}
@@ -941,7 +941,7 @@ function renderQuests(){
     const hot=n===0&&topUses>0;
     const badge=questUses(q)?`<span class="quses" aria-label="Claimed ${questUses(q)} times">x${questUses(q)}</span>`:'';
     const mark=hot?'<span class="qhot">Top</span>':'';
-    return `<article class="qcard${hot?' hot':''}" data-qid="${esc(q.id)}"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qbody"><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${badge}</div><div class="qrow"><button class="slab claim" data-claim>Claim</button></div></div></article>`;
+    return `<article class="qcard${hot?' hot':''}" data-qid="${esc(q.id)}"><div class="qtop"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${badge}</div></div><div class="qrow"><button class="slab claim" data-claim>Claim</button></div></article>`;
   }).join('');
 }
 function showTab(which){
