@@ -182,6 +182,7 @@
   li.loot-served{--rarity:#ffb020}
   li.loot-clear{--rarity:#3aa0ff}
   li.loot-manual{--rarity:#9a90b8}
+  li.loot-daily{--rarity:#9a90b8}
   li.meta{
     border:0;background:none;box-shadow:none;padding:8px 4px;
     color:var(--ink-dim);font-weight:700;
@@ -229,6 +230,50 @@
   .fab.spin{color:#1a1200;background:radial-gradient(circle at 50% 35%,#fff6a0,#ffe14a 48%,#f5b400)}
   .fab:active{transform:translateX(-50%) translateY(4px);box-shadow:0 3px 0 #12081f,0 0 0 4px var(--yellow),inset 0 2px 0 rgba(255,255,255,.45)}
   .fab[hidden]{display:none}
+  .dockside{display:flex;align-items:flex-end;min-width:0}
+  .dockside.left{justify-content:space-evenly}
+  .dockside.right{justify-content:center}
+  .dockside .docktab{flex:1;min-width:0}
+  .dockside.right .docktab{flex:0 1 auto;font-size:.62rem;letter-spacing:.03em}
+  .docktab span{white-space:nowrap}
+  .daycard{margin-top:12px;padding:12px 12px 4px;border-radius:16px;background:linear-gradient(180deg,#2a1468,#14082e);border:3px solid rgba(255,225,74,.75);box-shadow:0 6px 0 rgba(16,4,40,.35)}
+  .daycard.done{border-color:#5dff4a}
+  .daytop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .daytop b{font-size:1.25rem;letter-spacing:.04em}
+  .dayflame{color:var(--yellow);font-size:1.35rem;letter-spacing:.04em}
+  .daybadge{display:inline-block;margin-left:6px;padding:1px 8px 0;background:#ffe14a;color:#1a1200;border-radius:999px;font-size:.72rem;letter-spacing:.04em;vertical-align:2px}
+  .daytask{margin:8px 0 4px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:1.08rem;font-weight:800;line-height:1.25}
+  .daystatus,.dayreward,.daybest{margin:0 0 6px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:700;color:#efeaff;font-size:.95rem}
+  .daystatus.done{color:#5dff4a}
+  .dayweek{display:flex;justify-content:space-between;gap:4px;margin:4px 0 8px}
+  .daydot{flex:1;text-align:center;font-size:.72rem;letter-spacing:.04em;color:#efeaff}
+  .daydot span{display:block;width:22px;height:22px;margin:3px auto 0;border-radius:50%;border:2px solid rgba(255,225,74,.75);box-sizing:border-box}
+  .daydot.on span{background:#5dff4a;border-color:#5dff4a}
+  .daydot.now span{box-shadow:0 0 0 2px #ffe14a}
+  #dayGo,#daySpin{color:#1a1200}
+  #dayGo::before,#daySpin::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
+  #dayMark,#addCustom,#addMile{color:#fff}
+  #dayMark::before{background:linear-gradient(180deg,#6e63ff,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
+  #addCustom::before,#addMile::before{background:linear-gradient(180deg,#7ec8ff,#2f6bff 55%,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.4)}
+  .chh{margin:16px 0 8px;color:var(--yellow);letter-spacing:.08em;text-transform:uppercase;font-size:1.05rem;text-shadow:0 2px 0 #1a0a40}
+  .chrow{display:flex;align-items:center;gap:8px;padding:10px;margin:0 0 8px;border-radius:14px;background:rgba(10,6,28,.55);border:2px solid rgba(255,225,74,.35)}
+  .chrow .txt{flex:1;min-width:0}
+  .chrow b{display:block;font-size:1.02rem;letter-spacing:.02em;line-height:1.15}
+  .chrow small{display:block;margin-top:2px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:700;font-size:.85rem;letter-spacing:0;text-transform:none;color:#efeaff}
+  .chtog{flex:none;min-width:64px;min-height:44px;padding:0 10px;border-radius:999px;color:#d9ccf6;background:#241448;box-shadow:inset 0 0 0 2px rgba(255,225,74,.4);font-size:.85rem}
+  .chtog.on{color:#1a1200;background:linear-gradient(180deg,#fff6a0,#ffe14a)}
+  .chx{flex:none;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:50%;color:#efeaff;background:transparent;box-shadow:inset 0 0 0 2px rgba(232,224,255,.55);font-size:1.2rem;text-transform:none}
+  .chreward{display:flex;align-items:center;gap:8px;margin:0 0 8px}
+  .chreward select{flex:1;min-width:0;min-height:48px;padding:0 8px;border-radius:12px;border:3px solid #7d5cff;background:#140a32;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:16px;font-weight:800}
+  .step{flex:none;width:44px;min-width:44px;min-height:44px;padding:0;border-radius:12px;color:#1a1200;background:#ffe14a;font-size:1.4rem}
+  .chnum{min-width:2.2ch;text-align:center;font-size:1.15rem}
+  .daypop{position:fixed;inset:0;z-index:28;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(8,4,24,.78)}
+  .daypop:not([hidden]){display:flex}
+  .daysheet{width:min(100%,380px);position:relative;text-align:center;padding:22px 16px 8px;border-radius:18px;background:linear-gradient(180deg,#3a2088,#1a0c44);box-shadow:0 0 0 3px #ffe14a,0 12px 0 #090318}
+  .daypopk{margin:0;color:var(--yellow);letter-spacing:.12em;font-size:1.2rem}
+  .daypopn{margin:4px 0;font-family:var(--timer);font-size:4.2rem;line-height:.9;text-shadow:0 4px 0 #1a0a40}
+  #dayPopOk{color:#1a1200}
+  #dayPopOk::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
   .questLead{margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:1rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
   .questTotal{margin:0 0 12px;color:var(--yellow);letter-spacing:.08em;text-transform:uppercase;font-size:1.15rem;text-shadow:0 2px 0 #1a0a40}
   .qcard{display:flex;flex-direction:column;align-items:stretch;gap:8px;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(0,0,0,.3));border:3px solid rgba(255,225,74,.75);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 6px 0 rgba(16,4,40,.35)}
@@ -489,6 +534,17 @@
 
   <details><summary>History</summary><ul id="logList"></ul></details>
   <button id="clearBtn">Clear to zero</button>
+  <section class="daycard" id="dayCard" aria-label="Daily challenge">
+    <div class="daytop"><b>Daily challenge</b><span class="dayflame" id="dayFlame">🔥 0</span></div>
+    <p class="daytask" id="dayTask"></p>
+    <p class="daystatus" id="dayStatus"></p>
+    <p class="dayreward" id="dayReward"></p>
+    <div class="dayweek" id="dayWeek"></div>
+    <p class="daybest" id="dayBest"></p>
+    <button type="button" class="bigbtn" id="dayGo" hidden>Start</button>
+    <button type="button" class="bigbtn" id="dayMark" hidden>Mark done</button>
+    <button type="button" class="bigbtn" id="daySpin" hidden>Spin</button>
+  </section>
   </div>
   <div id="viewQuests" role="tabpanel" hidden>
     <p class="questLead">Things Fionn can do to earn penalty time back.</p>
@@ -498,21 +554,50 @@
     <input id="questName" placeholder="Add a quest" autocomplete="off" maxlength="60">
     <button class="bigbtn" id="addQuest">Add quest</button>
   </div>
+  <div id="viewChallenges" role="tabpanel" hidden>
+    <p class="questLead">Choose what Fionn can do, and what he earns. Today’s challenge stays put until tomorrow.</p>
+    <p class="chh">Challenge pool</p>
+    <div id="chalPool"></div>
+    <input id="customName" placeholder="Custom challenge" maxlength="60" autocomplete="off">
+    <button type="button" class="bigbtn" id="addCustom">Add challenge</button>
+    <p class="chh">Daily reward</p>
+    <div id="chalDaily"></div>
+    <p class="chh">Streak bonuses</p>
+    <div id="chalMiles"></div>
+    <button type="button" class="bigbtn" id="addMile">Add a streak bonus</button>
+  </div>
 </div>
 <nav class="dock" aria-label="Sections">
-  <button class="docktab on" id="tabTimer" role="tab" aria-selected="true" aria-controls="viewTimer">
-    <span class="dico"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="18" r="9.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M16 18V12.2M12.2 4.6h7.6M16 4.6V8M23.2 9.2l2-2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></span>
-    <span>Timer</span>
-  </button>
+  <div class="dockside left">
+    <button class="docktab on" id="tabTimer" role="tab" aria-selected="true" aria-controls="viewTimer">
+      <span class="dico"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="18" r="9.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M16 18V12.2M12.2 4.6h7.6M16 4.6V8M23.2 9.2l2-2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></span>
+      <span>Timer</span>
+    </button>
+    <button class="docktab" id="tabQuests" role="tab" aria-selected="false" aria-controls="viewQuests">
+      <span class="dico"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" d="M23.2 4.2 11.4 16M8 14.2l9.6 9.6M12.4 19.6 6.2 26.4"/><circle cx="5.2" cy="27.6" r="2.5" fill="currentColor"/></svg></span>
+      <span>Quests</span>
+    </button>
+  </div>
   <div class="dockact">
     <button class="fab penalty" id="addPen" aria-label="Add 5 minutes"><b>+5</b><small>Penalty</small></button>
     <button class="fab spin" id="spinBtn" hidden aria-label="Spin the wheel"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="13" r="9" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="16" cy="13" r="2.6" fill="currentColor"/><path d="M16 4.2v5.2M16 16.6v5.2M7.2 13h5.2M19.6 13h5.2" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><small>Spin</small></button>
   </div>
-  <button class="docktab" id="tabQuests" role="tab" aria-selected="false" aria-controls="viewQuests">
-    <span class="dico"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" d="M23.2 4.2 11.4 16M8 14.2l9.6 9.6M12.4 19.6 6.2 26.4"/><circle cx="5.2" cy="27.6" r="2.5" fill="currentColor"/></svg></span>
-    <span>Quests</span>
-  </button>
+  <div class="dockside right">
+    <button class="docktab" id="tabChallenges" role="tab" aria-selected="false" aria-controls="viewChallenges">
+      <span class="dico"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M10 3h12v9a6 6 0 0 1-12 0V3z"/><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M10 6.5H6a4 4 0 0 0 4 5M22 6.5h4a4 4 0 0 1-4 5"/><path fill="currentColor" d="M14 18h4v4h-4zM11 23h10v2.6H11z"/></svg></span>
+      <span>Challenges</span>
+    </button>
+  </div>
 </nav>
+<div class="daypop" id="dayPop" hidden>
+  <div class="confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="daysheet">
+    <p class="daypopk" id="dayPopK">Streak</p>
+    <p class="daypopn" id="dayPopN">3</p>
+    <p class="daytask" id="dayPopMsg"></p>
+    <button type="button" class="bigbtn" id="dayPopOk">Awesome</button>
+  </div>
+</div>
 
 <script>
 const KEY='fionnTracker.v3';
@@ -521,6 +606,13 @@ const $=id=>document.getElementById(id);
 const fmt=t=>new Date(t).toLocaleString([], {weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const QUEST_NAMES=['Tidy your bedroom','Read a book for 15 minutes','Help set or clear the table','Put your laundry away','Do 20 star jumps','Draw a picture for someone','Help with the dishes','Make your bed','Feed or help with a pet','Write a thank-you or sorry note','Practise spelling or times tables','Sort your toys or Lego'];
+const BUILTINS=[
+  {id:'quiz13',title:'Quiz score 13 or more',detail:'The 15-question times table quiz. Done at 13 or higher.'},
+  {id:'quiz15',title:'Perfect quiz, 15 out of 15',detail:'Every answer right on the times table quiz.'},
+  {id:'questAny',title:'Claim any side quest',detail:'Done when a quest spin lands.'},
+  {id:'questOne',title:'Claim one chosen quest',detail:'One quest from the list, the same all day.'},
+  {id:'focus',title:'Focus quiz, one times table',detail:'10 questions. 8 or more to pass.'}
+];
 function defaultQuests(){return QUEST_NAMES.map((name,i)=>({id:'qd'+i,name,uses:0}));}
 function questUses(q){
   const n=Math.floor(Number(q&&q.uses)||0);
@@ -530,7 +622,7 @@ function normQuests(o){
   if(o&&Array.isArray(o.quests))return o.quests.filter(q=>q&&String(q.name||'').trim()).map((q,i)=>({id:String(q.id||('q'+i)),name:String(q.name).trim().slice(0,60),uses:questUses(q)}));
   return defaultQuests();
 }
-function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),quizRun:null,quizSpins:0,quizRight:0};}
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),quizRun:null,quizSpins:0,quizRight:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null};}
 function normQuizRun(o){
   const q=o&&o.quizRun;
   if(!q||!Array.isArray(q.qs)||q.qs.length!==15)return null;
@@ -556,6 +648,7 @@ function norm(o){
   S.quizSpins=Math.max(0,Math.min(3,Math.floor(Number(o&&o.quizSpins)||0)));
   S.quizRight=Math.max(0,Math.min(15,Math.floor(Number(o&&o.quizRight)||0)));
   if(S.quizSpins>0)S.quizRun=null;
+  applyDaily(S,o);
   if(!o||typeof o!=='object')return S;
   S.sound=!!o.sound;
   const totalN=Number(o.totalMs);
@@ -686,8 +779,13 @@ function logLine(e){
   else if(e.kind==='quest')label='Side quest: '+esc(e.note||'Spin the wheel')+', '+(e.rarity?esc(e.rarity)+' ':'')+'-'+clock(e.ms);
   else if(e.kind==='quiz')label=esc(e.note||'Times Table Quiz')+', '+(e.rarity?esc(e.rarity)+' ':'')+'-'+clock(e.ms);
   else if(e.kind==='manual')label='Manual '+(e.note==='−'?'−':'+')+clock(e.ms);
+  else if(e.kind==='daily'){
+    label=esc(e.note||'Daily Challenge');
+    if(e.rarity)label+=', '+esc(e.rarity)+' -'+clock(e.ms);
+    else if(e.ms)label+=', -'+clock(e.ms);
+  }
   else return '';
-  const note=e.kind==='quest'||e.kind==='quiz'||e.kind==='manual'?'':(e.note?' · '+esc(e.note):'');
+  const note=e.kind==='quest'||e.kind==='quiz'||e.kind==='manual'||e.kind==='daily'?'':(e.note?' · '+esc(e.note):'');
   const used=e.kind==='served'||e.kind==='clear'?' used':'';
   const rar=e.rarity?esc(String(e.rarity).toLowerCase()):'';
   return `<li class="loot loot-${esc(e.kind)}${rar?' loot-'+rar:''}${used}">${label}${note}<div class="meta">${fmt(e.t)}</div></li>`;
@@ -711,6 +809,8 @@ function render(){
   $('logList').innerHTML=lines||'<li class="meta">None yet 👍</li>';
   renderQuests();
   paintQuizCard();
+  paintDay();
+  maybeDayPop();
 }
 function finishRun(){
   if(S.mode==='done')return false;
@@ -1072,8 +1172,8 @@ const PRIZES=[
 const QUIZ_W={COMMON:25,UNCOMMON:30,RARE:20,EPIC:13,LEGENDARY:8,MYTHIC:4};
 let wheelRot=0,spinning=false,spinGen=0,cueTimers=[];
 function weightsFor(kind){
-  if(kind!=='quiz')return PRIZES;
-  return PRIZES.map(p=>({...p,w:QUIZ_W[p.name]}));
+  if(kind==='quiz'||kind==='daily')return PRIZES.map(p=>({...p,w:QUIZ_W[p.name]}));
+  return PRIZES;
 }
 function prizeLayout(list){
   const rows=list||PRIZES;
@@ -1087,14 +1187,14 @@ function prizeLayout(list){
 }
 function paintBoost(kind,table){
   const boost=$('quizBoost');
-  const on=kind==='quiz';
+  const on=kind==='quiz'||kind==='daily';
   $('wheelBox').classList.toggle('boosted',on);
   boost.hidden=!on;
   if(!on)return;
-  boost.innerHTML='<b>Quiz boost</b><span class="qodds">'+table.map(p=>'<i style="color:'+p.color+'">'+p.w+'%</i>').join('')+'</span>';
+  boost.innerHTML='<b>'+(kind==='daily'?'Daily boost':'Quiz boost')+'</b><span class="qodds">'+table.map(p=>'<i style="color:'+p.color+'">'+p.w+'%</i>').join('')+'</span>';
 }
 function buildWheel(kind){
-  const mode=kind==='quiz'?'quiz':'normal';
+  const mode=kind==='quiz'||kind==='daily'?'quiz':'normal';
   const table=weightsFor(kind);
   paintBoost(kind,table);
   const wheel=$('wheel');
@@ -1134,14 +1234,19 @@ function renderQuests(){
 }
 function showTab(which){
   const quests=which==='quests';
-  $('viewTimer').hidden=quests;
+  const challenges=which==='challenges';
+  $('viewTimer').hidden=quests||challenges;
   $('viewQuests').hidden=!quests;
-  $('tabTimer').classList.toggle('on',!quests);
+  $('viewChallenges').hidden=!challenges;
+  $('tabTimer').classList.toggle('on',which==='timer');
   $('tabQuests').classList.toggle('on',quests);
-  $('tabTimer').setAttribute('aria-selected',String(!quests));
+  $('tabChallenges').classList.toggle('on',challenges);
+  $('tabTimer').setAttribute('aria-selected',String(which==='timer'));
   $('tabQuests').setAttribute('aria-selected',String(quests));
+  $('tabChallenges').setAttribute('aria-selected',String(challenges));
   $('addPen').hidden=quests;
   $('spinBtn').hidden=!quests;
+  if(challenges)paintChallenges();
 }
 function armAudio(){
   unlockAudio();
@@ -1207,6 +1312,7 @@ function showReveal(prize,questName,cut){
 }
 function openSpin(questName,questId,logKind){
   if(logKind==='quiz'&&!(S.quizSpins>0))return;
+  if(logKind==='daily'&&!(S.dailySpins>0))return;
   if(spinning||S.mode==='done')return;
   if(catchUp())return;
   spinning=true;
@@ -1242,8 +1348,14 @@ function openSpin(questName,questId,logKind){
       const used=S.quests.find(x=>x.id===questId);
       if(used)used.uses=questUses(used)+1;
     }
+    let note=questName;
     if(logKind==='quiz'&&S.quizSpins>0)S.quizSpins--;
-    pushLog({t:Date.now(),kind:logKind||'quest',ms:cut,note:questName,rarity:prize.name});
+    if(logKind==='daily'&&S.dailySpins>0){
+      S.dailySpins--;
+      if(S.dailyQueue&&S.dailyQueue.length)note=S.dailyQueue.shift();
+    }
+    pushLog({t:Date.now(),kind:logKind||'quest',ms:cut,note,rarity:prize.name});
+    if(questId)noteDailyQuest(questId);
     save();
     render();
     if($('quizBox').classList.contains('on'))paintQuiz();
@@ -1287,6 +1399,7 @@ $('clearBtn').onclick=clearAll;
 $('doneBtn').onclick=markServed;
 $('tabTimer').onclick=()=>showTab('timer');
 $('tabQuests').onclick=()=>showTab('quests');
+$('tabChallenges').onclick=()=>showTab('challenges');
 $('addQuest').onclick=()=>{
   const name=$('questName').value.trim();
   if(!name)return;
@@ -1320,13 +1433,14 @@ function newQuiz(){
   save();
 }
 function paintQuiz(){
-  const run=S.quizRun;
+  const focus=$('quizBox').dataset.face==='focus';
+  const run=focus?S.focusRun:S.quizRun;
   $('quizPlay').hidden=!run;
   $('quizEnd').hidden=!!run;
   if(run){
     const a=run.qs[run.i][0],b=run.qs[run.i][1],ans=a*b;
-    const key=run.i+':'+run.phase;
-    $('quizProg').textContent=(run.i+1)+'/15';
+    const key=run.i+':'+run.phase+':'+(focus?'f':'m');
+    $('quizProg').textContent=(run.i+1)+'/'+run.qs.length;
     $('quizQ').textContent=a+' × '+b;
     const fb=$('quizFb');
     if($('quizPlay').dataset.key!==key){
@@ -1339,7 +1453,7 @@ function paintQuiz(){
       fb.hidden=false;
       fb.className='quizfb '+(run.lastOk?'ok':'no');
       fb.textContent=(run.lastOk?cheers[run.i%cheers.length]:boosts[run.i%boosts.length])+' '+a+' × '+b+' = '+ans;
-      $('quizGo').textContent=run.i>=14?'See my score':'Next';
+      $('quizGo').textContent=run.i>=run.qs.length-1?'See my score':'Next';
       $('quizAns').disabled=true;
     }else{
       fb.hidden=true;
@@ -1347,6 +1461,15 @@ function paintQuiz(){
       $('quizGo').textContent='Check';
       $('quizAns').disabled=false;
     }
+    return;
+  }
+  if(focus){
+    const last=S.focusLast||{right:0,total:10,pass:false};
+    $('quizScore').textContent=last.right+'/'+last.total;
+    const msg=$('quizEndMsg');
+    msg.className='quizfb '+(last.pass?'ok':'');
+    msg.textContent=last.pass?'Challenge done! Nice work.':'Need 8 or more. You can try again from the challenge card.';
+    $('quizSpin').hidden=true;
     return;
   }
   const spins=S.quizSpins;
@@ -1365,6 +1488,7 @@ function paintQuiz(){
 }
 function openQuiz(){
   if(S.mode==='done')return;
+  $('quizBox').dataset.face='main';
   if(!(S.quizSpins>0)&&!S.quizRun)newQuiz();
   $('quizBox').classList.add('on');
   $('quizBox').setAttribute('aria-hidden','false');
@@ -1379,17 +1503,13 @@ function closeQuiz(){
   paintQuizCard();
 }
 function quizCheck(){
-  const run=S.quizRun;
+  const focus=$('quizBox').dataset.face==='focus';
+  const run=focus?S.focusRun:S.quizRun;
   if(!run)return;
   if(run.phase==='feedback'){
-    if(run.i>=14){
-      const wrong=run.wrong;
-      S.quizRight=15-wrong;
-      S.quizSpins=spinsForWrong(wrong);
-      S.quizRun=null;
-      save();
-      paintQuiz();
-      paintQuizCard();
+    if(run.i>=run.qs.length-1){
+      if(focus)finishFocus(run);
+      else finishMainQuiz(run);
       return;
     }
     run.i++;
@@ -1439,6 +1559,7 @@ $('wheelClose').onclick=()=>{
   $('wheelBox').classList.remove('on','party');
   $('wheelBox').setAttribute('aria-hidden','true');
   if($('quizBox').classList.contains('on'))paintQuiz();
+  maybeDayPop();
 };
 function onGesture(){
   unlockAudio();
@@ -1465,6 +1586,462 @@ function onWake(){tick()}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')onWake()});
 window.addEventListener('pageshow',onWake);
 window.addEventListener('focus',onWake);
+function defaultDailySet(){
+  return {
+    pool:{quiz13:true,quiz15:true,questAny:true,questOne:true,focus:true},
+    custom:[],
+    daily:{kind:'spins',n:1},
+    miles:[
+      {days:3,kind:'spins',n:1},
+      {days:7,kind:'spins',n:2},
+      {days:14,kind:'spins',n:3},
+      {days:30,kind:'spins',n:5}
+    ]
+  };
+}
+function clampReward(kind,n){
+  const max=kind==='time'?30:10;
+  n=Math.floor(Number(n));
+  if(!Number.isFinite(n))n=kind==='time'?1:1;
+  return Math.max(0,Math.min(max,n));
+}
+function normReward(r,fallback){
+  const kind=r&&r.kind==='time'?'time':'spins';
+  return {kind,n:clampReward(kind,r&&r.n!=null?r.n:fallback.n)};
+}
+function normDailySet(o){
+  const d=defaultDailySet();
+  const src=o&&o.dailySet;
+  if(!src||typeof src!=='object')return d;
+  BUILTINS.forEach(b=>{if(src.pool&&src.pool[b.id]===false)d.pool[b.id]=false});
+  if(Array.isArray(src.custom)){
+    const seen={};
+    d.custom=src.custom.filter(c=>c&&String(c.name||'').trim()).slice(0,20).map((c,i)=>{
+      let id=String(c.id||('c'+i)).replace(/[^\w-]/g,'').slice(0,24)||('c'+i);
+      if(seen[id])id+='x'+i;
+      seen[id]=1;
+      return {id,name:String(c.name).trim().slice(0,60),on:c.on!==false};
+    });
+  }
+  d.daily=normReward(src.daily,d.daily);
+  if(Array.isArray(src.miles)){
+    const miles=[];
+    const used={};
+    src.miles.forEach(m=>{
+      const days=Math.floor(Number(m&&m.days));
+      if(days<2||days>365||used[days])return;
+      used[days]=1;
+      const r=normReward(m,{kind:'spins',n:1});
+      miles.push({days,kind:r.kind,n:r.n});
+    });
+    miles.sort((a,b)=>a.days-b.days);
+    d.miles=miles.slice(0,8);
+  }
+  return d;
+}
+function normToday(t){
+  if(!t||typeof t!=='object'||!/^\d{4}-\d{2}-\d{2}$/.test(t.date))return null;
+  const rec={date:t.date,id:String(t.id||'').slice(0,40)};
+  if(t.questId)rec.questId=String(t.questId).slice(0,40);
+  if(t.questName)rec.questName=String(t.questName).slice(0,60);
+  if(t.name)rec.name=String(t.name).slice(0,60);
+  const table=Math.floor(Number(t.table));
+  if(table>=2&&table<=12)rec.table=table;
+  return rec;
+}
+function normFocus(q){
+  if(!q||!Array.isArray(q.qs)||q.qs.length!==10)return null;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(q.date)||q.date!==londonDay())return null;
+  const table=Math.floor(Number(q.table));
+  if(table<2||table>12)return null;
+  const qs=[];
+  const seen={};
+  for(let n=0;n<q.qs.length;n++){
+    const pair=q.qs[n];
+    const a=Math.floor(Number(pair&&pair[0]));
+    const b=Math.floor(Number(pair&&pair[1]));
+    if(a!==table||b<2||b>12||seen[b])return null;
+    seen[b]=1;
+    qs.push([a,b]);
+  }
+  const i=Math.max(0,Math.min(9,Math.floor(Number(q.i)||0)));
+  const wrong=Math.max(0,Math.min(10,Math.floor(Number(q.wrong)||0)));
+  return {qs,i,wrong,phase:q.phase==='feedback'?'feedback':'ask',lastOk:!!q.lastOk,table,date:q.date};
+}
+function applyDaily(S,o){
+  const src=o&&typeof o==='object'?o:{};
+  S.dailySet=normDailySet(src);
+  S.dailySpins=Math.max(0,Math.min(30,Math.floor(Number(src.dailySpins)||0)));
+  S.dailyStreak=Math.max(0,Math.min(9999,Math.floor(Number(src.dailyStreak)||0)));
+  S.dailyBest=Math.max(S.dailyStreak,Math.min(9999,Math.floor(Number(src.dailyBest)||0)));
+  S.dailyLast=/^\d{4}-\d{2}-\d{2}$/.test(src.dailyLast)?src.dailyLast:'';
+  S.dailyDone=Array.isArray(src.dailyDone)?src.dailyDone.filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)).slice(-90):[];
+  S.dailyQueue=Array.isArray(src.dailyQueue)?src.dailyQueue.map(s=>String(s).slice(0,80)).filter(Boolean).slice(-30):[];
+  while(S.dailyQueue.length<S.dailySpins)S.dailyQueue.push('Daily Challenge');
+  if(S.dailyQueue.length>S.dailySpins)S.dailyQueue=S.dailyQueue.slice(0,S.dailySpins);
+  S.dailyToday=normToday(src.dailyToday);
+  S.focusRun=normFocus(src.focusRun);
+  const fl=src.focusLast;
+  S.focusLast=fl&&fl.total===10?{right:Math.max(0,Math.min(10,Math.floor(Number(fl.right)||0))),total:10,pass:!!fl.pass}:null;
+  const pop=src.dailyPop;
+  S.dailyPop=pop&&pop.streak?{streak:Math.max(1,Math.floor(Number(pop.streak)||1)),milestone:!!pop.milestone,spins:Math.max(0,Math.floor(Number(pop.spins)||0)),time:Math.max(0,Math.floor(Number(pop.time)||0))}:null;
+}
+function londonDay(){
+  if(typeof window.__londonDay==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(window.__londonDay))return window.__londonDay;
+  return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+}
+function dayNum(iso){
+  const p=String(iso).split('-');
+  return Math.floor(Date.UTC(+p[0],+p[1]-1,+p[2])/86400000);
+}
+function isoFromNum(n){return new Date(n*86400000).toISOString().slice(0,10)}
+function dayHash(iso){
+  let h=2166136261;
+  const s=String(iso);
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}
+  return h>>>0;
+}
+function enabledIds(){
+  const ids=[];
+  BUILTINS.forEach(b=>{if(S.dailySet.pool[b.id]!==false)ids.push(b.id)});
+  S.dailySet.custom.forEach(c=>{if(c.on&&c.name)ids.push('c:'+c.id)});
+  ids.sort();
+  return ids;
+}
+function settleStreak(){
+  const today=londonDay();
+  if(S.dailyLast){
+    const gap=dayNum(today)-dayNum(S.dailyLast);
+    if(gap>1)S.dailyStreak=0;
+  }
+  if(S.dailyBest<S.dailyStreak)S.dailyBest=S.dailyStreak;
+}
+function assignToday(){
+  const today=londonDay();
+  const ids=enabledIds();
+  if(!ids.length){S.dailyToday={date:today,id:''};return S.dailyToday}
+  const h=dayHash(today);
+  let id=ids[h%ids.length];
+  const rec={date:today,id};
+  if(id==='questOne'){
+    if(S.quests.length){
+      const q=S.quests[(h>>>8)%S.quests.length];
+      rec.questId=q.id;
+      rec.questName=q.name;
+    }else{
+      const other=ids.find(x=>x!=='questOne');
+      rec.id=other||'';
+      id=rec.id;
+    }
+  }
+  if(rec.id==='focus')rec.table=2+((h>>>8)%11);
+  if(String(rec.id).startsWith('c:')){
+    const c=S.dailySet.custom.find(x=>'c:'+x.id===rec.id);
+    rec.name=c?c.name:'Custom challenge';
+  }
+  S.dailyToday=rec;
+  return rec;
+}
+function syncDaily(){
+  const before=S.dailyStreak+'|'+(S.dailyToday&&S.dailyToday.date||'')+'|'+(S.dailyToday&&S.dailyToday.id||'');
+  settleStreak();
+  const today=londonDay();
+  if(!S.dailyToday||S.dailyToday.date!==today){
+    S.focusRun=null;
+    S.focusLast=null;
+    assignToday();
+  }
+  const after=S.dailyStreak+'|'+S.dailyToday.date+'|'+S.dailyToday.id;
+  if(before!==after)save();
+}
+function rewardText(r){
+  if(!r||!r.n)return r&&r.kind==='time'?'No time off':'No spins';
+  if(r.kind==='time')return r.n+(r.n===1?' minute off':' minutes off');
+  return r.n+' boosted spin'+(r.n===1?'':'s');
+}
+function taskText(t){
+  if(!t||!t.id)return 'No challenge today. Add one in Challenges.';
+  if(t.id==='quiz13')return 'Score 13 or more on the Times Table Quiz.';
+  if(t.id==='quiz15')return 'Get a perfect 15 out of 15 on the Times Table Quiz.';
+  if(t.id==='questAny')return 'Claim any side quest.';
+  if(t.id==='questOne'){
+    if(t.questId&&!S.quests.some(q=>q.id===t.questId))return '“'+t.questName+'” was removed. A parent can mark this done.';
+    return 'Claim '+t.questName+'.';
+  }
+  if(t.id==='focus')return 'Score 8 or more on the '+t.table+' times table. 10 questions.';
+  return t.name||'A challenge from Gus.';
+}
+function grantDailyRewards(){
+  const streak=S.dailyStreak;
+  const bits=[S.dailySet.daily];
+  let milestone=false;
+  S.dailySet.miles.forEach(m=>{if(m.days===streak){bits.push(m);milestone=true}});
+  let spins=0,timeMs=0;
+  bits.forEach(r=>{
+    if(!r||!r.n)return;
+    if(r.kind==='time')timeMs+=r.n*60000;
+    else spins+=r.n;
+  });
+  const note='Daily Challenge (streak '+streak+')';
+  if(spins>0){
+    S.dailySpins=Math.min(30,(S.dailySpins||0)+spins);
+    for(let i=0;i<spins&&S.dailyQueue.length<30;i++)S.dailyQueue.push(note);
+    if(S.dailyQueue.length>S.dailySpins)S.dailyQueue=S.dailyQueue.slice(-S.dailySpins);
+  }
+  let cut=0;
+  if(timeMs>0){
+    cut=reduceOwed(timeMs);
+    pushLog({t:Date.now(),kind:'daily',ms:cut,note,rarity:''});
+  }
+  if(milestone)S.dailyPop={streak,milestone:true,spins,time:timeMs};
+}
+function completeDaily(){
+  syncDaily();
+  const today=londonDay();
+  if(!S.dailyToday||!S.dailyToday.id||S.dailyLast===today)return;
+  const gap=S.dailyLast?dayNum(today)-dayNum(S.dailyLast):99;
+  S.dailyStreak=gap===1?S.dailyStreak+1:1;
+  if(S.dailyStreak>S.dailyBest)S.dailyBest=S.dailyStreak;
+  S.dailyLast=today;
+  if(S.dailyDone.indexOf(today)<0)S.dailyDone.push(today);
+  if(S.dailyDone.length>90)S.dailyDone=S.dailyDone.slice(-90);
+  grantDailyRewards();
+  save();
+  render();
+}
+function noteDailyQuest(questId){
+  syncDaily();
+  const t=S.dailyToday;
+  if(!t||S.dailyLast===londonDay())return;
+  if(t.id==='questAny'||(t.id==='questOne'&&t.questId===questId))completeDaily();
+}
+function finishMainQuiz(run){
+  const right=run.qs.length-run.wrong;
+  S.quizRight=right;
+  S.quizSpins=spinsForWrong(run.wrong);
+  S.quizRun=null;
+  syncDaily();
+  const t=S.dailyToday;
+  if(t&&S.dailyLast!==londonDay()&&((t.id==='quiz15'&&right>=15)||(t.id==='quiz13'&&right>=13)))completeDaily();
+  save();
+  paintQuiz();
+  paintQuizCard();
+  paintDay();
+}
+function finishFocus(run){
+  const right=run.qs.length-run.wrong;
+  const pass=right>=8;
+  S.focusLast={right,total:run.qs.length,pass};
+  S.focusRun=null;
+  syncDaily();
+  if(pass&&S.dailyToday&&S.dailyToday.id==='focus'&&S.dailyLast!==londonDay())completeDaily();
+  save();
+  paintQuiz();
+  paintDay();
+}
+function newFocus(table){
+  const pool=[];
+  for(let b=2;b<=12;b++)pool.push([table,b]);
+  for(let n=pool.length-1;n>0;n--){
+    const j=Math.floor(Math.random()*(n+1));
+    const t=pool[n];pool[n]=pool[j];pool[j]=t;
+  }
+  S.focusRun={qs:pool.slice(0,10),i:0,wrong:0,phase:'ask',lastOk:false,table,date:londonDay()};
+  S.focusLast=null;
+  save();
+}
+function openFocus(){
+  if(S.mode==='done')return;
+  $('quizBox').dataset.face='focus';
+  const table=S.dailyToday&&S.dailyToday.table||2;
+  if(!S.focusRun||S.focusRun.table!==table)newFocus(table);
+  $('quizBox').classList.add('on');
+  $('quizBox').setAttribute('aria-hidden','false');
+  paintQuiz();
+  if(S.focusRun&&S.focusRun.phase==='ask')$('quizAns').focus();
+}
+function paintDay(){
+  if(!$('dayCard'))return;
+  syncDaily();
+  const today=londonDay();
+  const t=S.dailyToday;
+  const done=S.dailyLast===today;
+  $('dayCard').classList.toggle('done',done);
+  const badge=(S.dailySet.miles||[]).filter(m=>m.days<=S.dailyStreak).sort((a,b)=>b.days-a.days)[0];
+  $('dayFlame').innerHTML='🔥 '+S.dailyStreak+(badge?'<span class="daybadge">'+badge.days+'-day badge</span>':'');
+  $('dayTask').textContent=taskText(t);
+  const status=$('dayStatus');
+  let progress=false;
+  if(t&&(t.id==='quiz13'||t.id==='quiz15')&&S.quizRun)progress=true;
+  if(t&&t.id==='focus'&&S.focusRun)progress=true;
+  status.textContent=done?'Done':progress?'In progress':(t&&t.id?'Not started':'Waiting');
+  status.className='daystatus'+(done?' done':'');
+  const next=(S.dailySet.miles||[]).find(m=>m.days>S.dailyStreak);
+  $('dayReward').textContent='Reward: '+rewardText(S.dailySet.daily)+(next?' · Next bonus at '+next.days+' days':'');
+  const letters=['S','M','T','W','T','F','S'];
+  const start=dayNum(today)-6;
+  $('dayWeek').innerHTML=Array.from({length:7},(_,i)=>{
+    const iso=isoFromNum(start+i);
+    const on=S.dailyDone.indexOf(iso)>=0;
+    const now=iso===today;
+    const letter=letters[new Date(iso+'T12:00:00Z').getUTCDay()];
+    return '<div class="daydot'+(on?' on':'')+(now?' now':'')+'">'+letter+'<span></span></div>';
+  }).join('');
+  $('dayBest').textContent='Best streak '+S.dailyBest;
+  const go=$('dayGo'),mark=$('dayMark'),spin=$('daySpin');
+  go.hidden=true;mark.hidden=true;
+  spin.hidden=!(S.dailySpins>0);
+  spin.textContent=S.dailySpins===1?'Spin the reward':'Spin the reward · '+S.dailySpins+' left';
+  if(done||!t||!t.id)return;
+  if(t.id==='quiz13'||t.id==='quiz15'){
+    if(S.quizSpins>0&&!S.quizRun){
+      status.textContent='Quiz spins are waiting. Use them, then start a new quiz.';
+    }else{
+      go.hidden=false;
+      go.textContent=S.quizRun?'Continue quiz':'Start quiz';
+    }
+  }else if(t.id==='focus'){
+    go.hidden=false;
+    go.textContent=S.focusRun?'Continue':'Start the '+t.table+'s';
+  }else if(t.id==='questAny'||(t.id==='questOne'&&S.quests.some(q=>q.id===t.questId))){
+    go.hidden=false;
+    go.textContent='Go to quests';
+  }else mark.hidden=false;
+}
+function maybeDayPop(){
+  const pop=$('dayPop');
+  if(!pop)return;
+  if(!S.dailyPop||$('wheelBox').classList.contains('on')){
+    if(!S.dailyPop)pop.hidden=true;
+    return;
+  }
+  const p=S.dailyPop;
+  $('dayPopK').textContent=p.streak+' day streak!';
+  $('dayPopN').textContent=p.streak;
+  const bits=[];
+  if(p.spins)bits.push(p.spins+' boosted spin'+(p.spins===1?'':'s'));
+  if(p.time)bits.push((p.time/60000)+' min off');
+  $('dayPopMsg').textContent=bits.length?bits.join(' and ')+' ready.':'Bonus unlocked!';
+  pop.hidden=false;
+}
+function paintChallenges(){
+  if(!$('chalPool'))return;
+  const set=S.dailySet;
+  $('chalPool').innerHTML=BUILTINS.map(b=>chRow(b.title,b.detail,set.pool[b.id]!==false,'data-toggle="'+b.id+'"')).join('')
+    +set.custom.map(c=>chRow(c.name,'A parent taps Mark done.',c.on,'data-toggle-c="'+esc(c.id)+'"',c.id)).join('');
+  $('chalDaily').innerHTML=rewardEditor('daily',set.daily);
+  $('chalMiles').innerHTML=set.miles.map((m,i)=>mileEditor(m,i)).join('')||'<p class="daybest">No streak bonuses yet.</p>';
+}
+function chRow(title,detail,on,attr,id){
+  const x=id?'<button type="button" class="chx" data-del-c="'+esc(id)+'" aria-label="Remove '+esc(title)+'">×</button>':'';
+  return '<div class="chrow"><div class="txt"><b>'+esc(title)+'</b><small>'+esc(detail)+'</small></div>'+x+'<button type="button" class="chtog'+(on?' on':'')+'" '+attr+'>'+(on?'On':'Off')+'</button></div>';
+}
+function stepBtn(scope,field,dir,i){
+  const idx=i==null?'':' data-i="'+i+'"';
+  return '<button type="button" class="step" data-scope="'+scope+'" data-field="'+field+'" data-dir="'+dir+'"'+idx+' aria-label="'+(dir<0?'Less':'More')+'">'+(dir<0?'−':'+')+'</button>';
+}
+function rewardEditor(scope,r,i){
+  const idx=i==null?'':' data-i="'+i+'"';
+  return '<div class="chreward"><select data-kind="'+scope+'"'+idx+'><option value="spins"'+(r.kind!=='time'?' selected':'')+'>Boosted spins</option><option value="time"'+(r.kind==='time'?' selected':'')+'>Minutes off</option></select>'
+    +stepBtn(scope,'n',-1,i)+'<span class="chnum">'+r.n+'</span>'+stepBtn(scope,'n',1,i)+'</div>';
+}
+function mileEditor(m,i){
+  return '<div class="chrow"><div class="txt"><b>'+m.days+' day streak</b><small>'+esc(rewardText(m))+' extra</small></div><button type="button" class="chx" data-del-m="'+i+'" aria-label="Remove '+m.days+' day bonus">×</button></div>'
+    +'<div class="chreward">'+stepBtn('mile','days',-1,i)+'<span class="chnum">'+m.days+'</span>'+stepBtn('mile','days',1,i)+'</div>'
+    +rewardEditor('mile',m,i);
+}
+function bumpReward(scope,field,dir,i){
+  if(scope==='daily'){
+    const r=S.dailySet.daily;
+    r.n=clampReward(r.kind,r.n+dir);
+    return;
+  }
+  const m=S.dailySet.miles[i];
+  if(!m)return;
+  if(field==='days'){
+    const d=m.days+dir;
+    if(d<2||d>365)return;
+    if(S.dailySet.miles.some((x,j)=>j!==i&&x.days===d))return;
+    m.days=d;
+    S.dailySet.miles.sort((a,b)=>a.days-b.days);
+  }else m.n=clampReward(m.kind,m.n+dir);
+}
+$('dayGo').onclick=()=>{
+  const t=S.dailyToday;
+  if(!t)return;
+  if(t.id==='quiz13'||t.id==='quiz15')openQuiz();
+  else if(t.id==='focus')openFocus();
+  else showTab('quests');
+};
+$('dayMark').onclick=()=>{
+  syncDaily();
+  const t=S.dailyToday;
+  if(!t||!t.id||S.dailyLast===londonDay())return;
+  const custom=String(t.id).startsWith('c:');
+  const missing=t.id==='questOne'&&!S.quests.some(q=>q.id===t.questId);
+  if(custom||missing)completeDaily();
+};
+$('daySpin').onclick=()=>{
+  if(!(S.dailySpins>0)||spinning)return;
+  openSpin('Daily Challenge',null,'daily');
+};
+$('dayPopOk').onclick=()=>{S.dailyPop=null;save();$('dayPop').hidden=true};
+$('addCustom').onclick=()=>{
+  const name=$('customName').value.trim();
+  if(!name)return;
+  S.dailySet.custom.push({id:'c'+Date.now().toString(36),name:name.slice(0,60),on:true});
+  $('customName').value='';
+  save();
+  paintChallenges();
+};
+$('addMile').onclick=()=>{
+  const used={};
+  S.dailySet.miles.forEach(m=>{used[m.days]=1});
+  let d=2;
+  while(used[d]&&d<365)d++;
+  if(used[d])return;
+  S.dailySet.miles.push({days:d,kind:'spins',n:1});
+  S.dailySet.miles.sort((a,b)=>a.days-b.days);
+  save();
+  paintChallenges();
+};
+$('viewChallenges').onclick=ev=>{
+  const t=ev.target.closest('button');
+  if(!t||t.id==='addCustom'||t.id==='addMile')return;
+  if(t.dataset.toggle){
+    const id=t.dataset.toggle;
+    S.dailySet.pool[id]=S.dailySet.pool[id]===false;
+  }else if(t.dataset.toggleC){
+    const c=S.dailySet.custom.find(x=>x.id===t.dataset.toggleC);
+    if(c)c.on=!c.on;
+  }else if(t.dataset.delC){
+    S.dailySet.custom=S.dailySet.custom.filter(c=>c.id!==t.dataset.delC);
+  }else if(t.dataset.delM!=null){
+    S.dailySet.miles.splice(+t.dataset.delM,1);
+  }else if(t.dataset.scope){
+    bumpReward(t.dataset.scope,t.dataset.field,+t.dataset.dir,t.dataset.i==null?null:+t.dataset.i);
+  }else return;
+  save();
+  paintChallenges();
+  paintDay();
+};
+$('viewChallenges').addEventListener('change',ev=>{
+  const sel=ev.target;
+  if(!sel.matches||!sel.matches('select[data-kind]'))return;
+  const kind=sel.value==='time'?'time':'spins';
+  if(sel.dataset.kind==='daily'){
+    S.dailySet.daily.kind=kind;
+    S.dailySet.daily.n=clampReward(kind,S.dailySet.daily.n);
+  }else{
+    const m=S.dailySet.miles[+sel.dataset.i];
+    if(!m)return;
+    m.kind=kind;
+    m.n=clampReward(kind,m.n);
+  }
+  save();
+  paintChallenges();
+  paintDay();
+});
 sndLabel();
 render();
 tick();
