@@ -326,6 +326,61 @@
     64%{transform:translate3d(-4px,2px,0)}
     80%{transform:translate3d(2px,-1px,0)}
   }
+  .quizcard{
+    width:100%;min-height:84px;margin:0 0 12px;padding:10px 16px 16px;text-align:left;
+    color:#fff;position:relative;z-index:0;
+  }
+  .quizcard::before{
+    content:"";position:absolute;z-index:-1;left:0;right:0;top:0;bottom:8px;
+    clip-path:polygon(4% 0,100% 0,96% 100%,0 100%);
+    background:linear-gradient(180deg,#8d5cff,#3a2ad4 70%,#24105f);
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.35);
+  }
+  .quizcard b{display:block;position:relative;z-index:1;font-size:1.35rem;letter-spacing:.04em;line-height:1.05}
+  .quizcard small{
+    display:block;position:relative;z-index:1;margin-top:4px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;color:#efeaff;
+  }
+  .quizbox{
+    position:fixed;inset:0;z-index:25;display:none;overflow:auto;
+    align-items:center;justify-content:center;padding:16px;
+    background:
+      radial-gradient(circle at 50% 0%,rgba(255,225,74,.22),transparent 32%),
+      repeating-linear-gradient(-18deg,transparent 0 18px,rgba(255,255,255,.045) 18px 20px),
+      linear-gradient(180deg,#2a1468 0%,#14083a 58%,#070414 100%);
+  }
+  .quizbox.on{display:flex}
+  .quizpanel{
+    width:min(100%,440px);display:flex;flex-direction:column;align-items:stretch;
+    padding:6px 16px 18px;border-radius:18px;
+    background:linear-gradient(180deg,#3a2088,#1a0c44);
+    box-shadow:0 16px 0 #090318,0 0 0 2px rgba(255,225,74,.45);
+  }
+  .quizback{align-self:flex-start;min-height:48px;padding:0 8px;color:var(--yellow);background:transparent;letter-spacing:.08em}
+  .quizprog{margin:0 0 6px;text-align:center;color:var(--yellow);letter-spacing:.14em;font-size:1.15rem}
+  .quizq{
+    margin:0 0 12px;text-align:center;font-family:var(--timer);
+    font-size:clamp(3rem,14vw,4.8rem);line-height:.95;letter-spacing:.03em;
+    text-shadow:0 4px 0 #1a0a40;
+  }
+  #quizAns{
+    font-family:var(--timer);font-size:2.8rem;text-align:center;letter-spacing:.06em;
+    min-height:88px;margin-bottom:8px;
+  }
+  .quizfb{
+    min-height:4.4em;margin:0 0 8px;text-align:center;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:1.2rem;font-weight:800;line-height:1.25;color:#fff;
+  }
+  .quizfb.ok{color:#5dff4a}
+  .quizfb.no{color:#ffd2ea}
+  #quizSpin[hidden],#quizPlay[hidden],#quizEnd[hidden],#quizFb[hidden]{display:none}
+  #quizGo,#quizSpin{color:#1a1200}
+  #quizGo::before,#quizSpin::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
+  #quizDone{color:#fff}
+  #quizDone::before{background:linear-gradient(180deg,#6e63ff,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
+  li.loot-quiz{--rarity:#3aa0ff}
   @media (prefers-reduced-motion:reduce){
     .confetti i,.bigbtn::before,#clearBtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash{animation:none;transition:none}
   }
@@ -339,6 +394,25 @@
   <p class="vic">Victory Royale</p>
   <div class="big" id="overMsg">⏰ Penalty done — add 5 min on parental controls</div>
   <button id="doneBtn">✓ DONE</button>
+</div>
+<div class="quizbox" id="quizBox" aria-hidden="true">
+  <div class="quizpanel">
+    <button type="button" id="quizBack" class="quizback">Back</button>
+    <div id="quizPlay">
+      <p class="quizprog" id="quizProg">1/15</p>
+      <p class="quizq" id="quizQ">2 × 2</p>
+      <input id="quizAns" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" autocapitalize="off" autocorrect="off" maxlength="3" aria-label="Your answer">
+      <p class="quizfb" id="quizFb" hidden></p>
+      <button type="button" class="bigbtn" id="quizGo">Check</button>
+    </div>
+    <div id="quizEnd" hidden>
+      <p class="quizprog">Score</p>
+      <p class="quizq" id="quizScore">0/15</p>
+      <p class="quizfb" id="quizEndMsg"></p>
+      <button type="button" class="bigbtn" id="quizSpin">Spin the wheel</button>
+      <button type="button" class="bigbtn" id="quizDone">Done</button>
+    </div>
+  </div>
 </div>
 <div class="wheelbox" id="wheelBox" aria-hidden="true">
   <div class="confetti partybits" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -383,6 +457,7 @@
   <div id="viewQuests" role="tabpanel" hidden>
     <p class="questLead">Things Fionn can do to earn penalty time back.</p>
     <p class="questTotal" id="questTotal">Penalty 0 min</p>
+    <button type="button" class="quizcard" id="quizBtn"><b id="quizTitle">Times Table Quiz</b><small id="quizSub">15 questions · up to 3 spins</small></button>
     <button class="bigbtn" id="spinBtn">Spin the wheel</button>
     <div id="questList"></div>
     <input id="questName" placeholder="Add a quest" autocomplete="off" maxlength="60">
@@ -407,10 +482,32 @@ function normQuests(o){
   if(o&&Array.isArray(o.quests))return o.quests.filter(q=>q&&String(q.name||'').trim()).map((q,i)=>({id:String(q.id||('q'+i)),name:String(q.name).trim().slice(0,60),uses:questUses(q)}));
   return defaultQuests();
 }
-function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests()};}
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),quizRun:null,quizSpins:0,quizRight:0};}
+function normQuizRun(o){
+  const q=o&&o.quizRun;
+  if(!q||!Array.isArray(q.qs)||q.qs.length!==15)return null;
+  const qs=[];
+  const seen={};
+  for(let n=0;n<q.qs.length;n++){
+    const pair=q.qs[n];
+    const a=Math.floor(Number(pair&&pair[0]));
+    const b=Math.floor(Number(pair&&pair[1]));
+    const key=a+'x'+b;
+    if(a<2||a>12||b<2||b>12||seen[key])return null;
+    seen[key]=1;
+    qs.push([a,b]);
+  }
+  const i=Math.max(0,Math.min(14,Math.floor(Number(q.i)||0)));
+  const wrong=Math.max(0,Math.min(15,Math.floor(Number(q.wrong)||0)));
+  return {qs,i,wrong,phase:q.phase==='feedback'?'feedback':'ask',lastOk:!!q.lastOk};
+}
 function norm(o){
   const S=blank();
   S.quests=normQuests(o);
+  S.quizRun=normQuizRun(o);
+  S.quizSpins=Math.max(0,Math.min(3,Math.floor(Number(o&&o.quizSpins)||0)));
+  S.quizRight=Math.max(0,Math.min(15,Math.floor(Number(o&&o.quizRight)||0)));
+  if(S.quizSpins>0)S.quizRun=null;
   if(!o||typeof o!=='object')return S;
   S.sound=!!o.sound;
   const totalN=Number(o.totalMs);
@@ -539,8 +636,9 @@ function logLine(e){
   else if(e.kind==='served')label='✓ Served '+minsLabel(e.ms);
   else if(e.kind==='clear')label='🧹 Cleared '+minsLabel(e.ms);
   else if(e.kind==='quest')label='Side quest: '+esc(e.note||'Spin the wheel')+', '+(e.rarity?esc(e.rarity)+' ':'')+'-'+clock(e.ms);
+  else if(e.kind==='quiz')label=esc(e.note||'Times Table Quiz')+', '+(e.rarity?esc(e.rarity)+' ':'')+'-'+clock(e.ms);
   else return '';
-  const note=e.kind==='quest'?'':(e.note?' · '+esc(e.note):'');
+  const note=e.kind==='quest'||e.kind==='quiz'?'':(e.note?' · '+esc(e.note):'');
   const used=e.kind==='served'||e.kind==='clear'?' used':'';
   const rar=e.rarity?esc(String(e.rarity).toLowerCase()):'';
   return `<li class="loot loot-${esc(e.kind)}${rar?' loot-'+rar:''}${used}">${label}${note}<div class="meta">${fmt(e.t)}</div></li>`;
@@ -562,6 +660,7 @@ function render(){
   const lines=S.log.slice().reverse().map(logLine).filter(Boolean).join('');
   $('logList').innerHTML=lines||'<li class="meta">None yet 👍</li>';
   renderQuests();
+  paintQuizCard();
 }
 function finishRun(){
   if(S.mode==='done')return false;
@@ -1015,7 +1114,8 @@ function showReveal(prize,questName,cut){
   $('wheelClose').hidden=false;
   $('wheelBox').classList.toggle('party',prize.w<=7);
 }
-function openSpin(questName,questId){
+function openSpin(questName,questId,logKind){
+  if(logKind==='quiz'&&!(S.quizSpins>0))return;
   if(spinning||S.mode==='done')return;
   if(catchUp())return;
   spinning=true;
@@ -1050,9 +1150,11 @@ function openSpin(questName,questId){
       const used=S.quests.find(x=>x.id===questId);
       if(used)used.uses=questUses(used)+1;
     }
-    pushLog({t:Date.now(),kind:'quest',ms:cut,note:questName,rarity:prize.name});
+    if(logKind==='quiz'&&S.quizSpins>0)S.quizSpins--;
+    pushLog({t:Date.now(),kind:logKind||'quest',ms:cut,note:questName,rarity:prize.name});
     save();
     render();
+    if($('quizBox').classList.contains('on'))paintQuiz();
     showReveal(prize,questName,cut);
     raritySting(prize);
     const vib={COMMON:[35],UNCOMMON:[45,30,55],RARE:[50,30,55,30,90],EPIC:[60,35,70,35,120,40,160],LEGENDARY:[70,40,80,40,90,40,180,50,240],MYTHIC:[90,40,90,40,100,40,160,50,240,60,320]}[prize.name]||[40];
@@ -1100,7 +1202,130 @@ $('addQuest').onclick=()=>{
   save();
   renderQuests();
 };
+function spinsForWrong(w){
+  if(w<=0)return 3;
+  if(w===1)return 2;
+  if(w<=3)return 1;
+  return 0;
+}
+function quizLabel(){return 'Times Table Quiz '+S.quizRight+'/15'}
+function paintQuizCard(){
+  const sub=$('quizSub');
+  if(!sub)return;
+  if(S.quizSpins>0)sub.textContent=S.quizSpins+(S.quizSpins===1?' spin ready · ':' spins ready · ')+S.quizRight+'/15';
+  else if(S.quizRun)sub.textContent='Continue · '+(S.quizRun.i+1)+'/15';
+  else sub.textContent='15 questions · up to 3 spins';
+}
+function newQuiz(){
+  const pool=[];
+  for(let a=2;a<=12;a++)for(let b=2;b<=12;b++)pool.push([a,b]);
+  for(let n=pool.length-1;n>0;n--){
+    const j=Math.floor(Math.random()*(n+1));
+    const t=pool[n];pool[n]=pool[j];pool[j]=t;
+  }
+  S.quizRun={qs:pool.slice(0,15),i:0,wrong:0,phase:'ask',lastOk:false};
+  save();
+}
+function paintQuiz(){
+  const run=S.quizRun;
+  $('quizPlay').hidden=!run;
+  $('quizEnd').hidden=!!run;
+  if(run){
+    const a=run.qs[run.i][0],b=run.qs[run.i][1],ans=a*b;
+    const key=run.i+':'+run.phase;
+    $('quizProg').textContent=(run.i+1)+'/15';
+    $('quizQ').textContent=a+' × '+b;
+    const fb=$('quizFb');
+    if($('quizPlay').dataset.key!==key){
+      $('quizPlay').dataset.key=key;
+      if(run.phase==='ask')$('quizAns').value='';
+    }
+    if(run.phase==='feedback'){
+      const cheers=['Yes!','Nailed it!','Superstar!','That’s the one!'];
+      const boosts=['Good try!','Not quite.','Nearly!','Keep going!'];
+      fb.hidden=false;
+      fb.className='quizfb '+(run.lastOk?'ok':'no');
+      fb.textContent=(run.lastOk?cheers[run.i%cheers.length]:boosts[run.i%boosts.length])+' '+a+' × '+b+' = '+ans;
+      $('quizGo').textContent=run.i>=14?'See my score':'Next';
+      $('quizAns').disabled=true;
+    }else{
+      fb.hidden=true;
+      fb.textContent='';
+      $('quizGo').textContent='Check';
+      $('quizAns').disabled=false;
+    }
+    return;
+  }
+  const spins=S.quizSpins;
+  $('quizScore').textContent=S.quizRight+'/15';
+  const msg=$('quizEndMsg');
+  if(spins>0){
+    msg.className='quizfb ok';
+    msg.textContent=spins===1?'1 spin ready. Give the wheel a go!':spins+' spins ready. Give the wheel a go!';
+    $('quizSpin').hidden=false;
+    $('quizSpin').textContent=spins===1?'Spin the wheel':'Spin the wheel · '+spins+' left';
+  }else{
+    msg.className='quizfb';
+    msg.textContent=S.quizRight>=12?'So close! Have another go whenever you like.':'Good practice. Have another go whenever you like.';
+    $('quizSpin').hidden=true;
+  }
+}
+function openQuiz(){
+  if(S.mode==='done')return;
+  if(!(S.quizSpins>0)&&!S.quizRun)newQuiz();
+  $('quizBox').classList.add('on');
+  $('quizBox').setAttribute('aria-hidden','false');
+  paintQuiz();
+  if(S.quizRun&&S.quizRun.phase==='ask'){
+    $('quizAns').focus();
+  }
+}
+function closeQuiz(){
+  $('quizBox').classList.remove('on');
+  $('quizBox').setAttribute('aria-hidden','true');
+  paintQuizCard();
+}
+function quizCheck(){
+  const run=S.quizRun;
+  if(!run)return;
+  if(run.phase==='feedback'){
+    if(run.i>=14){
+      const wrong=run.wrong;
+      S.quizRight=15-wrong;
+      S.quizSpins=spinsForWrong(wrong);
+      S.quizRun=null;
+      save();
+      paintQuiz();
+      paintQuizCard();
+      return;
+    }
+    run.i++;
+    run.phase='ask';
+    save();
+    paintQuiz();
+    $('quizAns').focus();
+    return;
+  }
+  const raw=$('quizAns').value.trim();
+  if(!/^\d{1,3}$/.test(raw))return;
+  const a=run.qs[run.i][0],b=run.qs[run.i][1];
+  run.lastOk=Number(raw)===a*b;
+  if(!run.lastOk)run.wrong++;
+  run.phase='feedback';
+  save();
+  paintQuiz();
+}
 $('spinBtn').onclick=()=>openSpin('Spin the wheel');
+$('quizBtn').onclick=openQuiz;
+$('quizBack').onclick=closeQuiz;
+$('quizDone').onclick=closeQuiz;
+$('quizGo').onclick=quizCheck;
+$('quizAns').addEventListener('input',()=>{$('quizAns').value=$('quizAns').value.replace(/\D/g,'').slice(0,3)});
+$('quizAns').addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();quizCheck()}});
+$('quizSpin').onclick=()=>{
+  if(!(S.quizSpins>0)||spinning)return;
+  openSpin(quizLabel(),null,'quiz');
+};
 $('questList').onclick=ev=>{
   const btn=ev.target.closest('button');
   if(!btn)return;
@@ -1120,6 +1345,7 @@ $('wheelClose').onclick=()=>{
   if(spinning)return;
   $('wheelBox').classList.remove('on','party');
   $('wheelBox').setAttribute('aria-hidden','true');
+  if($('quizBox').classList.contains('on'))paintQuiz();
 };
 function onGesture(){
   unlockAudio();
