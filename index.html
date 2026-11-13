@@ -48,7 +48,7 @@
     border:16px solid rgba(176,80,255,.42);
     box-shadow:0 0 0 10px rgba(70,20,160,.28), inset 0 0 60px rgba(150,70,255,.2);
   }
-  .wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:14px 14px calc(28px + env(safe-area-inset-bottom))}
+  .wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:14px 14px calc(118px + env(safe-area-inset-bottom))}
   .title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 2px 12px}
   .brand{
     font-size:clamp(1.35rem,6vw,1.7rem);letter-spacing:.04em;text-transform:uppercase;line-height:1;
@@ -124,8 +124,6 @@
   .face{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:.9;pointer-events:none}
   .face b{font-size:1.85rem;font-weight:900}
   .face small{font-size:clamp(.78rem,3.2vw,1rem);letter-spacing:.08em;margin-top:2px}
-  #addPen{color:#fff}
-  #addPen::before{background:linear-gradient(180deg,#ff5d8a 0%,#e2185a 48%,#7a2bff 100%);box-shadow:inset 0 2px 0 rgba(255,255,255,.4)}
   #subPen{color:#06210a}
   #subPen::before{background:linear-gradient(180deg,#d6ff6a 0%,#5dff4a 42%,#1fae32 100%);box-shadow:inset 0 2px 0 rgba(255,255,255,.55)}
   #startBtn.green{color:#1a1200}
@@ -190,12 +188,38 @@
     box-shadow:0 4px 0 #12081f;text-transform:none;
   }
   .snd:active{transform:translateY(3px);box-shadow:0 1px 0 #12081f}
-  .tabs{display:flex;gap:8px;margin:0 0 12px}
-  .tab{flex:1;min-height:58px;font-size:clamp(.92rem,3.5vw,1.15rem);letter-spacing:.05em;color:#fff;padding:0 8px 6px;position:relative;z-index:0}
-  .tab::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;bottom:6px;clip-path:polygon(8% 0,100% 0,92% 100%,0 100%);background:linear-gradient(180deg,#6a48d0,#2c146e);box-shadow:inset 0 2px 0 rgba(255,255,255,.25)}
-  .tab.on{color:#1a1200}
-  .tab.on::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 50%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
-  .tab:active::before{transform:translateY(3px)}
+  .dock{
+    position:fixed;z-index:20;left:0;right:0;bottom:0;
+    display:grid;grid-template-columns:1fr auto 1fr;align-items:end;
+    padding:6px 10px calc(8px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,#3a1d86 0%,#1a0a40 42%,#12082c 100%);
+    border-top:3px solid var(--yellow);
+    box-shadow:0 -10px 24px rgba(8,4,24,.45);
+  }
+  .docktab{
+    min-height:52px;min-width:64px;padding:2px 4px 0;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:1px;
+    color:#d9ccf6;letter-spacing:.08em;font-size:.72rem;
+  }
+  .docktab .dico{display:flex;align-items:center;justify-content:center;width:40px;height:32px;border-radius:12px}
+  .docktab svg{width:26px;height:26px;display:block}
+  .docktab.on{color:var(--yellow)}
+  .docktab.on .dico{background:rgba(255,225,74,.16);box-shadow:inset 0 0 0 2px rgba(255,225,74,.7)}
+  .dockact{position:relative;width:92px;height:52px}
+  .fab{
+    position:absolute;left:50%;bottom:16px;transform:translateX(-50%);
+    width:76px;height:76px;min-width:76px;min-height:76px;border-radius:50%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+    line-height:.85;letter-spacing:.04em;
+    box-shadow:0 7px 0 #12081f,0 0 0 4px var(--yellow),inset 0 2px 0 rgba(255,255,255,.45);
+  }
+  .fab b{font-size:1.55rem;font-weight:900}
+  .fab small{font-size:.62rem;font-weight:900;letter-spacing:.06em}
+  .fab svg{width:26px;height:26px;display:block}
+  .fab.penalty{color:#fff;background:radial-gradient(circle at 50% 38%,#e0104e,#b80c3c 62%,#7a0828)}
+  .fab.spin{color:#1a1200;background:radial-gradient(circle at 50% 35%,#fff6a0,#ffe14a 48%,#f5b400)}
+  .fab:active{transform:translateX(-50%) translateY(4px);box-shadow:0 3px 0 #12081f,0 0 0 4px var(--yellow),inset 0 2px 0 rgba(255,255,255,.45)}
+  .fab[hidden]{display:none}
   .questLead{margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:1rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
   .questTotal{margin:0 0 12px;color:var(--yellow);letter-spacing:.08em;text-transform:uppercase;font-size:1.15rem;text-shadow:0 2px 0 #1a0a40}
   .qcard{display:flex;flex-direction:column;align-items:stretch;gap:8px;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(0,0,0,.3));border:3px solid rgba(255,225,74,.75);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 6px 0 rgba(16,4,40,.35)}
@@ -230,8 +254,6 @@
   .qempty{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#efeaff;font-weight:700}
   #addQuest{color:#fff}
   #addQuest::before{background:linear-gradient(180deg,#7ec8ff,#2f6bff 55%,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.4)}
-  #spinBtn{color:#1a1200}
-  #spinBtn::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
   .wheelbox{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;background:radial-gradient(circle at 50% 18%,rgba(255,225,74,.18),transparent 36%),linear-gradient(180deg,rgba(18,8,48,.94),rgba(8,4,24,.96))}
   .wheelbox.on{display:flex}
   .quizboost{margin:0 0 8px;color:var(--yellow);letter-spacing:.14em;font-size:1.2rem;line-height:1.05}
@@ -437,10 +459,6 @@
 </div>
 <div class="wrap">
   <div class="title"><span class="brand">TimeOutTastic</span><button class="snd" id="sndBtn" aria-label="Sound on or off">🔇</button></div>
-  <div class="tabs" role="tablist">
-    <button class="tab on" id="tabTimer" role="tab" aria-selected="true" aria-controls="viewTimer">Storm timer</button>
-    <button class="tab" id="tabQuests" role="tab" aria-selected="false" aria-controls="viewQuests">Side quests</button>
-  </div>
   <div id="viewTimer" role="tabpanel">
 
   <div class="hero" id="hero">
@@ -452,10 +470,7 @@
   </div>
 
   <input id="note" placeholder="What was missed? (optional)" autocomplete="off">
-  <div class="row">
-    <button class="bigbtn red" id="addPen" aria-label="Add 5 minutes"><span class="face"><b>+5</b><small>PENALTY</small></span></button>
-    <button class="bigbtn grey" id="subPen" aria-label="Remove 5 minutes"><span class="face"><b>−5</b><small>EARNED BACK</small></span></button>
-  </div>
+  <button class="bigbtn grey" id="subPen" aria-label="Remove 5 minutes"><span class="face"><b>−5</b><small>EARNED BACK</small></span></button>
   <button class="bigbtn green" id="startBtn" style="display:none">▶ START</button>
 
   <details><summary>History</summary><ul id="logList"></ul></details>
@@ -468,10 +483,23 @@
     <div id="questList"></div>
     <input id="questName" placeholder="Add a quest" autocomplete="off" maxlength="60">
     <button class="bigbtn" id="addQuest">Add quest</button>
-    <button class="bigbtn" id="spinBtn">Spin the wheel</button>
   </div>
   <p class="fine">Saved on this device only.</p>
 </div>
+<nav class="dock" aria-label="Sections">
+  <button class="docktab on" id="tabTimer" role="tab" aria-selected="true" aria-controls="viewTimer">
+    <span class="dico"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="18" r="9.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M16 18V12.2M12.2 4.6h7.6M16 4.6V8M23.2 9.2l2-2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></span>
+    <span>Timer</span>
+  </button>
+  <div class="dockact">
+    <button class="fab penalty" id="addPen" aria-label="Add 5 minutes"><b>+5</b><small>Penalty</small></button>
+    <button class="fab spin" id="spinBtn" hidden aria-label="Spin the wheel"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="13" r="9" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="16" cy="13" r="2.6" fill="currentColor"/><path d="M16 4.2v5.2M16 16.6v5.2M7.2 13h5.2M19.6 13h5.2" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><small>Spin</small></button>
+  </div>
+  <button class="docktab" id="tabQuests" role="tab" aria-selected="false" aria-controls="viewQuests">
+    <span class="dico"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" d="M23.2 4.2 11.4 16M8 14.2l9.6 9.6M12.4 19.6 6.2 26.4"/><circle cx="5.2" cy="27.6" r="2.5" fill="currentColor"/></svg></span>
+    <span>Quests</span>
+  </button>
+</nav>
 
 <script>
 const KEY='fionnTracker.v3';
@@ -1077,6 +1105,8 @@ function showTab(which){
   $('tabQuests').classList.toggle('on',quests);
   $('tabTimer').setAttribute('aria-selected',String(!quests));
   $('tabQuests').setAttribute('aria-selected',String(quests));
+  $('addPen').hidden=quests;
+  $('spinBtn').hidden=!quests;
 }
 function armAudio(){
   unlockAudio();
