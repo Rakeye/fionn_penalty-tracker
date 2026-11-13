@@ -1,6 +1,6 @@
 {
-  "name": "Fionn's Game Time Tracker",
-  "short_name": "Penalty",
+  "name": "TimeOutTastic",
+  "short_name": "TimeOut",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#2f6bff",

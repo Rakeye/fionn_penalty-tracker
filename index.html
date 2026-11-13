@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="apple-mobile-web-app-title" content="Penalty">
-<title>Fionn's Game Time Tracker</title>
+<meta name="apple-mobile-web-app-title" content="TimeOut">
+<title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
@@ -333,20 +333,20 @@
     80%{transform:translate3d(2px,-1px,0)}
   }
   .quizcard{
-    width:100%;min-height:84px;margin:0 0 12px;padding:10px 16px 16px;text-align:left;
-    color:#fff;position:relative;z-index:0;
+    width:100%;min-height:84px;margin:0 0 12px;padding:10px 18px 16px;text-align:center;
+    color:#1a1200;position:relative;z-index:0;
   }
   .quizcard::before{
     content:"";position:absolute;z-index:-1;left:0;right:0;top:0;bottom:8px;
     clip-path:polygon(4% 0,100% 0,96% 100%,0 100%);
-    background:linear-gradient(180deg,#8d5cff,#3a2ad4 70%,#24105f);
-    box-shadow:inset 0 2px 0 rgba(255,255,255,.35);
+    background:linear-gradient(180deg,#ffd4f8,#ff4ad6 46%,#e012a4);
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.75);
   }
   .quizcard b{display:block;position:relative;z-index:1;font-size:1.35rem;letter-spacing:.04em;line-height:1.05}
   .quizcard small{
     display:block;position:relative;z-index:1;margin-top:4px;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;color:#efeaff;
+    font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;color:#4a0838;
   }
   .quizbox{
     position:fixed;inset:0;z-index:25;display:none;overflow:auto;
@@ -436,7 +436,7 @@
   <button id="wheelClose" hidden>Continue</button>
 </div>
 <div class="wrap">
-  <div class="title"><span class="brand">Fionn's Penalties</span><button class="snd" id="sndBtn" aria-label="Sound on or off">🔇</button></div>
+  <div class="title"><span class="brand">TimeOutTastic</span><button class="snd" id="sndBtn" aria-label="Sound on or off">🔇</button></div>
   <div class="tabs" role="tablist">
     <button class="tab on" id="tabTimer" role="tab" aria-selected="true" aria-controls="viewTimer">Storm timer</button>
     <button class="tab" id="tabQuests" role="tab" aria-selected="false" aria-controls="viewQuests">Side quests</button>
@@ -465,10 +465,10 @@
     <p class="questLead">Things Fionn can do to earn penalty time back.</p>
     <p class="questTotal" id="questTotal">Penalty 0 min</p>
     <button type="button" class="quizcard" id="quizBtn"><b id="quizTitle">Times Table Quiz</b><small id="quizSub">15 questions · up to 3 spins</small></button>
-    <button class="bigbtn" id="spinBtn">Spin the wheel</button>
     <div id="questList"></div>
     <input id="questName" placeholder="Add a quest" autocomplete="off" maxlength="60">
     <button class="bigbtn" id="addQuest">Add quest</button>
+    <button class="bigbtn" id="spinBtn">Spin the wheel</button>
   </div>
   <p class="fine">Saved on this device only.</p>
 </div>
