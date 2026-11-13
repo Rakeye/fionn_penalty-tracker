@@ -459,6 +459,14 @@
     box-shadow:0 16px 0 #090318,0 0 0 2px rgba(255,225,74,.45);
   }
   .quizback{align-self:flex-start;min-height:48px;padding:0 8px;color:var(--yellow);background:transparent;letter-spacing:.08em}
+  .quizlevel,.levelup{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;letter-spacing:0;text-transform:none;text-align:center}
+  .quizlevel{margin:0 0 4px;color:#ffd4f8;font-size:1.02rem;line-height:1.25}
+  .levelup{margin:0 0 8px;padding:8px 10px;border-radius:12px;background:#ffe14a;color:#1a1200;font-size:1.05rem;line-height:1.25;animation:lvlpop .45s ease}
+  .levelup[hidden]{display:none}
+  @keyframes lvlpop{0%{transform:scale(.7);opacity:0}100%{transform:none;opacity:1}}
+  .lvrow{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+  .lvchip{min-width:44px;min-height:44px;padding:0;border-radius:12px;background:#241448;color:#efeaff;box-shadow:inset 0 0 0 2px rgba(255,225,74,.35);font-size:1rem}
+  .lvchip.on{background:#ffe14a;color:#1a1200;box-shadow:none}
   .quizprog{margin:0 0 6px;text-align:center;color:var(--yellow);letter-spacing:.14em;font-size:1.15rem}
   .quizq{
     margin:0 0 12px;text-align:center;font-family:var(--timer);
@@ -483,7 +491,7 @@
   #quizDone::before{background:linear-gradient(180deg,#6e63ff,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
   li.loot-quiz{--rarity:#3aa0ff}
   @media (prefers-reduced-motion:reduce){
-    .confetti i,.bigbtn::before,#clearBtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash{animation:none;transition:none}
+    .confetti i,.bigbtn::before,#clearBtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup{animation:none;transition:none}
   }
 </style>
 </head>
@@ -500,6 +508,7 @@
   <div class="quizpanel">
     <button type="button" id="quizBack" class="quizback">Back</button>
     <div id="quizPlay">
+      <p class="quizlevel" id="quizLevel"></p>
       <p class="quizprog" id="quizProg">1/15</p>
       <p class="quizq" id="quizQ">2 × 2</p>
       <input id="quizAns" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" autocapitalize="off" autocorrect="off" maxlength="3" aria-label="Your answer">
@@ -507,6 +516,7 @@
       <button type="button" class="bigbtn" id="quizGo">Check</button>
     </div>
     <div id="quizEnd" hidden>
+      <p class="levelup" id="quizBump" hidden>Level up!</p>
       <p class="quizprog">Score</p>
       <p class="quizq" id="quizScore">0/15</p>
       <p class="quizfb" id="quizEndMsg"></p>
@@ -586,6 +596,8 @@
     <button type="button" class="bigbtn" id="addCustom">Add challenge</button>
     <p class="chh">Quest rewards</p>
     <div id="chalRules"></div>
+    <p class="chh">Quiz levels</p>
+    <div id="chalLevels"></div>
     <p class="chh">Daily reward</p>
     <div id="chalDaily"></div>
     <p class="chh">Streak bonuses</p>
@@ -686,7 +698,26 @@ function normQuestQueue(o,quests){
   if(!o||!Array.isArray(o.questQueue))return [];
   return o.questQueue.filter(x=>x&&ids[x.id]&&String(x.name||'').trim()).slice(-40).map(x=>({id:String(x.id).slice(0,40),name:String(x.name).trim().slice(0,60),diff:normDiff(x.diff)||'medium'}));
 }
-function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],quizRun:null,quizSpins:0,quizRight:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null};}
+const QUIZ_LEVELS=[[2,5,10,11],[3,4,6,7],[7,9,12]];
+function normTableList(row){
+  const nums=[];
+  const seen={};
+  (Array.isArray(row)?row:[]).forEach(n=>{
+    n=Math.floor(Number(n));
+    if(n>=2&&n<=12&&!seen[n]){seen[n]=1;nums.push(n)}
+  });
+  nums.sort((a,b)=>a-b);
+  return nums;
+}
+function normQuizLevels(o){
+  const src=o&&o.quizLevels;
+  if(!Array.isArray(src)||src.length!==3)return QUIZ_LEVELS.map(a=>a.slice());
+  return src.map((row,i)=>{
+    const nums=normTableList(row);
+    return nums.length>=2?nums:QUIZ_LEVELS[i].slice();
+  });
+}
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null};}
 function normQuizRun(o){
   const q=o&&o.quizRun;
   if(!q||!Array.isArray(q.qs)||q.qs.length!==15)return null;
@@ -703,7 +734,11 @@ function normQuizRun(o){
   }
   const i=Math.max(0,Math.min(14,Math.floor(Number(q.i)||0)));
   const wrong=Math.max(0,Math.min(15,Math.floor(Number(q.wrong)||0)));
-  return {qs,i,wrong,phase:q.phase==='feedback'?'feedback':'ask',lastOk:!!q.lastOk};
+  const level=Math.min(3,Math.max(1,Math.floor(Number(q.level)||1)));
+  const tables=normTableList(q.tables);
+  const rec={qs,i,wrong,phase:q.phase==='feedback'?'feedback':'ask',lastOk:!!q.lastOk,level,date:/^\d{4}-\d{2}-\d{2}$/.test(q.date)?q.date:''};
+  if(tables.length>=2)rec.tables=tables;
+  return rec;
 }
 function norm(o){
   const S=blank();
@@ -713,6 +748,11 @@ function norm(o){
   S.quizRun=normQuizRun(o);
   S.quizSpins=Math.max(0,Math.min(3,Math.floor(Number(o&&o.quizSpins)||0)));
   S.quizRight=Math.max(0,Math.min(15,Math.floor(Number(o&&o.quizRight)||0)));
+  S.quizLevels=normQuizLevels(o);
+  S.quizPlays=Math.max(0,Math.min(99,Math.floor(Number(o&&o.quizPlays)||0)));
+  S.quizPlayDay=/^\d{4}-\d{2}-\d{2}$/.test(o&&o.quizPlayDay)?o.quizPlayDay:'';
+  S.quizNote=String(o&&o.quizNote||'').slice(0,80);
+  S.quizBump=o&&(o.quizBump===2||o.quizBump===3)?o.quizBump:0;
   if(S.quizSpins>0)S.quizRun=null;
   applyDaily(S,o);
   if(!o||typeof o!=='object')return S;
@@ -1539,22 +1579,39 @@ function spinsForWrong(w){
   if(w<=3)return 1;
   return 0;
 }
-function quizLabel(){return 'Times Table Quiz '+S.quizRight+'/15'}
+function quizPlaysToday(){return S.quizPlayDay===londonDay()?S.quizPlays:0}
+function nextQuizLevel(){return Math.min(3,quizPlaysToday()+1)}
+function tablesFor(level){
+  const row=S.quizLevels[Math.min(3,Math.max(1,level))-1];
+  return row&&row.length?row.slice():QUIZ_LEVELS[0].slice();
+}
+function levelLine(level,tables){
+  const tabs=tables&&tables.length?tables:tablesFor(level);
+  return 'Level '+level+' of 3, '+tabs.join(', ')+' tables';
+}
+function quizLabel(){return S.quizNote||('Times Table Quiz L'+nextQuizLevel()+' '+S.quizRight+'/15')}
 function paintQuizCard(){
   const sub=$('quizSub');
   if(!sub)return;
-  if(S.quizSpins>0)sub.textContent=S.quizSpins+(S.quizSpins===1?' spin ready · ':' spins ready · ')+S.quizRight+'/15';
-  else if(S.quizRun)sub.textContent='Continue · '+(S.quizRun.i+1)+'/15';
-  else sub.textContent='15 questions · up to 3 spins';
+  const level=S.quizRun&&S.quizRun.level?S.quizRun.level:nextQuizLevel();
+  const tables=S.quizRun&&S.quizRun.tables;
+  let line=levelLine(level,tables);
+  if(!S.quizRun&&S.quizBump)line='Level up! '+line;
+  if(S.quizSpins>0)line+=' · '+S.quizSpins+(S.quizSpins===1?' spin ready':' spins ready');
+  else if(S.quizRun)line+=' · Continue '+(S.quizRun.i+1)+'/15';
+  sub.textContent=line;
 }
 function newQuiz(){
+  const level=nextQuizLevel();
+  const tables=tablesFor(level);
   const pool=[];
-  for(let a=2;a<=12;a++)for(let b=2;b<=12;b++)pool.push([a,b]);
+  tables.forEach(a=>{for(let b=2;b<=12;b++)pool.push([a,b])});
   for(let n=pool.length-1;n>0;n--){
     const j=Math.floor(Math.random()*(n+1));
     const t=pool[n];pool[n]=pool[j];pool[j]=t;
   }
-  S.quizRun={qs:pool.slice(0,15),i:0,wrong:0,phase:'ask',lastOk:false};
+  S.quizRun={qs:pool.slice(0,15),i:0,wrong:0,phase:'ask',lastOk:false,level,date:londonDay(),tables};
+  S.quizBump=0;
   save();
 }
 function paintQuiz(){
@@ -1565,6 +1622,8 @@ function paintQuiz(){
   if(run){
     const a=run.qs[run.i][0],b=run.qs[run.i][1],ans=a*b;
     const key=run.i+':'+run.phase+':'+(focus?'f':'m');
+    $('quizLevel').hidden=!!focus;
+    if(!focus)$('quizLevel').textContent=levelLine(run.level||1,run.tables);
     $('quizProg').textContent=(run.i+1)+'/'+run.qs.length;
     $('quizQ').textContent=a+' × '+b;
     const fb=$('quizFb');
@@ -1589,6 +1648,7 @@ function paintQuiz(){
     return;
   }
   if(focus){
+    $('quizBump').hidden=true;
     const last=S.focusLast||{right:0,total:10,pass:false};
     $('quizScore').textContent=last.right+'/'+last.total;
     const msg=$('quizEndMsg');
@@ -1598,6 +1658,11 @@ function paintQuiz(){
     return;
   }
   const spins=S.quizSpins;
+  const bump=$('quizBump');
+  if(S.quizBump){
+    bump.hidden=false;
+    bump.textContent='Level up! Next: '+levelLine(S.quizBump);
+  }else bump.hidden=true;
   $('quizScore').textContent=S.quizRight+'/15';
   const msg=$('quizEndMsg');
   if(spins>0){
@@ -1951,9 +2016,16 @@ function noteDailyQuest(questId){
 }
 function finishMainQuiz(run){
   const right=run.qs.length-run.wrong;
+  const level=Math.min(3,Math.max(1,Math.floor(Number(run.level)||1)));
   S.quizRight=right;
   S.quizSpins=spinsForWrong(run.wrong);
+  S.quizNote='Times Table Quiz L'+level+' '+right+'/15';
   S.quizRun=null;
+  const today=londonDay();
+  if(S.quizPlayDay!==today){S.quizPlays=0;S.quizPlayDay=today}
+  S.quizPlays+=1;
+  const next=Math.min(3,S.quizPlays+1);
+  S.quizBump=next>level?next:0;
   syncDaily();
   const t=S.dailyToday;
   if(t&&S.dailyLast!==londonDay()&&((t.id==='quiz15'&&right>=15)||(t.id==='quiz13'&&right>=13)))completeDaily();
@@ -2066,6 +2138,27 @@ function paintChallenges(){
   $('chalDaily').innerHTML=rewardEditor('daily',set.daily);
   $('chalMiles').innerHTML=set.miles.map((m,i)=>mileEditor(m,i)).join('')||'<p class="daybest">No streak bonuses yet.</p>';
   if($('chalRules'))$('chalRules').innerHTML=DIFFS.map(ruleEditor).join('');
+  if($('chalLevels'))$('chalLevels').innerHTML=[0,1,2].map(levelEditor).join('');
+}
+function levelEditor(i){
+  const nums=S.quizLevels[i];
+  let chips='';
+  for(let n=2;n<=12;n++)chips+='<button type="button" class="lvchip'+(nums.indexOf(n)>=0?' on':'')+'" data-lv="'+(i+1)+'" data-table="'+n+'">'+n+'</button>';
+  return '<div class="chrow"><div class="txt"><b>Level '+(i+1)+'</b><small>'+esc(nums.join(', '))+'</small></div></div><div class="lvrow">'+chips+'</div>';
+}
+function toggleLevel(level,table){
+  const i=level-1;
+  if(i<0||i>2)return false;
+  const row=S.quizLevels[i].slice();
+  const at=row.indexOf(table);
+  if(at>=0){
+    if(row.length<=2)return false;
+    row.splice(at,1);
+  }else if(table>=2&&table<=12)row.push(table);
+  else return false;
+  row.sort((a,b)=>a-b);
+  S.quizLevels[i]=row;
+  return true;
 }
 function oddsBits(kind){return weightsFor(kind).map(p=>p.w).join(' / ')}
 function ruleEditor(diff){
@@ -2167,6 +2260,8 @@ $('viewChallenges').onclick=ev=>{
     S.dailySet.custom=S.dailySet.custom.filter(c=>c.id!==t.dataset.delC);
   }else if(t.dataset.delM!=null){
     S.dailySet.miles.splice(+t.dataset.delM,1);
+  }else if(t.dataset.lv){
+    if(!toggleLevel(+t.dataset.lv,+t.dataset.table))return;
   }else if(t.dataset.scope==='qrule'){
     bumpRule(t.dataset.i,t.dataset.field,+t.dataset.dir);
   }else if(t.dataset.scope){
@@ -2175,6 +2270,7 @@ $('viewChallenges').onclick=ev=>{
   save();
   paintChallenges();
   paintDay();
+  paintQuizCard();
 };
 $('viewChallenges').addEventListener('change',ev=>{
   const sel=ev.target;
