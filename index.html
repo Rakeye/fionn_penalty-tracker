@@ -199,7 +199,11 @@
   .questLead{margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:1rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
   .questTotal{margin:0 0 12px;color:var(--yellow);letter-spacing:.08em;text-transform:uppercase;font-size:1.15rem;text-shadow:0 2px 0 #1a0a40}
   .qcard{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(0,0,0,.3));border:3px solid rgba(255,225,74,.75);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 6px 0 rgba(16,4,40,.35)}
-  .qname{font-size:1.28rem;letter-spacing:.03em;text-transform:uppercase;line-height:1.05;margin-bottom:8px}
+  .qhead{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+  .qname{flex:1;min-width:0;font-size:1.28rem;letter-spacing:.03em;text-transform:uppercase;line-height:1.05}
+  .quses{flex:none;min-height:28px;padding:2px 9px 0;background:linear-gradient(180deg,#fff6a0,#ffe14a);color:#1a1200;font-size:1rem;letter-spacing:.04em;border-radius:999px;line-height:1.35;text-transform:none;box-shadow:0 3px 0 #1a0a40}
+  .qhot{display:inline-block;margin-left:8px;padding:1px 8px 0;background:#5dff4a;color:#06210a;font-size:.72rem;letter-spacing:.08em;border-radius:999px;vertical-align:2px}
+  .qcard.hot{border-color:#fff6a0;box-shadow:0 6px 0 rgba(16,4,40,.35),0 0 0 3px rgba(255,225,74,.4)}
   .qrow{display:flex;gap:8px}
   .slab{position:relative;z-index:0;min-height:56px;padding:0 10px 6px}
   .slab::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;bottom:6px;clip-path:polygon(8% 0,100% 0,92% 100%,0 100%)}
@@ -379,9 +383,13 @@ const $=id=>document.getElementById(id);
 const fmt=t=>new Date(t).toLocaleString([], {weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const QUEST_NAMES=['Tidy your bedroom','Read a book for 15 minutes','Help set or clear the table','Put your laundry away','Do 20 star jumps','Draw a picture for someone','Help with the dishes','Make your bed','Feed or help with a pet','Write a thank-you or sorry note','Practise spelling or times tables','Sort your toys or Lego'];
-function defaultQuests(){return QUEST_NAMES.map((name,i)=>({id:'qd'+i,name}));}
+function defaultQuests(){return QUEST_NAMES.map((name,i)=>({id:'qd'+i,name,uses:0}));}
+function questUses(q){
+  const n=Math.floor(Number(q&&q.uses)||0);
+  return n>0?Math.min(9999,n):0;
+}
 function normQuests(o){
-  if(o&&Array.isArray(o.quests))return o.quests.filter(q=>q&&String(q.name||'').trim()).map((q,i)=>({id:String(q.id||('q'+i)),name:String(q.name).trim().slice(0,60)}));
+  if(o&&Array.isArray(o.quests))return o.quests.filter(q=>q&&String(q.name||'').trim()).map((q,i)=>({id:String(q.id||('q'+i)),name:String(q.name).trim().slice(0,60),uses:questUses(q)}));
   return defaultQuests();
 }
 function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests()};}
@@ -430,7 +438,8 @@ function fromOld(o){
 function readKey(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
 const existing=readKey(KEY);
 let S=existing?norm(existing):fromOld(readKey('fionnTracker.v2')||readKey('fionnTracker.v1'));
-const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+function sortQuests(){S.quests.sort((a,b)=>questUses(b)-questUses(a))}
+const save=()=>{sortQuests();localStorage.setItem(KEY,JSON.stringify(S))};
 if(!existing)save();
 function owed(){
   if(S.mode==='running'&&typeof S.endsAt==='number')return Math.max(0,S.endsAt-Date.now());
@@ -909,8 +918,16 @@ function pickPrize(){
 }
 function renderQuests(){
   const list=$('questList');
-  if(!S.quests.length)list.innerHTML='<p class="qempty">No quests yet. Add one below.</p>';
-  else list.innerHTML=S.quests.map(q=>`<article class="qcard" data-qid="${esc(q.id)}"><div class="qname">${esc(q.name)}</div><div class="qrow"><button class="slab claim" data-claim>Claim</button><button class="slab del" data-del aria-label="Remove ${esc(q.name)}">Remove</button></div></article>`).join('');
+  if(!S.quests.length){list.innerHTML='<p class="qempty">No quests yet. Add one below.</p>';return}
+  sortQuests();
+  const ranked=S.quests.map((q)=>({q}));
+  const topUses=questUses(ranked[0].q);
+  list.innerHTML=ranked.map(({q},n)=>{
+    const hot=n===0&&topUses>0;
+    const badge=questUses(q)?`<span class="quses" aria-label="Claimed ${questUses(q)} times">x${questUses(q)}</span>`:'';
+    const mark=hot?'<span class="qhot">Top</span>':'';
+    return `<article class="qcard${hot?' hot':''}" data-qid="${esc(q.id)}"><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${badge}</div><div class="qrow"><button class="slab claim" data-claim>Claim</button><button class="slab del" data-del aria-label="Remove ${esc(q.name)}">Remove</button></div></article>`;
+  }).join('');
 }
 function showTab(which){
   const quests=which==='quests';
@@ -983,7 +1000,7 @@ function showReveal(prize,questName,cut){
   $('wheelClose').hidden=false;
   $('wheelBox').classList.toggle('party',prize.w<=7);
 }
-function openSpin(questName){
+function openSpin(questName,questId){
   if(spinning||S.mode==='done')return;
   if(catchUp())return;
   spinning=true;
@@ -1014,6 +1031,10 @@ function openSpin(questName){
     spinning=false;
     clearCues();
     const cut=applyReward(prize.ms);
+    if(questId){
+      const used=S.quests.find(x=>x.id===questId);
+      if(used)used.uses=questUses(used)+1;
+    }
     pushLog({t:Date.now(),kind:'quest',ms:cut,note:questName,rarity:prize.name});
     save();
     render();
@@ -1059,7 +1080,7 @@ $('tabQuests').onclick=()=>showTab('quests');
 $('addQuest').onclick=()=>{
   const name=$('questName').value.trim();
   if(!name)return;
-  S.quests.push({id:'q'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:name.slice(0,60)});
+  S.quests.push({id:'q'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:name.slice(0,60),uses:0});
   $('questName').value='';
   save();
   renderQuests();
@@ -1078,7 +1099,7 @@ $('questList').onclick=ev=>{
     renderQuests();
     return;
   }
-  if(btn.hasAttribute('data-claim'))openSpin(q.name);
+  if(btn.hasAttribute('data-claim'))openSpin(q.name,q.id);
 };
 $('wheelClose').onclick=()=>{
   if(spinning)return;
