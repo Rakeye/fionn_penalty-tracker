@@ -549,7 +549,7 @@
   <div class="hero" id="hero">
     <div class="kicker" id="heroKicker">Storm timer</div>
     <div class="hero-row">
-      <button type="button" class="nudge minus" id="nudgeMinus" aria-label="Remove 30 seconds">−</button>
+      <button type="button" class="nudge minus" id="nudgeMinus" aria-label="Take off 30 seconds, or bank 30 seconds of credit">−</button>
       <div class="hero-mid">
         <div class="icon" id="heroIcon">👍</div>
         <div class="num" id="heroNum">0</div>
@@ -886,7 +886,7 @@ function logLine(e){
   else if(e.kind==='clear')label='🧹 Cleared '+minsLabel(e.ms);
   else if(e.kind==='quest')label='Side quest: '+esc(e.note||'Spin the wheel')+', '+(e.rarity?esc(e.rarity)+' ':'')+'-'+clock(e.ms);
   else if(e.kind==='quiz')label=esc(e.note||'Times Table Quiz')+', '+(e.rarity?esc(e.rarity)+' ':'')+'-'+clock(e.ms);
-  else if(e.kind==='manual')label='Manual '+(e.note==='−'?'−':'+')+clock(e.ms);
+  else if(e.kind==='manual')label=e.note==='credit'?'Manual +'+clock(e.ms)+' credit':'Manual '+(e.note==='−'?'−':'+')+clock(e.ms);
   else if(e.kind==='daily'){
     label=esc(e.note||'Daily Challenge');
     if(e.rarity)label+=', '+esc(e.rarity)+' -'+clock(e.ms);
@@ -904,7 +904,7 @@ function render(){
   const showStart=S.mode==='running'||S.mode==='paused'||(S.mode==='idle'&&S.totalMs>0);
   start.style.display=showStart?'block':'none';
   start.disabled=!showStart;
-  $('nudgeMinus').disabled=S.mode==='done'||owed()<=0;
+  $('nudgeMinus').disabled=false;
   if(S.mode==='running'){start.textContent='⏸ PAUSE';start.className='bigbtn grey'}
   else{start.textContent='▶ START';start.className='bigbtn green'}
   const done=S.mode==='done';
@@ -1041,9 +1041,20 @@ function nudgePlus(){
 }
 function nudgeMinus(){
   if(catchUp()||S.mode==='done')return;
-  const cut=reduceOwed(NUDGE);
-  if(cut<=0)return;
-  pushLog({t:Date.now(),kind:'manual',ms:cut,note:'−'});
+  const have=owed();
+  if(have>0){
+    const cut=reduceOwed(NUDGE);
+    if(cut<=0)return;
+    pushLog({t:Date.now(),kind:'manual',ms:cut,note:'−'});
+  }else{
+    S.mode='idle';
+    S.endsAt=null;
+    S.remainingMs=0;
+    S.runMs=0;
+    S.alerted=false;
+    S.totalMs=(Number.isFinite(S.totalMs)?S.totalMs:0)-NUDGE;
+    pushLog({t:Date.now(),kind:'manual',ms:NUDGE,note:'credit'});
+  }
   save();render();
   if(navigator.vibrate)navigator.vibrate(20);
 }
