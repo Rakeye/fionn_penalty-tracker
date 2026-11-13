@@ -532,7 +532,6 @@
   <input id="note" placeholder="What was missed? (optional)" autocomplete="off">
   <button class="bigbtn green" id="startBtn" style="display:none">▶ START</button>
 
-  <details><summary>History</summary><ul id="logList"></ul></details>
   <button id="clearBtn">Clear to zero</button>
   <section class="daycard" id="dayCard" aria-label="Daily challenge">
     <div class="daytop"><b>Daily challenge</b><span class="dayflame" id="dayFlame">🔥 0</span></div>
@@ -553,6 +552,7 @@
     <div id="questList"></div>
     <input id="questName" placeholder="Add a quest" autocomplete="off" maxlength="60">
     <button class="bigbtn" id="addQuest">Add quest</button>
+    <details id="history"><summary>History</summary><ul id="logList"></ul></details>
   </div>
   <div id="viewChallenges" role="tabpanel" hidden>
     <p class="questLead">Choose what Fionn can do, and what he earns. Today’s challenge stays put until tomorrow.</p>
