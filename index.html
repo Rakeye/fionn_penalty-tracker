@@ -234,6 +234,12 @@
   #spinBtn::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
   .wheelbox{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;background:radial-gradient(circle at 50% 18%,rgba(255,225,74,.18),transparent 36%),linear-gradient(180deg,rgba(18,8,48,.94),rgba(8,4,24,.96))}
   .wheelbox.on{display:flex}
+  .quizboost{margin:0 0 8px;color:var(--yellow);letter-spacing:.14em;font-size:1.2rem;line-height:1.05}
+  .quizboost b{font-weight:400;text-transform:uppercase}
+  .qodds{display:flex;justify-content:center;gap:8px;margin-top:4px;font-family:var(--timer);font-size:.95rem;letter-spacing:.02em;text-shadow:0 1px 0 #1a0a40}
+  .qodds i{font-style:normal}
+  .quizboost[hidden]{display:none}
+  .wheelbox.boosted{background:radial-gradient(circle at 50% 18%,rgba(255,225,74,.18),transparent 36%),linear-gradient(180deg,#160a38,#0c061c)}
   .wheel-stage{position:relative;width:min(86vw,340px);aspect-ratio:1}
   .ptr{position:absolute;left:50%;top:-2px;transform:translateX(-50%);z-index:3;width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:28px solid var(--yellow);filter:drop-shadow(0 3px 0 #1a0a40)}
   .wheel{width:100%;height:100%;border-radius:50%;border:6px solid var(--yellow);position:relative;box-shadow:0 0 0 6px rgba(110,40,200,.5),0 12px 0 rgba(16,4,40,.45)}
@@ -416,6 +422,7 @@
 </div>
 <div class="wheelbox" id="wheelBox" aria-hidden="true">
   <div class="confetti partybits" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="quizboost" id="quizBoost" hidden><b>Quiz boost</b></p>
   <div class="wheel-stage">
     <div class="ptr" aria-hidden="true"></div>
     <div class="wheel" id="wheel"></div>
@@ -999,22 +1006,40 @@ const PRIZES=[
   {name:'LEGENDARY',ms:240000,w:4,color:'#ff9a1a',ink:'#1a1200'},
   {name:'MYTHIC',ms:300000,w:1,color:'#ffe14a',ink:'#1a1200'}
 ];
+const QUIZ_W={COMMON:25,UNCOMMON:30,RARE:20,EPIC:13,LEGENDARY:8,MYTHIC:4};
 let wheelRot=0,spinning=false,spinGen=0,cueTimers=[];
-function prizeLayout(){
+function weightsFor(kind){
+  if(kind!=='quiz')return PRIZES;
+  return PRIZES.map(p=>({...p,w:QUIZ_W[p.name]}));
+}
+function prizeLayout(list){
+  const rows=list||PRIZES;
   let acc=0;
-  return PRIZES.map(p=>{
+  return rows.map(p=>{
     const sweep=p.w/100*360;
     const row={p,sweep,start:acc,center:acc+sweep/2};
     acc+=sweep;
     return row;
   });
 }
-function buildWheel(){
+function paintBoost(kind,table){
+  const boost=$('quizBoost');
+  const on=kind==='quiz';
+  $('wheelBox').classList.toggle('boosted',on);
+  boost.hidden=!on;
+  if(!on)return;
+  boost.innerHTML='<b>Quiz boost</b><span class="qodds">'+table.map(p=>'<i style="color:'+p.color+'">'+p.w+'%</i>').join('')+'</span>';
+}
+function buildWheel(kind){
+  const mode=kind==='quiz'?'quiz':'normal';
+  const table=weightsFor(kind);
+  paintBoost(kind,table);
   const wheel=$('wheel');
-  if(wheel.dataset.built)return;
-  wheel.dataset.built='1';
+  if(wheel.dataset.built===mode)return;
+  wheel.dataset.built=mode;
+  wheel.replaceChildren();
   const parts=[];
-  prizeLayout().forEach(({p,sweep,start,center})=>{
+  prizeLayout(table).forEach(({p,sweep,start,center})=>{
     parts.push(p.color+' '+start+'deg '+(start+sweep)+'deg');
     const lab=document.createElement('span');
     lab.className='wlab'+(p.w<8?' tiny':'');
@@ -1025,10 +1050,11 @@ function buildWheel(){
   });
   wheel.style.background='conic-gradient('+parts.join(',')+')';
 }
-function pickPrize(){
+function pickPrize(list){
+  const rows=list||PRIZES;
   let r=Math.random()*100;
-  for(const p of PRIZES){if(r<p.w)return p;r-=p.w}
-  return PRIZES[0];
+  for(const p of rows){if(r<p.w)return p;r-=p.w}
+  return rows[0];
 }
 function renderQuests(){
   const list=$('questList');
@@ -1112,7 +1138,7 @@ function showReveal(prize,questName,cut){
   if(cut<prize.ms)extra+=cut>0?' · took off '+clock(cut):' · nothing left to take off';
   $('rQuest').textContent=extra;
   $('wheelClose').hidden=false;
-  $('wheelBox').classList.toggle('party',prize.w<=7);
+  $('wheelBox').classList.toggle('party',prize.name==='EPIC'||prize.name==='LEGENDARY'||prize.name==='MYTHIC');
 }
 function openSpin(questName,questId,logKind){
   if(logKind==='quiz'&&!(S.quizSpins>0))return;
@@ -1120,9 +1146,10 @@ function openSpin(questName,questId,logKind){
   if(catchUp())return;
   spinning=true;
   armAudio();
-  buildWheel();
-  const prize=pickPrize();
-  const seg=prizeLayout().find(x=>x.p===prize);
+  const table=weightsFor(logKind);
+  buildWheel(logKind);
+  const prize=pickPrize(table);
+  const seg=prizeLayout(table).find(x=>x.p===prize);
   const jitter=(Math.random()-.5)*seg.sweep*.5;
   const target=(seg.center+jitter+360)%360;
   const current=((wheelRot%360)+360)%360;
