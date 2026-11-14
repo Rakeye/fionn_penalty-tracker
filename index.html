@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
+<meta name="app-version" content="20261114a">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -30,7 +31,7 @@
     --timer:"Anton","Arial Narrow",Impact,Haettenschweiler,sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;min-height:100%}
+  html,body{margin:0;height:100%;height:100dvh;overflow:hidden}
   body{
     color:var(--ink);
     font-family:var(--display);
@@ -39,7 +40,6 @@
       radial-gradient(circle at 50% -8%, rgba(255,225,74,.22), transparent 42%),
       radial-gradient(circle at 50% 8%, transparent 0 120px, rgba(180,92,255,.55) 126px 142px, transparent 150px),
       linear-gradient(180deg, #49c4ff 0%, #2f6bff 26%, #6a2bff 58%, #24105f 100%);
-    background-attachment:fixed;
   }
   .storm{
     position:fixed;z-index:0;pointer-events:none;
@@ -48,7 +48,12 @@
     border:16px solid rgba(176,80,255,.42);
     box-shadow:0 0 0 10px rgba(70,20,160,.28), inset 0 0 60px rgba(150,70,255,.2);
   }
-  .wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:14px 14px calc(118px + env(safe-area-inset-bottom))}
+  .wrap{
+    position:relative;z-index:1;max-width:520px;margin:0 auto;
+    height:100%;height:100dvh;overflow-x:hidden;overflow-y:auto;
+    -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    padding:14px 14px calc(118px + env(safe-area-inset-bottom));
+  }
   .title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 2px 12px}
   .brand{
     font-size:clamp(1.35rem,6vw,1.7rem);letter-spacing:.04em;text-transform:uppercase;line-height:1;
@@ -198,7 +203,7 @@
   .dock{
     position:fixed;z-index:20;left:0;right:0;bottom:0;
     display:grid;grid-template-columns:1fr auto 1fr;align-items:end;
-    padding:6px 10px calc(8px + env(safe-area-inset-bottom));
+    padding:6px 10px calc(8px + env(safe-area-inset-bottom, 0px));
     background:linear-gradient(180deg,#3a1d86 0%,#1a0a40 42%,#12082c 100%);
     border-top:3px solid var(--yellow);
     box-shadow:0 -10px 24px rgba(8,4,24,.45);
@@ -384,7 +389,7 @@
   .confetti i:nth-child(6){left:66%;background:var(--yellow);animation-delay:-1.2s}
   .confetti i:nth-child(7){left:76%;background:var(--storm);animation-delay:-.4s}
   .confetti i:nth-child(8){left:88%;background:var(--uncommon);width:8px;height:8px;border-radius:50%;animation-delay:-1.8s}
-  @keyframes fall{to{transform:translateY(110vh) rotate(200deg)}}
+  @keyframes fall{to{transform:translateY(110dvh) rotate(200deg)}}
   .vic{
     position:relative;z-index:1;margin:0 0 12px;
     font-size:clamp(2.7rem,13vw,4.6rem);line-height:.88;letter-spacing:.02em;text-transform:uppercase;
@@ -636,6 +641,7 @@
 </div>
 
 <script>
+const APP_VERSION="20261114a";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
@@ -2285,6 +2291,48 @@ sndLabel();
 render();
 tick();
 setInterval(tick,250);
+const UPDATE_KEY='toutUpdateAttempt';
+let updateChecking=false;
+function remoteVersion(text){
+  const key='const APP_VERSION="';
+  const i=text.indexOf(key);
+  if(i<0)return '';
+  const rest=text.slice(i+key.length);
+  const j=rest.indexOf('"');
+  return j<0?'':rest.slice(0,j);
+}
+function reloadApp(version){
+  try{sessionStorage.setItem(UPDATE_KEY,version)}catch(e){}
+  const next=new URL(location.href);
+  next.searchParams.set('v',version);
+  location.replace(next.toString());
+}
+async function checkUpdate(){
+  if(updateChecking)return;
+  updateChecking=true;
+  try{
+    const url=new URL('index.html',location.href);
+    url.searchParams.set('ts',String(Date.now()));
+    const res=await fetch(url,{cache:'no-store'});
+    if(!res.ok)return;
+    const remote=remoteVersion(await res.text());
+    if(!remote||remote===APP_VERSION){
+      try{sessionStorage.removeItem(UPDATE_KEY)}catch(e){}
+      return;
+    }
+    let tried='';
+    try{tried=sessionStorage.getItem(UPDATE_KEY)||''}catch(e){}
+    if(tried===remote)return;
+    if(typeof spinning!=='undefined'&&spinning)return;
+    try{sessionStorage.setItem(UPDATE_KEY,remote)}catch(e){}
+    reloadApp(remote);
+  }catch(e){}
+  finally{updateChecking=false}
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible')checkUpdate();
+});
+checkUpdate();
 </script>
 </body>
 </html>
