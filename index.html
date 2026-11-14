@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="app-version" content="20261114a">
+<meta name="app-version" content="20261114b">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -641,7 +641,7 @@
 </div>
 
 <script>
-const APP_VERSION="20261114a";
+const APP_VERSION="20261114b";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
@@ -1271,15 +1271,15 @@ function confirmBlip(){
 }
 function sndLabel(){$('sndBtn').textContent=S.sound?'🔊':'🔇'}
 const PRIZES=[
-  {name:'COMMON',ms:30000,w:50,color:'#e4e4ee',ink:'#1a1200'},
-  {name:'UNCOMMON',ms:60000,w:25,color:'#5dff4a',ink:'#06210a'},
-  {name:'RARE',ms:120000,w:13,color:'#3aa0ff',ink:'#041018'},
-  {name:'EPIC',ms:180000,w:7,color:'#c06bff',ink:'#fff'},
-  {name:'LEGENDARY',ms:240000,w:4,color:'#ff9a1a',ink:'#1a1200'},
+  {name:'COMMON',ms:30000,w:55,color:'#e4e4ee',ink:'#1a1200'},
+  {name:'UNCOMMON',ms:60000,w:28,color:'#5dff4a',ink:'#06210a'},
+  {name:'RARE',ms:120000,w:10,color:'#3aa0ff',ink:'#041018'},
+  {name:'EPIC',ms:180000,w:4,color:'#c06bff',ink:'#fff'},
+  {name:'LEGENDARY',ms:240000,w:2,color:'#ff9a1a',ink:'#1a1200'},
   {name:'MYTHIC',ms:300000,w:1,color:'#ffe14a',ink:'#1a1200'}
 ];
-const QUIZ_W={COMMON:35,UNCOMMON:30,RARE:18,EPIC:10,LEGENDARY:5,MYTHIC:2};
-const HARD_W={COMMON:30,UNCOMMON:30,RARE:20,EPIC:12,LEGENDARY:6,MYTHIC:2};
+const QUIZ_W={COMMON:42,UNCOMMON:32,RARE:14,EPIC:7,LEGENDARY:3,MYTHIC:2};
+const HARD_W={COMMON:36,UNCOMMON:33,RARE:16,EPIC:8,LEGENDARY:5,MYTHIC:2};
 let wheelRot=0,spinning=false,spinGen=0,cueTimers=[];
 function weightsFor(kind){
   if(kind==='quiz'||kind==='daily'||kind==='medium')return PRIZES.map(p=>({...p,w:QUIZ_W[p.name]}));
