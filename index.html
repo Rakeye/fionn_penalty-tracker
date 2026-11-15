@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="app-version" content="20261115c">
+<meta name="app-version" content="20261115d">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -241,9 +241,9 @@
   .daycard{margin-top:4px;padding:12px;border-radius:16px;background:linear-gradient(180deg,#2a1468,#14082e);border:3px solid rgba(255,225,74,.75);box-shadow:0 6px 0 rgba(16,4,40,.35)}
   .daycard .bigbtn{margin:8px 0 0}
   .daycard.done{border-color:#5dff4a}
-  .daytop{display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .daytop b{font-size:1.25rem;letter-spacing:.04em}
-  .dayflame{color:var(--yellow);font-size:1.35rem;letter-spacing:.04em}
+  .daytop{display:flex;align-items:center;gap:8px;min-width:0}
+  .daytop b{flex:1;min-width:0;font-size:1.25rem;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dayflame{flex:none;margin-left:auto;color:var(--yellow);font-size:1.35rem;letter-spacing:.04em;white-space:nowrap}
   .daybadge{display:inline-block;margin-left:6px;padding:1px 8px 0;background:#ffe14a;color:#1a1200;border-radius:999px;font-size:.72rem;letter-spacing:.04em;vertical-align:2px}
   .daytask{margin:8px 0 4px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:1.08rem;font-weight:800;line-height:1.25}
   .daystatus,.dayreward{margin:0 0 6px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:700;color:#efeaff;font-size:.95rem}
@@ -299,11 +299,13 @@
   }
   .qx:active::before{background:rgba(255,255,255,.2)}
   .qhead{display:flex;align-items:flex-start;gap:8px;flex:1;min-width:0;margin-bottom:0}
-  .qname{flex:1;min-width:0;font-size:1.28rem;letter-spacing:.03em;text-transform:uppercase;line-height:1.05}
+  .qname{flex:1;min-width:0;font-size:1.28rem;letter-spacing:.03em;text-transform:uppercase;line-height:1.05;overflow-wrap:anywhere}
   .quses{flex:none;min-height:28px;padding:2px 9px 0;background:linear-gradient(180deg,#fff6a0,#ffe14a);color:#1a1200;font-size:1rem;letter-spacing:.04em;border-radius:999px;line-height:1.35;text-transform:none;box-shadow:0 3px 0 #1a0a40}
   .qhot{display:inline-block;margin-left:8px;padding:1px 8px 0;background:#5dff4a;color:#06210a;font-size:.72rem;letter-spacing:.08em;border-radius:999px;vertical-align:2px}
   .qcard.hot{border-color:#fff6a0;box-shadow:0 6px 0 rgba(16,4,40,.35),0 0 0 3px rgba(255,225,74,.4)}
-  .qmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .qmeta{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;min-width:0}
+  .qmeta .qdiff{padding:0 10px;font-size:.88rem}
+  .qmeta .qtoday{margin-left:auto;font-size:.82rem;white-space:nowrap}
   .qdiff{
     flex:none;min-width:0;min-height:44px;padding:0 12px;border-radius:999px;
     font-size:.95rem;letter-spacing:.04em;text-transform:uppercase;
@@ -320,14 +322,16 @@
     position:relative;z-index:0;color:#ffe14a;-webkit-text-fill-color:#ffe14a;
     background:#16082e;animation:none;box-shadow:none;
   }
-  .qdiff.insanity .rainbow{
+  .qdiff.insanity .rainbow,
+  .qxp.insanity .rainbow{
     background-image:linear-gradient(90deg,#ff4d6d,#ffe14a,#5dff4a,#3ad0ff,#c06bff,#ff4d6d);
     background-size:220% 100%;
     -webkit-background-clip:text;background-clip:text;
     -webkit-text-fill-color:transparent;color:transparent;
     animation:rainmove 2.8s linear infinite;
   }
-  .qdiff.insanity::before{
+  .qdiff.insanity::before,
+  .qxp.insanity::before{
     content:"";position:absolute;z-index:-1;inset:0;border-radius:inherit;padding:3px;pointer-events:none;
     background:linear-gradient(90deg,#ff4d6d,#ffe14a,#5dff4a,#3ad0ff,#c06bff,#ff4d6d);
     background-size:220% 100%;
@@ -337,7 +341,8 @@
     mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite:exclude;
   }
-  .qdiff.insanity::after{
+  .qdiff.insanity::after,
+  .qxp.insanity::after{
     content:"";position:absolute;z-index:-2;inset:3px;border-radius:inherit;pointer-events:none;
     background:
       linear-gradient(110deg,transparent 32%,rgba(255,255,255,.7) 48%,transparent 64%),
@@ -365,6 +370,18 @@
   @keyframes rainmove{from{background-position:0% 50%}to{background-position:100% 50%}}
   @keyframes rainborder{from{background-position:0 0,0% 50%}to{background-position:0 0,100% 50%}}
   @keyframes shimmer{from{background-position:120% 0,0 0}to{background-position:-20% 0,0 0}}
+  .qxp{
+    flex:none;display:inline-flex;align-items:center;justify-content:center;
+    min-height:28px;padding:0 8px;border-radius:999px;white-space:nowrap;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:.78rem;font-weight:800;letter-spacing:0;text-transform:none;line-height:1;
+  }
+  .qxp.easy{background:#5dff4a;color:#06210a}
+  .qxp.medium{background:linear-gradient(180deg,#8eb6ff,#5b4dff);color:#fff}
+  .qxp.hard{background:linear-gradient(180deg,#ffe14a,#ff9a1a);color:#1a1200}
+  .qxp.master{background:linear-gradient(180deg,#fff8d0,#ffe14a 42%,#f5a400 78%,#c86a00);color:#1a1200;box-shadow:inset 0 1px 0 #fff,0 0 0 2px #7a3d00}
+  .qxp.insanity{position:relative;z-index:0;background:#16082e;color:#ffe14a;-webkit-text-fill-color:#ffe14a}
+  .qxp.quiz,.qxp.day{background:#ffe14a;color:#1a1200}
   .qtoday,.qreward{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;letter-spacing:0;text-transform:none}
   .qtoday{font-size:.95rem;color:#efeaff}
   .qreward{font-size:1.02rem;color:#ffe14a}
@@ -504,7 +521,8 @@
     background:linear-gradient(180deg,#ffd4f8,#ff4ad6 46%,#e012a4);
     box-shadow:inset 0 2px 0 rgba(255,255,255,.75);
   }
-  .quizcard b{display:block;position:relative;z-index:1;font-size:1.35rem;letter-spacing:.04em;line-height:1.05}
+  .quiztop{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-width:0}
+  .quizcard b{flex:0 1 auto;min-width:0;font-size:1.35rem;letter-spacing:.04em;line-height:1.05}
   .quizcard small{
     display:block;position:relative;z-index:1;margin-top:4px;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -620,7 +638,7 @@
   .skillpop.boom .vic,.skillpop.boom .skillask,.skillpop.boom .skillprize{animation:vshake .75s linear}
   @keyframes rainbg{0%{background-position:0% 40%}50%{background-position:100% 60%}100%{background-position:0% 40%}}
   @media (prefers-reduced-motion:reduce){
-    .confetti i,.bigbtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup,.xppop.go,.lvlup.boom .vic,.lvlup.boom .lvlrank,.qdiff.insanity,.qdiff.insanity::before,.qdiff.insanity::after,.qdiff.insanity .rainbow,.qcard.insanity,.pbar i,.qskill::before,.skillpop,.skillpop.boom .vic,.skillpop.boom .skillask,.skillpop.boom .skillprize{animation:none;transition:none}
+    .confetti i,.bigbtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup,.xppop.go,.lvlup.boom .vic,.lvlup.boom .lvlrank,.qdiff.insanity,.qdiff.insanity::before,.qdiff.insanity::after,.qdiff.insanity .rainbow,.qxp.insanity,.qxp.insanity::before,.qxp.insanity::after,.qxp.insanity .rainbow,.qcard.insanity,.pbar i,.qskill::before,.skillpop,.skillpop.boom .vic,.skillpop.boom .skillask,.skillpop.boom .skillprize{animation:none;transition:none}
   }
 </style>
 </head>
@@ -693,7 +711,7 @@
   <button class="bigbtn green" id="startBtn" style="display:none">▶ START</button>
 
   <section class="daycard" id="dayCard" aria-label="Daily challenge">
-    <div class="daytop"><b>Daily challenge</b><span class="dayflame" id="dayFlame">🔥 0</span></div>
+    <div class="daytop"><b>Daily challenge</b><span class="qxp day" id="dayXp">+20 XP</span><span class="dayflame" id="dayFlame">🔥 0</span></div>
     <p class="daytask" id="dayTask"></p>
     <p class="daystatus" id="dayStatus"></p>
     <p class="dayreward" id="dayReward"></p>
@@ -709,7 +727,7 @@
     <p class="masterday" id="masterNoteQuests"></p>
     <p class="questLead">Things Fionn can do to earn penalty time back.</p>
     <p class="questTotal" id="questTotal">Penalty 0 min</p>
-    <button type="button" class="quizcard" id="quizBtn"><b id="quizTitle">Times Table Quiz</b><small id="quizSub">15 questions · up to 3 spins</small></button>
+    <button type="button" class="quizcard" id="quizBtn"><span class="quiztop"><b id="quizTitle">Times Table Quiz</b><span class="qxp quiz" id="quizXp">up to +40 XP</span></span><small id="quizSub">15 questions · up to 3 spins</small></button>
     <div id="questList"></div>
     <input id="questName" placeholder="Add a quest" autocomplete="off" maxlength="60">
     <div class="adddiffs" id="addDiffs" role="group" aria-label="Difficulty">
@@ -806,7 +824,7 @@
 </div>
 
 <script>
-const APP_VERSION="20261115c";
+const APP_VERSION="20261115d";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
@@ -1939,7 +1957,7 @@ function renderQuests(){
     const trophy=q.mastered?'<span class="qtrophy" aria-label="Mastered">🏆</span>':'';
     const tier=q.diff==='insanity'?' insanity':'';
     const done=q.mastered?' mastered':'';
-    return `<article class="qcard${hot?' hot':''}${tier}${done}" data-qid="${esc(q.id)}"><div class="qtop"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${trophy}${badge}</div></div><div class="qmeta"><button type="button" class="qdiff ${q.diff}" data-cycle aria-label="Difficulty ${diffName(q.diff)}, tap to change">${diffMarkHtml(q.diff)}</button><span class="qtoday">${today}/${rule.max} today</span></div><p class="qreward">${esc(rewardLine(q.diff))}</p>${meterHtml(q)}<div class="qrow"><button type="button" class="slab claim" data-claim${maxed?' disabled':''}>${maxed?'Done for today':'Claim'}</button></div>${spin}</article>`;
+    return `<article class="qcard${hot?' hot':''}${tier}${done}" data-qid="${esc(q.id)}"><div class="qtop"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${trophy}${badge}</div></div><div class="qmeta"><button type="button" class="qdiff ${q.diff}" data-cycle aria-label="Difficulty ${diffName(q.diff)}, tap to change">${diffMarkHtml(q.diff)}</button>${xpPill(q.diff)}<span class="qtoday">${today}/${rule.max} today</span></div><p class="qreward">${esc(rewardLine(q.diff))}</p>${meterHtml(q)}<div class="qrow"><button type="button" class="slab claim" data-claim${maxed?' disabled':''}>${maxed?'Done for today':'Claim'}</button></div>${spin}</article>`;
   }).join('');
 }
 function claimsToday(q){return q.claimDay===londonDay()?(q.claimN||0):0}
@@ -1952,15 +1970,24 @@ function meterHtml(q){
   const pct=Math.max(0,Math.min(100,Math.round(into/interval*100)));
   return '<div class="pmeter"><p class="plab">'+into+' / '+interval+' mins to Skill Check</p><div class="pbar"><i style="width:'+pct+'%"></i></div></div>';
 }
+function questXp(diff){
+  const n=S.xpSet&&S.xpSet.quest?S.xpSet.quest[diff]:0;
+  return Math.max(0,Math.round(Number(n)||0));
+}
+function xpPill(diff){
+  const label='+'+questXp(diff)+' XP';
+  return '<span class="qxp '+diff+'">'+(diff==='insanity'?'<span class="rainbow">'+label+'</span>':label)+'</span>';
+}
+function quizXpText(){
+  const x=S.xpSet||{};
+  const n=Math.max(0,Math.round((Number(x.quiz)||0)*15+(Number(x.perfect)||0)));
+  return 'up to +'+n+' XP';
+}
 function rewardLine(diff){
   const r=S.questRules[diff]||S.questRules.medium;
   const word=r.spins===1?'spin':'spins';
-  let line=diff==='easy'?'Easy: '+r.spins+' normal '+word:diffName(diff)+': '+r.spins+' boosted '+word;
-  if(diff==='insanity'){
-    const xp=S.xpSet&&S.xpSet.quest?S.xpSet.quest.insanity||0:0;
-    if(xp)line+=' · '+xp+' XP';
-  }
-  return line;
+  if(diff==='easy')return 'Easy: '+r.spins+' normal '+word;
+  return diffName(diff)+': '+r.spins+' boosted '+word;
 }
 function claimQuest(q){
   if(S.mode==='done'||spinning)return;
@@ -2206,6 +2233,7 @@ function paintQuizCard(){
   if(S.quizSpins>0)line+=' · '+S.quizSpins+(S.quizSpins===1?' spin ready':' spins ready');
   else if(S.quizRun)line+=' · Continue '+(S.quizRun.i+1)+'/15';
   sub.textContent=line;
+  if($('quizXp'))$('quizXp').textContent=quizXpText();
 }
 function newQuiz(){
   const level=nextQuizLevel();
@@ -2710,6 +2738,7 @@ function paintDay(){
   status.className='daystatus'+(done?' done':'');
   const next=(S.dailySet.miles||[]).find(m=>m.days>S.dailyStreak);
   $('dayReward').textContent='Reward: '+rewardText(S.dailySet.daily)+(next?' · Next bonus at '+next.days+' days':'');
+  if($('dayXp'))$('dayXp').textContent='+'+Math.max(0,Math.round(Number(S.xpSet&&S.xpSet.daily)||0))+' XP';
   const letters=['S','M','T','W','T','F','S'];
   const start=dayNum(today)-6;
   $('dayWeek').innerHTML=Array.from({length:7},(_,i)=>{
@@ -3027,6 +3056,7 @@ $('viewChallenges').onclick=ev=>{
   paintDay();
   paintQuizCard();
   paintRank();
+  renderQuests();
 };
 $('viewChallenges').addEventListener('input',ev=>{
   const el=ev.target;
