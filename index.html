@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="app-version" content="20261115b">
+<meta name="app-version" content="20261115c">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -316,6 +316,55 @@
     color:#1a1200;
     box-shadow:inset 0 1px 0 #fff, 0 0 0 2px #7a3d00;
   }
+  .qdiff.insanity{
+    position:relative;z-index:0;color:#ffe14a;-webkit-text-fill-color:#ffe14a;
+    background:#16082e;animation:none;box-shadow:none;
+  }
+  .qdiff.insanity .rainbow{
+    background-image:linear-gradient(90deg,#ff4d6d,#ffe14a,#5dff4a,#3ad0ff,#c06bff,#ff4d6d);
+    background-size:220% 100%;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    animation:rainmove 2.8s linear infinite;
+  }
+  .qdiff.insanity::before{
+    content:"";position:absolute;z-index:-1;inset:0;border-radius:inherit;padding:3px;pointer-events:none;
+    background:linear-gradient(90deg,#ff4d6d,#ffe14a,#5dff4a,#3ad0ff,#c06bff,#ff4d6d);
+    background-size:220% 100%;
+    animation:rainmove 2.8s linear infinite;
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite:exclude;
+  }
+  .qdiff.insanity::after{
+    content:"";position:absolute;z-index:-2;inset:3px;border-radius:inherit;pointer-events:none;
+    background:
+      linear-gradient(110deg,transparent 32%,rgba(255,255,255,.7) 48%,transparent 64%),
+      #16082e;
+    background-size:220% 100%,auto;
+    animation:shimmer 2.4s linear infinite;
+  }
+  .qcard.insanity{
+    border:4px solid transparent;
+    background:
+      linear-gradient(180deg,#2c1870,#14082e) padding-box,
+      linear-gradient(90deg,#ff4d6d,#ffe14a,#5dff4a,#3ad0ff,#c06bff,#ff4d6d) border-box;
+    background-size:auto,220% 100%;
+    animation:rainborder 3.4s linear infinite;
+    box-shadow:0 6px 0 rgba(16,4,40,.35),0 0 18px rgba(255,77,109,.35);
+  }
+  .adddiffs .qdiff.insanity{grid-column:1 / -1}
+  .pmeter{display:flex;flex-direction:column;gap:4px}
+  .plab{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;font-size:.92rem;letter-spacing:0;text-transform:none;color:#fff}
+  .pbar{height:12px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+  .pbar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#ff4d6d,#ffe14a,#5dff4a,#3ad0ff,#c06bff,#ff4d6d);background-size:220% 100%;animation:rainmove 2.8s linear infinite}
+  .qtrophy{flex:none;font-size:1.15rem;line-height:1;text-transform:none}
+  .qskill{width:100%;color:#1a1200;font-size:1.05rem}
+  .qskill::before{background:linear-gradient(90deg,#ff4d6d,#ffe14a,#5dff4a,#3ad0ff,#c06bff,#ff4d6d);background-size:220% 100%;animation:rainmove 2.8s linear infinite;box-shadow:inset 0 2px 0 rgba(255,255,255,.55)}
+  @keyframes rainmove{from{background-position:0% 50%}to{background-position:100% 50%}}
+  @keyframes rainborder{from{background-position:0 0,0% 50%}to{background-position:0 0,100% 50%}}
+  @keyframes shimmer{from{background-position:120% 0,0 0}to{background-position:-20% 0,0 0}}
   .qtoday,.qreward{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;letter-spacing:0;text-transform:none}
   .qtoday{font-size:.95rem;color:#efeaff}
   .qreward{font-size:1.02rem;color:#ffe14a}
@@ -394,6 +443,15 @@
   .confetti i:nth-child(6){left:66%;background:var(--yellow);animation-delay:-1.2s}
   .confetti i:nth-child(7){left:76%;background:var(--storm);animation-delay:-.4s}
   .confetti i:nth-child(8){left:88%;background:var(--uncommon);width:8px;height:8px;border-radius:50%;animation-delay:-1.8s}
+  .confetti i:nth-child(9){left:4%;background:#ff5d8a;animation-delay:-2.2s}
+  .confetti i:nth-child(10){left:14%;background:#3ad0ff;width:8px;height:8px;border-radius:50%;animation-delay:-.8s}
+  .confetti i:nth-child(11){left:24%;background:#ffe14a;animation-delay:-1.4s}
+  .confetti i:nth-child(12){left:36%;background:#c06bff;animation-delay:-2.5s}
+  .confetti i:nth-child(13){left:48%;background:#5dff4a;width:8px;height:8px;border-radius:50%;animation-delay:-.3s}
+  .confetti i:nth-child(14){left:60%;background:#ff9a1a;animation-delay:-1.9s}
+  .confetti i:nth-child(15){left:72%;background:#ff4d6d;animation-delay:-1.1s}
+  .confetti i:nth-child(16){left:84%;background:#8ec6ff;width:8px;height:8px;border-radius:50%;animation-delay:-2.4s}
+  .skillpop .confetti i{width:14px;height:20px;animation-duration:3.4s}
   @keyframes fall{to{transform:translateY(110dvh) rotate(200deg)}}
   .vic{
     position:relative;z-index:1;margin:0 0 12px;
@@ -502,6 +560,7 @@
   li.loot-xp{--rarity:#5dff4a}
   li.loot-xp.down{--rarity:#ff5d7a}
   li.loot-miss{--rarity:#ff9a1a}
+  li.loot-skill::before{background:linear-gradient(180deg,#ff4d6d,#ffe14a,#5dff4a,#3ad0ff,#c06bff)}
   .rankbar{margin:0 0 8px;padding:8px 10px 9px;border-radius:14px;background:rgba(10,6,28,.72);border:2px solid #d5d0ea}
   .ranktop{display:flex;align-items:baseline;gap:8px}
   .ranklv{font-size:1.15rem;letter-spacing:.04em;color:#e4e4ee}
@@ -529,8 +588,39 @@
   #lvlOk,#missOk{color:#1a1200;position:relative;z-index:1}
   #lvlOk::before,#missOk::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
   #missPop{z-index:33}
+  .skillpop{
+    position:fixed;inset:0;z-index:38;display:none;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:22px;overflow:auto;
+    background:linear-gradient(120deg,#ff4d6d,#ff9a1a,#ffe14a,#5dff4a,#3ad0ff,#9b4dff,#ff4d6d);
+    background-size:320% 320%;
+    animation:rainbg 7s linear infinite;
+  }
+  .skillpop:not([hidden]){display:flex}
+  .skillpop .vic{position:relative;z-index:1;color:#fff}
+  .skillask,.skillname,.skillparent,.skillprize{
+    position:relative;z-index:1;max-width:18em;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-weight:800;letter-spacing:0;text-transform:none;
+  }
+  .skillask{margin:8px 0 0;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.92);color:#1a1200;font-size:1.28rem;line-height:1.25}
+  .skillname{margin:8px 0 0;color:#1a1200;font-size:1rem}
+  .skillparent{margin:6px 0 0;color:#1a1200;font-size:.92rem}
+  .skillprize{margin:8px 0 0;padding:10px 14px;border-radius:14px;background:#1a1200;color:#ffe14a;font-size:1.05rem;line-height:1.3}
+  .skillacts{position:relative;z-index:1;width:min(100%,340px);flex-direction:column;align-items:center;gap:4px}
+  .skillacts:not([hidden]){display:flex}
+  .skillpop [hidden]{display:none !important}
+  .skillpop .bigbtn{width:100%;margin:8px 0 0;font-size:1.2rem;line-height:1.05;white-space:normal}
+  #skillYes{color:#06210a}
+  #skillYes::before{background:linear-gradient(180deg,#d6ff6a,#5dff4a 45%,#1fae32);box-shadow:inset 0 2px 0 rgba(255,255,255,.55)}
+  #skillNo,#skillOk{color:#1a1200}
+  #skillNo::before,#skillOk::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
+  #skillLater{min-height:44px;margin-top:4px;color:#1a1200;background:transparent;text-decoration:underline;text-underline-offset:3px}
+  .skillpop .confetti{display:none}
+  .skillpop.win .confetti{display:block}
+  .skillpop.boom .vic,.skillpop.boom .skillask,.skillpop.boom .skillprize{animation:vshake .75s linear}
+  @keyframes rainbg{0%{background-position:0% 40%}50%{background-position:100% 60%}100%{background-position:0% 40%}}
   @media (prefers-reduced-motion:reduce){
-    .confetti i,.bigbtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup,.xppop.go,.lvlup.boom .vic,.lvlup.boom .lvlrank{animation:none;transition:none}
+    .confetti i,.bigbtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup,.xppop.go,.lvlup.boom .vic,.lvlup.boom .lvlrank,.qdiff.insanity,.qdiff.insanity::before,.qdiff.insanity::after,.qdiff.insanity .rainbow,.qcard.insanity,.pbar i,.qskill::before,.skillpop,.skillpop.boom .vic,.skillpop.boom .skillask,.skillpop.boom .skillprize{animation:none;transition:none}
   }
 </style>
 </head>
@@ -627,6 +717,7 @@
       <button type="button" class="qdiff medium on" data-add-diff="medium">Medium</button>
       <button type="button" class="qdiff hard" data-add-diff="hard">Hard</button>
       <button type="button" class="qdiff master" data-add-diff="master">★ Master</button>
+      <button type="button" class="qdiff insanity" data-add-diff="insanity"><span class="rainbow">Insanity</span></button>
     </div>
     <button class="bigbtn" id="addQuest">Add quest</button>
     <details id="history"><summary>History</summary><ul id="logList"></ul></details>
@@ -639,6 +730,8 @@
     <button type="button" class="bigbtn" id="addCustom">Add challenge</button>
     <p class="chh">Quest rewards</p>
     <div id="chalRules"></div>
+    <p class="chh" id="insanityHead">Insanity</p>
+    <div id="chalInsanity"></div>
     <p class="chh" id="xpHead">Levels & XP</p>
     <div id="chalXp"></div>
     <p class="chh">Quiz levels</p>
@@ -688,6 +781,20 @@
     <button type="button" class="bigbtn" id="missOk">OK</button>
   </div>
 </div>
+<div class="skillpop" id="skillPop" hidden role="dialog" aria-modal="true" aria-labelledby="skillTitle">
+  <div class="confetti" id="skillBits" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="vic" id="skillTitle">Skill Check!</p>
+  <p class="skillask" id="skillAsk"></p>
+  <p class="skillname" id="skillName"></p>
+  <p class="skillparent" id="skillParent">A parent answers this one.</p>
+  <p class="skillprize" id="skillPrize" hidden></p>
+  <div class="skillacts" id="skillChoose">
+    <button type="button" class="bigbtn" id="skillYes">Yes, he did it!</button>
+    <button type="button" class="bigbtn" id="skillNo">Not yet, keep practising</button>
+    <button type="button" id="skillLater">Later</button>
+  </div>
+  <button type="button" class="bigbtn" id="skillOk" hidden>Awesome</button>
+</div>
 <div class="daypop" id="dayPop" hidden>
   <div class="confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <div class="daysheet">
@@ -699,7 +806,7 @@
 </div>
 
 <script>
-const APP_VERSION="20261115b";
+const APP_VERSION="20261115c";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
@@ -707,10 +814,12 @@ const fmt=t=>new Date(t).toLocaleString([], {weekday:'short',day:'numeric',month
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const QUEST_NAMES=['Tidy your bedroom','Read a book for 15 minutes','Help set or clear the table','Put your laundry away','Do 20 star jumps','Draw a picture for someone','Help with the dishes','Make your bed','Feed or help with a pet','Write a thank-you or sorry note','Practise spelling or times tables','Sort your toys or Lego'];
 const MASTER_QUESTS=['20 mins piano','20 mins reading','20 mins writing a story','20 mins designing a game'];
-const DIFFS=['easy','medium','hard','master'];
+const INSANITY_QUESTS=['10 mins practising tying shoelaces','10 mins practising tying a tie'];
+const DIFFS=['easy','medium','hard','master','insanity'];
 function normDiff(v){return DIFFS.indexOf(v)>=0?v:''}
 function guessDiff(name){
   const n=String(name||'').trim().toLowerCase();
+  if(INSANITY_QUESTS.some(q=>q.toLowerCase()===n))return 'insanity';
   if(MASTER_QUESTS.some(q=>q.toLowerCase()===n))return 'master';
   if(n==='do 20 star jumps'||n==='make your bed'||n==='write a thank-you or sorry note')return 'easy';
   if(n==='tidy your bedroom'||n==='read a book for 15 minutes'||n==='help with the dishes'||n==='practise spelling or times tables')return 'hard';
@@ -718,9 +827,10 @@ function guessDiff(name){
   if(/\b(read|reading|book|spell|times tables?|homework|tidy|bedroom|dishes)\b/.test(n))return 'hard';
   return 'medium';
 }
-function diffName(d){return d==='master'?'Master':d==='hard'?'Hard':d==='easy'?'Easy':'Medium'}
+function diffName(d){return d==='insanity'?'Insanity':d==='master'?'Master':d==='hard'?'Hard':d==='easy'?'Easy':'Medium'}
 function diffMark(d){return (d==='master'?'★ ':'')+diffName(d)}
-function defaultQuestRules(){return {easy:{max:3,spins:1},medium:{max:2,spins:1},hard:{max:1,spins:2},master:{max:1,spins:3}}}
+function diffMarkHtml(d){return d==='insanity'?'<span class="rainbow">Insanity</span>':esc(diffMark(d))}
+function defaultQuestRules(){return {easy:{max:3,spins:1},medium:{max:2,spins:1},hard:{max:1,spins:2},master:{max:1,spins:3},insanity:{max:1,spins:3}}}
 function clampInt(n,min,max,fb){
   n=Math.floor(Number(n));
   if(!Number.isFinite(n))n=fb;
@@ -744,7 +854,23 @@ const BUILTINS=[
   {id:'questOne',title:'Claim one chosen quest',detail:'One quest from the list, the same all day.'},
   {id:'focus',title:'Focus quiz, one times table',detail:'10 questions. 8 or more to pass.'}
 ];
-function defaultQuests(){return QUEST_NAMES.concat(MASTER_QUESTS).map((name,i)=>({id:'qd'+i,name,uses:0,diff:guessDiff(name),claimDay:'',claimN:0}));}
+function freshQuest(name,id,diff){
+  return {id,name,uses:0,diff:diff||guessDiff(name),claimDay:'',claimN:0,mins:0,per:10,interval:100,checks:0,prize:'Big reward TBD',bonusXp:500,bonusSpins:5,mastered:false};
+}
+function practiceFields(q){
+  const prize=String(q&&q.prize!=null?q.prize:'Big reward TBD').trim().slice(0,80)||'Big reward TBD';
+  return {
+    mins:clampInt(q&&q.mins,0,100000,0),
+    per:clampInt(q&&q.per,1,60,10),
+    interval:clampInt(q&&q.interval,10,500,100),
+    checks:clampInt(q&&q.checks,0,10000,0),
+    prize,
+    bonusXp:clampInt(q&&q.bonusXp,0,2000,500),
+    bonusSpins:clampInt(q&&q.bonusSpins,0,10,5),
+    mastered:!!(q&&q.mastered)
+  };
+}
+function defaultQuests(){return QUEST_NAMES.concat(MASTER_QUESTS,INSANITY_QUESTS).map((name,i)=>freshQuest(name,'qd'+i));}
 function withMasterQuests(list,alreadySeeded){
   if(alreadySeeded)return list;
   const names={};
@@ -756,7 +882,22 @@ function withMasterQuests(list,alreadySeeded){
     while(ids[id])id+='x';
     ids[id]=1;
     names[name.toLowerCase()]=1;
-    list.push({id,name,uses:0,diff:'master',claimDay:'',claimN:0});
+    list.push(freshQuest(name,id,'master'));
+  });
+  return list;
+}
+function withInsanityQuests(list,alreadySeeded){
+  if(alreadySeeded)return list;
+  const names={};
+  const ids={};
+  list.forEach(q=>{names[q.name.trim().toLowerCase()]=1;ids[q.id]=1});
+  INSANITY_QUESTS.forEach((name,i)=>{
+    if(names[name.toLowerCase()])return;
+    let id='qi'+i;
+    while(ids[id])id+='x';
+    ids[id]=1;
+    names[name.toLowerCase()]=1;
+    list.push(freshQuest(name,id,'insanity'));
   });
   return list;
 }
@@ -768,7 +909,7 @@ function normQuests(o){
   if(o&&Array.isArray(o.quests))return o.quests.filter(q=>q&&String(q.name||'').trim()).map((q,i)=>{
     const name=String(q.name).trim().slice(0,60);
     const claimDay=/^\d{4}-\d{2}-\d{2}$/.test(q.claimDay)?q.claimDay:'';
-    return {id:String(q.id||('q'+i)).slice(0,40),name,uses:questUses(q),diff:normDiff(q.diff)||guessDiff(name),claimDay,claimN:Math.max(0,Math.min(20,Math.floor(Number(q.claimN)||0)))};
+    return Object.assign({id:String(q.id||('q'+i)).slice(0,40),name,uses:questUses(q),diff:normDiff(q.diff)||guessDiff(name),claimDay,claimN:Math.max(0,Math.min(20,Math.floor(Number(q.claimN)||0)))},practiceFields(q));
   });
   return defaultQuests();
 }
@@ -797,8 +938,8 @@ function normQuizLevels(o){
     return nums.length>=2?nums:QUIZ_LEVELS[i].slice();
   });
 }
-function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null,xp:0,level:1,xpSet:null,xpStart:'',xpCheck:'',masterDays:[],xpNotice:null};}
-function defaultXpSet(){return {quest:{easy:10,medium:25,hard:50,master:100},quiz:2,perfect:10,daily:20,miles:[{days:3,xp:25},{days:7,xp:50},{days:14,xp:100},{days:30,xp:200}],penalty:10,missMin:10,missXp:25,missOn:true,pause:false}}
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,insanitySeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null,xp:0,level:1,xpSet:null,xpStart:'',xpCheck:'',masterDays:[],xpNotice:null,skillCue:''};}
+function defaultXpSet(){return {quest:{easy:10,medium:25,hard:50,master:100,insanity:150},quiz:2,perfect:10,daily:20,miles:[{days:3,xp:25},{days:7,xp:50},{days:14,xp:100},{days:30,xp:200}],penalty:10,missMin:10,missXp:25,missOn:true,pause:false}}
 function normXpSet(o){
   const d=defaultXpSet();
   const src=o&&o.xpSet;
@@ -847,8 +988,9 @@ function normQuizRun(o){
 }
 function norm(o){
   const S=blank();
-  S.quests=withMasterQuests(normQuests(o),!!(o&&o.masterSeed));
+  S.quests=withInsanityQuests(withMasterQuests(normQuests(o),!!(o&&o.masterSeed)),!!(o&&o.insanitySeed));
   S.masterSeed=true;
+  S.insanitySeed=true;
   S.questRules=normQuestRules(o);
   S.questQueue=normQuestQueue(o,S.quests);
   S.quizRun=normQuizRun(o);
@@ -875,6 +1017,11 @@ function norm(o){
   if(S.masterDays.length>120)S.masterDays=S.masterDays.slice(-120);
   const note=o&&o.xpNotice;
   S.xpNotice=note&&note.days>0?{days:clampInt(note.days,1,3,1),min:clampInt(note.min,0,60,10),xp:clampInt(note.xp,0,200,25)}:null;
+  S.skillCue='';
+  if(o&&typeof o.skillCue==='string'){
+    const cue=o.skillCue.slice(0,40);
+    if(S.quests.some(q=>q.id===cue&&skillPending(q)))S.skillCue=cue;
+  }
   if(!o||typeof o!=='object')return S;
   S.sound=!!o.sound;
   const totalN=Number(o.totalMs);
@@ -919,7 +1066,7 @@ const existing=readKey(KEY);
 let S=existing?norm(existing):fromOld(readKey('fionnTracker.v2')||readKey('fionnTracker.v1'));
 function sortQuests(){S.quests.sort((a,b)=>questUses(b)-questUses(a))}
 const save=()=>{sortQuests();localStorage.setItem(KEY,JSON.stringify(S))};
-if(!existing||!existing.masterSeed)save();
+if(!existing||!existing.masterSeed||!existing.insanitySeed)save();
 function owed(){
   if(S.mode==='running'&&typeof S.endsAt==='number')return Math.max(0,S.endsAt-Date.now());
   if(S.mode==='paused')return Math.max(0,S.remainingMs);
@@ -1012,9 +1159,10 @@ function logLine(e){
   }
   else if(e.kind==='xp')label=(e.xp>0?'+'+e.xp:String(e.xp))+' XP · '+esc(e.note||'XP');
   else if(e.kind==='miss')label='No Master quest +'+clock(e.ms)+' / -'+Math.abs(e.xp||0)+' XP';
+  else if(e.kind==='skill')label='🏆 Mastered: '+esc(e.note||'Skill Check');
   else return '';
   if(e.xp&&e.kind!=='xp'&&e.kind!=='miss')label+=' · '+(e.xp>0?'+':'')+e.xp+' XP';
-  const note=e.kind==='quest'||e.kind==='quiz'||e.kind==='manual'||e.kind==='daily'||e.kind==='xp'||e.kind==='miss'?'':(e.note?' · '+esc(e.note):'');
+  const note=e.kind==='quest'||e.kind==='quiz'||e.kind==='manual'||e.kind==='daily'||e.kind==='xp'||e.kind==='miss'||e.kind==='skill'?'':(e.note?' · '+esc(e.note):'');
   const used=e.kind==='served'||e.kind==='clear'?' used':'';
   const rar=e.rarity?esc(String(e.rarity).toLowerCase()):'';
   const down=e.xp<0?' down':'';
@@ -1052,7 +1200,7 @@ function xpProgress(){
   const into=Math.max(0,Math.min(need,(S.xp||0)-floor));
   return {level,need,into};
 }
-let xpFlash=0,xpQuiet=false,pendingLevel=null,xpPopTimer=0;
+let xpFlash=0,xpQuiet=false,pendingLevel=null,xpPopTimer=0,skillMode='',skillWinQ=null;
 function grantXp(delta){
   delta=Math.round(Number(delta)||0);
   if(!delta)return 0;
@@ -1124,7 +1272,18 @@ function paintRank(){
 }
 function masterClaimedOn(day){
   if(S.masterDays&&S.masterDays.indexOf(day)>=0)return true;
-  return S.quests.some(q=>q.diff==='master'&&q.claimDay===day&&q.claimN>0);
+  return S.quests.some(q=>(q.diff==='master'||q.diff==='insanity')&&q.claimDay===day&&q.claimN>0);
+}
+function skillPending(q){
+  if(!q||q.diff!=='insanity'||q.mastered)return 0;
+  const interval=Math.max(10,q.interval||100);
+  return Math.max(0,Math.floor((q.mins||0)/interval)-(q.checks||0));
+}
+function skillQuestion(q){
+  const n=String(q&&q.name||'').toLowerCase();
+  if(n.indexOf('shoelace')>=0)return 'Can Fionn tie his shoelaces on his own?';
+  if(n.indexOf('tying a tie')>=0)return 'Can Fionn tie a tie on his own?';
+  return 'Can Fionn do this on his own?';
 }
 function noteMasterClaim(){
   const day=londonDay();
@@ -1187,6 +1346,101 @@ function maybeMissPop(){
   $('missMsg').textContent=p.days===1?'A day with no Master quest. +'+each+' and -'+p.xp+' XP.':p.days+' days with no Master quest. +'+each+' and -'+p.xp+' XP each.';
   pop.hidden=false;
 }
+function skillFanfare(){
+  if(!S.sound)return;
+  unlockAudio();
+  if(!ctx)return;
+  ensureRack();
+  setAudible(true);
+  const t=ctx.currentTime+0.03;
+  boom(t,0.72);
+  chord([523.25,659.25,783.99],t+0.12,0.38,0.5);
+  chord([587.33,739.99,880],t+0.5,0.38,0.55);
+  chord([659.25,830.61,987.77],t+0.88,0.42,0.58);
+  chord([783.99,987.77,1174.66],t+1.28,0.5,0.62);
+  siren(t+1.78,0.7);
+  chord([523.25,659.25,783.99,1046.5],t+2.45,1.25,0.7);
+  brass(1318.5,t+2.55,0.9,0.4);
+  noise(t+2.5,0.2,0.12,4800,'highpass');
+}
+function showSkillAsk(q){
+  skillMode='ask';
+  const pop=$('skillPop');
+  pop.classList.remove('win','boom');
+  $('skillTitle').textContent='Skill Check!';
+  $('skillAsk').hidden=false;
+  $('skillAsk').textContent=skillQuestion(q);
+  $('skillName').hidden=false;
+  $('skillName').textContent=q.name;
+  $('skillParent').hidden=false;
+  $('skillPrize').hidden=true;
+  $('skillChoose').hidden=false;
+  $('skillOk').hidden=true;
+  $('skillOk').textContent='Awesome';
+  pop.hidden=false;
+}
+function showSkillEncourage(message){
+  skillMode='encourage';
+  const pop=$('skillPop');
+  pop.classList.remove('win','boom');
+  pop.hidden=false;
+  $('skillTitle').textContent='Keep practising';
+  $('skillAsk').hidden=false;
+  $('skillAsk').textContent=message;
+  $('skillName').hidden=true;
+  $('skillParent').hidden=true;
+  $('skillPrize').hidden=true;
+  $('skillChoose').hidden=true;
+  $('skillOk').hidden=false;
+  $('skillOk').textContent='Keep going';
+}
+function showSkillWin(q){
+  skillMode='win';
+  const pop=$('skillPop');
+  const spins=q.bonusSpins||0;
+  const xp=q.bonusXp||0;
+  const bits=[q.prize||'Big reward TBD'];
+  if(xp)bits.push('+'+xp+' XP');
+  if(spins)bits.push(spins+' Hard spin'+(spins===1?'':'s'));
+  pop.hidden=false;
+  pop.classList.remove('boom');
+  $('skillTitle').textContent='Mastered!';
+  $('skillAsk').hidden=false;
+  $('skillAsk').textContent=q.name;
+  $('skillName').hidden=true;
+  $('skillParent').hidden=true;
+  $('skillPrize').hidden=false;
+  $('skillPrize').textContent=bits.join(' · ');
+  $('skillChoose').hidden=true;
+  $('skillOk').hidden=false;
+  $('skillOk').textContent='Awesome';
+  void pop.offsetWidth;
+  pop.classList.add('win','boom');
+  if(navigator.vibrate)navigator.vibrate([60,40,80,40,120,50,200,60,280]);
+  try{skillFanfare()}catch(e){}
+}
+function maybeSkillPop(){
+  if(skillMode==='ask'||skillMode==='encourage'||skillMode==='win')return;
+  const pop=$('skillPop');
+  if(!pop)return;
+  if(typeof spinning!=='undefined'&&spinning)return;
+  if(S.mode==='done')return;
+  const lvl=$('lvlUp');
+  if(lvl&&!lvl.hidden)return;
+  const q=S.quests.find(x=>x.id===S.skillCue&&skillPending(x));
+  if(!q)return;
+  showSkillAsk(q);
+}
+function closeSkillPop(){
+  skillMode='';
+  const pop=$('skillPop');
+  if(!pop)return;
+  pop.hidden=true;
+  pop.classList.remove('win','boom');
+}
+function currentSkillQuest(){
+  return S.quests.find(q=>q.id===S.skillCue&&q.diff==='insanity'&&!q.mastered)||null;
+}
 function levelFanfare(){
   if(!S.sound)return;
   unlockAudio();
@@ -1241,6 +1495,7 @@ function render(){
   flushXpFlash();
   maybeLevelUp();
   maybeMissPop();
+  maybeSkillPop();
 }
 function finishRun(){
   if(S.mode==='done')return false;
@@ -1604,11 +1859,11 @@ const HARD_W={COMMON:36,UNCOMMON:33,RARE:16,EPIC:8,LEGENDARY:5,MYTHIC:2};
 let wheelRot=0,spinning=false,spinGen=0,cueTimers=[];
 function weightsFor(kind){
   if(kind==='quiz'||kind==='daily'||kind==='medium')return PRIZES.map(p=>({...p,w:QUIZ_W[p.name]}));
-  if(kind==='hard'||kind==='master')return PRIZES.map(p=>({...p,w:HARD_W[p.name]}));
+  if(kind==='hard'||kind==='master'||kind==='insanity')return PRIZES.map(p=>({...p,w:HARD_W[p.name]}));
   return PRIZES;
 }
 function wheelMode(kind){
-  if(kind==='hard'||kind==='master')return 'hard';
+  if(kind==='hard'||kind==='master'||kind==='insanity')return 'hard';
   if(kind==='quiz'||kind==='daily'||kind==='medium')return 'quiz';
   return 'normal';
 }
@@ -1618,6 +1873,7 @@ function boostTitle(kind){
   if(kind==='medium')return 'Medium boost';
   if(kind==='hard')return 'Hard boost';
   if(kind==='master')return 'Master';
+  if(kind==='insanity')return 'Insanity';
   if(kind==='easy')return 'Easy';
   return '';
 }
@@ -1634,7 +1890,7 @@ function prizeLayout(list){
 function paintBoost(kind,table){
   const boost=$('quizBoost');
   const title=boostTitle(kind);
-  $('wheelBox').classList.toggle('boosted',kind==='quiz'||kind==='daily'||kind==='medium'||kind==='hard'||kind==='master');
+  $('wheelBox').classList.toggle('boosted',kind==='quiz'||kind==='daily'||kind==='medium'||kind==='hard'||kind==='master'||kind==='insanity');
   boost.hidden=!title;
   if(!title)return;
   boost.innerHTML='<b>'+title+'</b><span class="qodds">'+table.map(p=>'<i style="color:'+p.color+'">'+p.w+'%</i>').join('')+'</span>';
@@ -1678,17 +1934,33 @@ function renderQuests(){
     const rule=S.questRules[q.diff]||S.questRules.medium;
     const today=claimsToday(q);
     const maxed=today>=rule.max;
-    const pending=S.questQueue.filter(x=>x.id===q.id).length;
-    const spin=pending?'<div class="qrow"><button type="button" class="slab qspin" data-qspin>'+(pending===1?'Spin the reward':'Spin · '+pending+' left')+'</button></div>':'';
-    return `<article class="qcard${hot?' hot':''}" data-qid="${esc(q.id)}"><div class="qtop"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${badge}</div></div><div class="qmeta"><button type="button" class="qdiff ${q.diff}" data-cycle aria-label="Difficulty ${diffName(q.diff)}, tap to change">${diffMark(q.diff)}</button><span class="qtoday">${today}/${rule.max} today</span></div><p class="qreward">${esc(rewardLine(q.diff))}</p><div class="qrow"><button type="button" class="slab claim" data-claim${maxed?' disabled':''}>${maxed?'Done for today':'Claim'}</button></div>${spin}</article>`;
+    const queued=S.questQueue.filter(x=>x.id===q.id).length;
+    const spin=queued?'<div class="qrow"><button type="button" class="slab qspin" data-qspin>'+(queued===1?'Spin the reward':'Spin · '+queued+' left')+'</button></div>':'';
+    const trophy=q.mastered?'<span class="qtrophy" aria-label="Mastered">🏆</span>':'';
+    const tier=q.diff==='insanity'?' insanity':'';
+    const done=q.mastered?' mastered':'';
+    return `<article class="qcard${hot?' hot':''}${tier}${done}" data-qid="${esc(q.id)}"><div class="qtop"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${trophy}${badge}</div></div><div class="qmeta"><button type="button" class="qdiff ${q.diff}" data-cycle aria-label="Difficulty ${diffName(q.diff)}, tap to change">${diffMarkHtml(q.diff)}</button><span class="qtoday">${today}/${rule.max} today</span></div><p class="qreward">${esc(rewardLine(q.diff))}</p>${meterHtml(q)}<div class="qrow"><button type="button" class="slab claim" data-claim${maxed?' disabled':''}>${maxed?'Done for today':'Claim'}</button></div>${spin}</article>`;
   }).join('');
 }
 function claimsToday(q){return q.claimDay===londonDay()?(q.claimN||0):0}
+function meterHtml(q){
+  if(q.diff!=='insanity')return '';
+  const interval=Math.max(10,q.interval||100);
+  if(q.mastered)return '<div class="pmeter"><p class="plab">🏆 Mastered · '+esc(q.prize||'Big reward TBD')+'</p><div class="pbar"><i style="width:100%"></i></div></div>';
+  if(skillPending(q))return '<div class="pmeter"><p class="plab">Skill Check ready</p><div class="pbar"><i style="width:100%"></i></div></div><div class="qrow"><button type="button" class="slab qskill" data-skill>Skill Check</button></div>';
+  const into=(q.mins||0)%interval;
+  const pct=Math.max(0,Math.min(100,Math.round(into/interval*100)));
+  return '<div class="pmeter"><p class="plab">'+into+' / '+interval+' mins to Skill Check</p><div class="pbar"><i style="width:'+pct+'%"></i></div></div>';
+}
 function rewardLine(diff){
   const r=S.questRules[diff]||S.questRules.medium;
   const word=r.spins===1?'spin':'spins';
-  if(diff==='easy')return 'Easy: '+r.spins+' normal '+word;
-  return diffName(diff)+': '+r.spins+' boosted '+word;
+  let line=diff==='easy'?'Easy: '+r.spins+' normal '+word:diffName(diff)+': '+r.spins+' boosted '+word;
+  if(diff==='insanity'){
+    const xp=S.xpSet&&S.xpSet.quest?S.xpSet.quest.insanity||0:0;
+    if(xp)line+=' · '+xp+' XP';
+  }
+  return line;
 }
 function claimQuest(q){
   if(S.mode==='done'||spinning)return;
@@ -1698,7 +1970,13 @@ function claimQuest(q){
   q.claimDay=londonDay();
   q.claimN=n+1;
   q.uses=questUses(q)+1;
-  if(q.diff==='master')noteMasterClaim();
+  if(q.diff==='master'||q.diff==='insanity')noteMasterClaim();
+  if(q.diff==='insanity'){
+    const interval=Math.max(10,q.interval||100);
+    const before=Math.floor((q.mins||0)/interval);
+    q.mins=(q.mins||0)+(q.per||10);
+    if(!q.mastered&&Math.floor(q.mins/interval)>before)S.skillCue=q.id;
+  }
   for(let i=0;i<rule.spins&&S.questQueue.length<40;i++)S.questQueue.push({id:q.id,name:q.name,diff:q.diff});
   const gain=S.xpSet&&S.xpSet.quest?S.xpSet.quest[q.diff]||0:0;
   const got=grantXp(gain);
@@ -1896,7 +2174,7 @@ $('addDiffs').onclick=ev=>{
 $('addQuest').onclick=()=>{
   const name=$('questName').value.trim();
   if(!name)return;
-  S.quests.push({id:'q'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:name.slice(0,60),uses:0,diff:addDiff,claimDay:'',claimN:0});
+  S.quests.push(freshQuest(name.slice(0,60),'q'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),addDiff));
   $('questName').value='';
   save();
   renderQuests();
@@ -2067,8 +2345,17 @@ $('questList').onclick=ev=>{
   if(btn.hasAttribute('data-del')){
     S.quests=S.quests.filter(x=>x.id!==q.id);
     S.questQueue=S.questQueue.filter(x=>x.id!==q.id);
+    if(S.skillCue===q.id)S.skillCue='';
+    if(skillWinQ&&skillWinQ.id===q.id)skillWinQ=null;
     save();
     renderQuests();
+    return;
+  }
+  if(btn.hasAttribute('data-skill')){
+    if(!skillPending(q))return;
+    S.skillCue=q.id;
+    save();
+    showSkillAsk(q);
     return;
   }
   if(btn.hasAttribute('data-cycle')){
@@ -2474,8 +2761,33 @@ function paintChallenges(){
   $('chalDaily').innerHTML=rewardEditor('daily',set.daily);
   $('chalMiles').innerHTML=set.miles.map((m,i)=>mileEditor(m,i)).join('')||'<p class="daybest">No streak bonuses yet.</p>';
   if($('chalRules'))$('chalRules').innerHTML=DIFFS.map(ruleEditor).join('');
+  paintInsanity();
   if($('chalLevels'))$('chalLevels').innerHTML=[0,1,2].map(levelEditor).join('');
   paintXp();
+}
+function paintInsanity(){
+  const box=$('chalInsanity');
+  if(!box)return;
+  const list=S.quests.filter(q=>q.diff==='insanity');
+  if(!list.length){box.innerHTML='<p class="daybest">No Insanity quests yet. Add one on the Quests screen.</p>';return}
+  box.innerHTML=list.map(q=>{
+    const sub=(q.mastered?'Mastered · ':'')+(q.mins||0)+' mins practised';
+    return '<div class="chrow"><div class="txt"><b>'+esc(q.name)+'</b><small>'+esc(sub)+'</small></div></div>'
+      +'<div class="chreward"><span class="chlab">Minutes each claim</span>'+stepBtn('insanity','per',-1,q.id)+'<span class="chnum">'+q.per+'</span>'+stepBtn('insanity','per',1,q.id)+'</div>'
+      +'<div class="chreward"><span class="chlab">Skill Check every</span>'+stepBtn('insanity','interval',-1,q.id)+'<span class="chnum">'+q.interval+'</span>'+stepBtn('insanity','interval',1,q.id)+'</div>'
+      +'<div class="chreward"><span class="chlab">Reward</span></div>'
+      +'<input data-skill-prize="'+esc(q.id)+'" value="'+esc(q.prize)+'" maxlength="80" autocomplete="off">'
+      +'<div class="chreward"><span class="chlab">Bonus XP</span>'+stepBtn('insanity','xp',-1,q.id)+'<span class="chnum">'+q.bonusXp+'</span>'+stepBtn('insanity','xp',1,q.id)+'</div>'
+      +'<div class="chreward"><span class="chlab">Bonus Hard spins</span>'+stepBtn('insanity','spins',-1,q.id)+'<span class="chnum">'+q.bonusSpins+'</span>'+stepBtn('insanity','spins',1,q.id)+'</div>';
+  }).join('');
+}
+function bumpInsanity(id,field,dir){
+  const q=S.quests.find(x=>x.id===id);
+  if(!q)return;
+  if(field==='per')q.per=clampInt(q.per+dir,1,60,10);
+  else if(field==='interval')q.interval=clampInt(q.interval+dir*10,10,500,100);
+  else if(field==='xp')q.bonusXp=clampInt(q.bonusXp+dir*50,0,2000,500);
+  else if(field==='spins')q.bonusSpins=clampInt(q.bonusSpins+dir,0,10,5);
 }
 function xpStep(label,field,i){
   const n=field==='m'?S.xpSet.miles[i].xp:field.indexOf('q-')===0?S.xpSet.quest[field.slice(2)]:S.xpSet[field];
@@ -2535,10 +2847,16 @@ function toggleLevel(level,table){
   return true;
 }
 function oddsBits(kind){return weightsFor(kind).map(p=>p.w).join(' / ')}
+function oddsLabel(diff){
+  if(diff==='easy')return 'Normal odds · '+oddsBits('easy');
+  if(diff==='medium')return 'Quiz boost · '+oddsBits('medium');
+  if(diff==='hard')return 'Hard boost · '+oddsBits('hard');
+  return 'Hard wheel · '+oddsBits(diff);
+}
 function ruleEditor(diff){
   const r=S.questRules[diff];
-  const odds=diff==='easy'?'Normal odds · '+oddsBits('easy'):diff==='medium'?'Quiz boost · '+oddsBits('medium'):diff==='master'?'Hard wheel · '+oddsBits('master'):'Hard boost · '+oddsBits('hard');
-  return '<div class="chrow"><div class="txt"><b><span class="qdiff '+diff+'">'+diffMark(diff)+'</span></b><small>'+esc(odds)+'</small></div></div>'
+  const odds=oddsLabel(diff);
+  return '<div class="chrow"><div class="txt"><b><span class="qdiff '+diff+'">'+diffMarkHtml(diff)+'</span></b><small>'+esc(odds)+'</small></div></div>'
     +'<div class="chreward"><span class="chlab">Claims a day</span>'+stepBtn('qrule','max',-1,diff)+'<span class="chnum">'+r.max+'</span>'+stepBtn('qrule','max',1,diff)+'</div>'
     +'<div class="chreward"><span class="chlab">Spins each</span>'+stepBtn('qrule','spins',-1,diff)+'<span class="chnum">'+r.spins+'</span>'+stepBtn('qrule','spins',1,diff)+'</div>';
 }
@@ -2601,7 +2919,60 @@ $('daySpin').onclick=()=>{
   openSpin('Daily Challenge',null,'daily');
 };
 $('dayPopOk').onclick=()=>{S.dailyPop=null;save();$('dayPop').hidden=true};
-$('lvlOk').onclick=()=>{$('lvlUp').hidden=true;$('lvlUp').classList.remove('boom')};
+$('lvlOk').onclick=()=>{
+  $('lvlUp').hidden=true;
+  $('lvlUp').classList.remove('boom');
+  if(skillWinQ){
+    const q=skillWinQ;
+    skillWinQ=null;
+    showSkillWin(q);
+  }else maybeSkillPop();
+};
+function acceptSkill(){
+  const q=currentSkillQuest();
+  if(!q)return;
+  q.checks=(q.checks||0)+1;
+  q.mastered=true;
+  const xp=grantXp(q.bonusXp||0);
+  const spins=q.bonusSpins||0;
+  for(let i=0;i<spins&&S.questQueue.length<40;i++)S.questQueue.push({id:q.id,name:q.name,diff:'insanity'});
+  const noteBits=[q.name,q.prize||'Big reward TBD'];
+  if(spins)noteBits.push(spins+' Hard spin'+(spins===1?'':'s'));
+  pushLog({t:Date.now(),kind:'skill',ms:0,note:noteBits.join(' · '),xp});
+  S.skillCue='';
+  skillMode='win';
+  save();
+  render();
+  if($('lvlUp')&&!$('lvlUp').hidden){
+    skillWinQ=q;
+    $('skillPop').hidden=true;
+  }else showSkillWin(q);
+}
+function declineSkill(){
+  const q=currentSkillQuest();
+  if(!q)return;
+  q.checks=(q.checks||0)+1;
+  S.skillCue='';
+  skillMode='encourage';
+  const interval=q.interval||100;
+  const next=(q.checks+1)*interval;
+  save();
+  render();
+  showSkillEncourage(skillPending(q)?'Not yet — and that is okay. Another Skill Check is ready when you are.':'Not yet — and that is okay. Every minute still counts. Next Skill Check at '+next+' mins.');
+}
+$('skillYes').onclick=acceptSkill;
+$('skillNo').onclick=declineSkill;
+$('skillLater').onclick=()=>{
+  S.skillCue='';
+  closeSkillPop();
+  save();
+  renderQuests();
+};
+$('skillOk').onclick=()=>{
+  closeSkillPop();
+  $('skillOk').textContent='Awesome';
+  maybeSkillPop();
+};
 $('missOk').onclick=()=>{S.xpNotice=null;save();$('missPop').hidden=true};
 $('addCustom').onclick=()=>{
   const name=$('customName').value.trim();
@@ -2644,6 +3015,8 @@ $('viewChallenges').onclick=ev=>{
     else return;
   }else if(t.dataset.scope==='qrule'){
     bumpRule(t.dataset.i,t.dataset.field,+t.dataset.dir);
+  }else if(t.dataset.scope==='insanity'){
+    bumpInsanity(t.dataset.i,t.dataset.field,+t.dataset.dir);
   }else if(t.dataset.scope==='xp'){
     bumpXp(t.dataset.field,+t.dataset.dir,t.dataset.i==null?null:+t.dataset.i);
   }else if(t.dataset.scope){
@@ -2655,6 +3028,24 @@ $('viewChallenges').onclick=ev=>{
   paintQuizCard();
   paintRank();
 };
+$('viewChallenges').addEventListener('input',ev=>{
+  const el=ev.target;
+  if(!el.matches||!el.matches('[data-skill-prize]'))return;
+  const q=S.quests.find(x=>x.id===el.dataset.skillPrize);
+  if(!q)return;
+  q.prize=el.value.slice(0,80);
+  save();
+});
+$('viewChallenges').addEventListener('focusout',ev=>{
+  const el=ev.target;
+  if(!el.matches||!el.matches('[data-skill-prize]'))return;
+  const q=S.quests.find(x=>x.id===el.dataset.skillPrize);
+  if(!q)return;
+  const prize=el.value.trim().slice(0,80);
+  q.prize=prize||'Big reward TBD';
+  if(!prize)el.value=q.prize;
+  save();
+});
 $('viewChallenges').addEventListener('change',ev=>{
   const sel=ev.target;
   if(!sel.matches||!sel.matches('select[data-kind]'))return;
