@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="app-version" content="20261115a">
+<meta name="app-version" content="20261115b">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -499,8 +499,38 @@
   #quizDone{color:#fff}
   #quizDone::before{background:linear-gradient(180deg,#6e63ff,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
   li.loot-quiz{--rarity:#3aa0ff}
+  li.loot-xp{--rarity:#5dff4a}
+  li.loot-xp.down{--rarity:#ff5d7a}
+  li.loot-miss{--rarity:#ff9a1a}
+  .rankbar{margin:0 0 8px;padding:8px 10px 9px;border-radius:14px;background:rgba(10,6,28,.72);border:2px solid #d5d0ea}
+  .ranktop{display:flex;align-items:baseline;gap:8px}
+  .ranklv{font-size:1.15rem;letter-spacing:.04em;color:#e4e4ee}
+  .rankname{flex:1;min-width:0;font-size:.95rem;letter-spacing:.08em;text-transform:uppercase}
+  .rankxp{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:.78rem;font-weight:800;letter-spacing:0;text-transform:none;color:#efeaff}
+  .ranktrack{height:8px;margin-top:6px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+  .ranktrack i{display:block;height:100%;width:0;border-radius:99px;background:#e4e4ee}
+  .rankbar.rookie{border-color:#d5d0ea}.rankbar.rookie .ranklv,.rankbar.rookie .rankname{color:#e4e4ee}
+  .rankbar.scout{border-color:#5dff4a}.rankbar.scout .ranklv,.rankbar.scout .rankname{color:#5dff4a}.rankbar.scout .ranktrack i{background:#5dff4a}
+  .rankbar.ranger{border-color:#3aa0ff}.rankbar.ranger .ranklv,.rankbar.ranger .rankname{color:#8ec6ff}.rankbar.ranger .ranktrack i{background:#3aa0ff}
+  .rankbar.elite{border-color:#c06bff}.rankbar.elite .ranklv,.rankbar.elite .rankname{color:#e0b0ff}.rankbar.elite .ranktrack i{background:#c06bff}
+  .rankbar.champion{border-color:#ff9a1a}.rankbar.champion .ranklv,.rankbar.champion .rankname{color:#ffb020}.rankbar.champion .ranktrack i{background:#ff9a1a}
+  .rankbar.legend{border-color:#ffe14a}.rankbar.legend .ranklv,.rankbar.legend .rankname{color:#ffe14a}.rankbar.legend .ranktrack i{background:#ffe14a}
+  .masterday{margin:0 0 10px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;font-size:.92rem;letter-spacing:0;text-transform:none;color:#efeaff}
+  .masterday.ok{color:#5dff4a}
+  .masterday.warn{color:#ffe14a}
+  .xppop{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:26;pointer-events:none;font-size:2.2rem;letter-spacing:.04em;color:#5dff4a;text-shadow:0 3px 0 #06210a}
+  .xppop.down{color:#ff5d7a;text-shadow:0 3px 0 #3a0614}
+  .xppop.go{animation:xpfly .9s ease forwards}
+  @keyframes xpfly{0%{opacity:0;transform:translate(-50%,8px)}18%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-42px)}}
+  .lvlup{position:fixed;inset:0;z-index:36;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(circle at 50% 18%,rgba(255,225,74,.28),transparent 34%),linear-gradient(180deg,#49c4ff 0%,#5a2bff 46%,#1a0a4a 100%)}
+  .lvlup:not([hidden]){display:flex}
+  .lvlrank{position:relative;z-index:1;margin:0 0 8px;font-size:clamp(2.4rem,12vw,4rem);line-height:.9;letter-spacing:.04em;text-transform:uppercase;text-shadow:0 4px 0 #1a0a40}
+  .lvlrank.rookie{color:#e4e4ee}.lvlrank.scout{color:#5dff4a}.lvlrank.ranger{color:#8ec6ff}.lvlrank.elite{color:#e0b0ff}.lvlrank.champion{color:#ffb020}.lvlrank.legend{color:#ffe14a}
+  #lvlOk,#missOk{color:#1a1200;position:relative;z-index:1}
+  #lvlOk::before,#missOk::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
+  #missPop{z-index:33}
   @media (prefers-reduced-motion:reduce){
-    .confetti i,.bigbtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup{animation:none;transition:none}
+    .confetti i,.bigbtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup,.xppop.go,.lvlup.boom .vic,.lvlup.boom .lvlrank{animation:none;transition:none}
   }
 </style>
 </head>
@@ -552,6 +582,8 @@
 <div class="wrap">
   <div class="title"><span class="brand">TimeOutTastic</span><button class="snd" id="sndBtn" aria-label="Sound on or off">🔇</button></div>
   <div id="viewTimer" role="tabpanel">
+  <div class="rankbar rookie" id="rankTimer"><div class="ranktop"><b class="ranklv">Lv 1</b><span class="rankname">Rookie</span><span class="rankxp">0 / 100 XP</span></div><div class="ranktrack"><i></i></div></div>
+  <p class="masterday" id="masterNoteTimer"></p>
 
   <div class="hero" id="hero">
     <div class="kicker" id="heroKicker">Storm timer</div>
@@ -583,6 +615,8 @@
   </section>
   </div>
   <div id="viewQuests" role="tabpanel" hidden>
+    <div class="rankbar rookie" id="rankQuests"><div class="ranktop"><b class="ranklv">Lv 1</b><span class="rankname">Rookie</span><span class="rankxp">0 / 100 XP</span></div><div class="ranktrack"><i></i></div></div>
+    <p class="masterday" id="masterNoteQuests"></p>
     <p class="questLead">Things Fionn can do to earn penalty time back.</p>
     <p class="questTotal" id="questTotal">Penalty 0 min</p>
     <button type="button" class="quizcard" id="quizBtn"><b id="quizTitle">Times Table Quiz</b><small id="quizSub">15 questions · up to 3 spins</small></button>
@@ -605,6 +639,8 @@
     <button type="button" class="bigbtn" id="addCustom">Add challenge</button>
     <p class="chh">Quest rewards</p>
     <div id="chalRules"></div>
+    <p class="chh" id="xpHead">Levels & XP</p>
+    <div id="chalXp"></div>
     <p class="chh">Quiz levels</p>
     <div id="chalLevels"></div>
     <p class="chh">Daily reward</p>
@@ -636,6 +672,22 @@
     </button>
   </div>
 </nav>
+<div class="xppop" id="xpPop" hidden>+10 XP</div>
+<div class="lvlup" id="lvlUp" hidden>
+  <div class="flash" aria-hidden="true"></div>
+  <div class="confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="vic">Level up!</p>
+  <p class="lvlrank rookie" id="lvlRank">Rookie</p>
+  <p class="big" id="lvlMsg">Level 2</p>
+  <button type="button" class="bigbtn" id="lvlOk">Nice</button>
+</div>
+<div class="daypop" id="missPop" hidden>
+  <div class="daysheet">
+    <p class="daypopk">No Master quest</p>
+    <p class="daytask" id="missMsg"></p>
+    <button type="button" class="bigbtn" id="missOk">OK</button>
+  </div>
+</div>
 <div class="daypop" id="dayPop" hidden>
   <div class="confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <div class="daysheet">
@@ -647,7 +699,7 @@
 </div>
 
 <script>
-const APP_VERSION="20261115a";
+const APP_VERSION="20261115b";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
@@ -745,7 +797,32 @@ function normQuizLevels(o){
     return nums.length>=2?nums:QUIZ_LEVELS[i].slice();
   });
 }
-function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null};}
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null,xp:0,level:1,xpSet:null,xpStart:'',xpCheck:'',masterDays:[],xpNotice:null};}
+function defaultXpSet(){return {quest:{easy:10,medium:25,hard:50,master:100},quiz:2,perfect:10,daily:20,miles:[{days:3,xp:25},{days:7,xp:50},{days:14,xp:100},{days:30,xp:200}],penalty:10,missMin:10,missXp:25,missOn:true,pause:false}}
+function normXpSet(o){
+  const d=defaultXpSet();
+  const src=o&&o.xpSet;
+  if(!src||typeof src!=='object')return d;
+  DIFFS.forEach(k=>{d.quest[k]=clampInt(src.quest&&src.quest[k],0,500,d.quest[k])});
+  d.quiz=clampInt(src.quiz,0,50,d.quiz);
+  d.perfect=clampInt(src.perfect,0,200,d.perfect);
+  d.daily=clampInt(src.daily,0,500,d.daily);
+  d.penalty=clampInt(src.penalty,0,100,d.penalty);
+  d.missMin=clampInt(src.missMin,0,60,d.missMin);
+  d.missXp=clampInt(src.missXp,0,200,d.missXp);
+  d.missOn=src.missOn!==false;
+  d.pause=!!src.pause;
+  if(Array.isArray(src.miles)&&src.miles.length){
+    const miles=[];
+    src.miles.slice(0,8).forEach(m=>{
+      const days=clampInt(m&&m.days,2,365,0);
+      if(!days||miles.some(x=>x.days===days))return;
+      miles.push({days,xp:clampInt(m.xp,0,500,0)});
+    });
+    if(miles.length){miles.sort((a,b)=>a.days-b.days);d.miles=miles}
+  }
+  return d;
+}
 function normQuizRun(o){
   const q=o&&o.quizRun;
   if(!q||!Array.isArray(q.qs)||q.qs.length!==15)return null;
@@ -784,6 +861,20 @@ function norm(o){
   S.quizBump=o&&(o.quizBump===2||o.quizBump===3)?o.quizBump:0;
   if(S.quizSpins>0)S.quizRun=null;
   applyDaily(S,o);
+  S.xpSet=normXpSet(o);
+  S.xp=Math.max(0,Math.min(5000000,Math.floor(Number(o&&o.xp)||0)));
+  S.level=levelFromXp(S.xp);
+  if(Number.isFinite(Number(o&&o.level))&&S.xp>=floorFor(clampInt(o.level,1,99,1)))S.level=Math.max(S.level,clampInt(o.level,1,99,1));
+  S.xpStart=/^\d{4}-\d{2}-\d{2}$/.test(o&&o.xpStart)?o.xpStart:londonDay();
+  S.xpCheck=/^\d{4}-\d{2}-\d{2}$/.test(o&&o.xpCheck)?o.xpCheck:'';
+  const seenDay={};
+  S.masterDays=[];
+  (Array.isArray(o&&o.masterDays)?o.masterDays:[]).forEach(d=>{
+    if(/^\d{4}-\d{2}-\d{2}$/.test(d)&&!seenDay[d]){seenDay[d]=1;S.masterDays.push(d)}
+  });
+  if(S.masterDays.length>120)S.masterDays=S.masterDays.slice(-120);
+  const note=o&&o.xpNotice;
+  S.xpNotice=note&&note.days>0?{days:clampInt(note.days,1,3,1),min:clampInt(note.min,0,60,10),xp:clampInt(note.xp,0,200,25)}:null;
   if(!o||typeof o!=='object')return S;
   S.sound=!!o.sound;
   const totalN=Number(o.totalMs);
@@ -795,7 +886,7 @@ function norm(o){
   S.runMs=Math.max(0,Number(o.runMs)||0);
   S.servedMs=Math.max(0,Number(o.servedMs)||0);
   S.alerted=!!o.alerted;
-  S.log=Array.isArray(o.log)?o.log.filter(e=>e&&e.t&&e.kind).map(e=>({t:e.t,kind:e.kind,ms:Math.max(0,Number(e.ms)||0),note:e.note||'',rarity:e.rarity||''})):[];
+  S.log=Array.isArray(o.log)?o.log.filter(e=>e&&e.t&&e.kind).map(e=>({t:e.t,kind:e.kind,ms:Math.max(0,Number(e.ms)||0),note:e.note||'',rarity:e.rarity||'',xp:Number.isFinite(Number(e.xp))?Math.round(Number(e.xp)):0})):[];
   if(S.mode==='running'&&typeof S.endsAt!=='number')S.mode='paused';
   if(S.mode==='paused'&&S.remainingMs<=0){S.mode='idle';if(S.totalMs>0)S.totalMs=0}
   if(S.mode==='done'&&S.servedMs<=0)S.servedMs=S.runMs||STEP;
@@ -919,14 +1010,215 @@ function logLine(e){
     if(e.rarity)label+=', '+esc(e.rarity)+' -'+clock(e.ms);
     else if(e.ms)label+=', -'+clock(e.ms);
   }
+  else if(e.kind==='xp')label=(e.xp>0?'+'+e.xp:String(e.xp))+' XP · '+esc(e.note||'XP');
+  else if(e.kind==='miss')label='No Master quest +'+clock(e.ms)+' / -'+Math.abs(e.xp||0)+' XP';
   else return '';
-  const note=e.kind==='quest'||e.kind==='quiz'||e.kind==='manual'||e.kind==='daily'?'':(e.note?' · '+esc(e.note):'');
+  if(e.xp&&e.kind!=='xp'&&e.kind!=='miss')label+=' · '+(e.xp>0?'+':'')+e.xp+' XP';
+  const note=e.kind==='quest'||e.kind==='quiz'||e.kind==='manual'||e.kind==='daily'||e.kind==='xp'||e.kind==='miss'?'':(e.note?' · '+esc(e.note):'');
   const used=e.kind==='served'||e.kind==='clear'?' used':'';
   const rar=e.rarity?esc(String(e.rarity).toLowerCase()):'';
-  return `<li class="loot loot-${esc(e.kind)}${rar?' loot-'+rar:''}${used}">${label}${note}<div class="meta">${fmt(e.t)}</div></li>`;
+  const down=e.xp<0?' down':'';
+  return `<li class="loot loot-${esc(e.kind)}${rar?' loot-'+rar:''}${used}${down}">${label}${note}<div class="meta">${fmt(e.t)}</div></li>`;
+}
+function needFor(level){return 100+(Math.max(1,level)-1)*50}
+function floorFor(level){
+  let xp=0;
+  for(let n=1;n<level;n++)xp+=needFor(n);
+  return xp;
+}
+function levelFromXp(xp){
+  let level=1,floor=0;
+  xp=Math.max(0,xp||0);
+  while(level<99){
+    const need=needFor(level);
+    if(xp<floor+need)return level;
+    floor+=need;
+    level++;
+  }
+  return level;
+}
+function rankFor(level){
+  if(level>=30)return {name:'Legend',cls:'legend'};
+  if(level>=20)return {name:'Champion',cls:'champion'};
+  if(level>=15)return {name:'Elite',cls:'elite'};
+  if(level>=10)return {name:'Ranger',cls:'ranger'};
+  if(level>=5)return {name:'Scout',cls:'scout'};
+  return {name:'Rookie',cls:'rookie'};
+}
+function xpProgress(){
+  const level=Math.max(1,S.level||1);
+  const floor=floorFor(level);
+  const need=needFor(level);
+  const into=Math.max(0,Math.min(need,(S.xp||0)-floor));
+  return {level,need,into};
+}
+let xpFlash=0,xpQuiet=false,pendingLevel=null,xpPopTimer=0;
+function grantXp(delta){
+  delta=Math.round(Number(delta)||0);
+  if(!delta)return 0;
+  const before=Math.max(0,Math.round(Number(S.xp)||0));
+  const oldLevel=Math.max(1,S.level||1);
+  let next=before+delta;
+  const floor=floorFor(oldLevel);
+  if(next<floor)next=floor;
+  if(next<0)next=0;
+  const applied=next-before;
+  S.xp=next;
+  if(applied>0){
+    const lv=levelFromXp(S.xp);
+    if(lv>oldLevel){
+      S.level=lv;
+      if(!pendingLevel)pendingLevel={from:oldLevel,to:lv};
+      else pendingLevel.to=lv;
+    }
+  }
+  if(applied&&!xpQuiet)xpFlash+=applied;
+  return applied;
+}
+function flashXp(n){
+  const el=$('xpPop');
+  if(!el||!n)return;
+  el.textContent=(n>0?'+':'')+n+' XP';
+  el.classList.toggle('down',n<0);
+  el.hidden=false;
+  el.classList.remove('go');
+  void el.offsetWidth;
+  el.classList.add('go');
+  clearTimeout(xpPopTimer);
+  xpPopTimer=setTimeout(()=>{el.hidden=true;el.classList.remove('go')},1000);
+}
+function flushXpFlash(){
+  const n=xpFlash;
+  xpFlash=0;
+  if(n)flashXp(n);
+}
+function paintRank(){
+  const p=xpProgress();
+  const rank=rankFor(p.level);
+  ['rankTimer','rankQuests'].forEach(id=>{
+    const el=$(id);
+    if(!el)return;
+    el.className='rankbar '+rank.cls;
+    el.querySelector('.ranklv').textContent='Lv '+p.level;
+    el.querySelector('.rankname').textContent=rank.name;
+    el.querySelector('.rankxp').textContent=p.into+' / '+p.need+' XP';
+    el.querySelector('i').style.width=(p.need?Math.round(p.into/p.need*100):0)+'%';
+  });
+  const today=londonDay();
+  const done=masterClaimedOn(today);
+  let text,cls;
+  if(done){text='Master quest today: ✓ done';cls='masterday ok'}
+  else if(S.xpSet&&S.xpSet.pause){text='Master quest today: holiday pause';cls='masterday'}
+  else if(S.xpSet&&S.xpSet.missOn===false){text='Master quest today: penalty off';cls='masterday'}
+  else{
+    const mins=clock(((S.xpSet&&S.xpSet.missMin)||0)*60000);
+    text='Master quest today: ⚠ not yet, +'+mins+' at midnight';
+    cls='masterday warn';
+  }
+  ['masterNoteTimer','masterNoteQuests'].forEach(id=>{
+    const el=$(id);
+    if(!el)return;
+    el.className=cls;
+    el.textContent=text;
+  });
+}
+function masterClaimedOn(day){
+  if(S.masterDays&&S.masterDays.indexOf(day)>=0)return true;
+  return S.quests.some(q=>q.diff==='master'&&q.claimDay===day&&q.claimN>0);
+}
+function noteMasterClaim(){
+  const day=londonDay();
+  if(S.masterDays.indexOf(day)<0)S.masterDays.push(day);
+  if(S.masterDays.length>120)S.masterDays=S.masterDays.slice(-120);
+}
+function addTime(ms){
+  if(!(ms>0))return;
+  if(S.mode==='running'&&typeof S.endsAt==='number'){
+    S.endsAt+=ms;
+    S.runMs=(S.runMs||0)+ms;
+    S.totalMs=Math.max(0,S.endsAt-Date.now());
+  }else if(S.mode==='paused'){
+    S.remainingMs+=ms;
+    S.totalMs=S.remainingMs;
+    S.runMs=(S.runMs||0)+ms;
+  }else{
+    S.mode='idle';
+    S.endsAt=null;
+    S.totalMs=(Number.isFinite(S.totalMs)?S.totalMs:0)+ms;
+  }
+}
+function applyMissDay(){
+  const ms=Math.max(0,(S.xpSet.missMin||0)*60000);
+  if(ms)addTime(ms);
+  const lost=grantXp(-(S.xpSet.missXp||0));
+  pushLog({t:Date.now(),kind:'miss',ms,note:'',xp:lost});
+}
+function checkMasterDays(){
+  if(typeof spinning!=='undefined'&&spinning)return;
+  const today=londonDay();
+  let changed=false;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(S.xpStart)){S.xpStart=today;changed=true}
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(S.xpCheck)){S.xpCheck=isoFromNum(dayNum(S.xpStart)-1);changed=true}
+  const from=Math.max(dayNum(S.xpStart),dayNum(S.xpCheck)+1);
+  const to=dayNum(today)-1;
+  if(to>=from){
+    const missed=[];
+    for(let n=from;n<=to;n++){
+      const d=isoFromNum(n);
+      if(!masterClaimedOn(d))missed.push(d);
+    }
+    const charge=S.xpSet.missOn&&!S.xpSet.pause;
+    const apply=charge?missed.slice(-3):[];
+    xpQuiet=true;
+    apply.forEach(applyMissDay);
+    xpQuiet=false;
+    S.xpCheck=isoFromNum(to);
+    if(apply.length)S.xpNotice={days:apply.length,min:S.xpSet.missMin,xp:S.xpSet.missXp};
+    changed=true;
+  }
+  if(changed)save();
+}
+function maybeMissPop(){
+  const pop=$('missPop');
+  if(!pop)return;
+  const p=S.xpNotice;
+  if(!p){pop.hidden=true;return}
+  const each=clock((p.min||0)*60000);
+  $('missMsg').textContent=p.days===1?'A day with no Master quest. +'+each+' and -'+p.xp+' XP.':p.days+' days with no Master quest. +'+each+' and -'+p.xp+' XP each.';
+  pop.hidden=false;
+}
+function levelFanfare(){
+  if(!S.sound)return;
+  unlockAudio();
+  if(!ctx)return;
+  ensureRack();
+  setAudible(true);
+  const t=ctx.currentTime+0.02;
+  chord([392,493.88,587.33],t,0.32,0.5);
+  brass(783.99,t+0.26,0.2,0.34);
+  chord([523.25,659.25,783.99],t+0.48,0.85,0.62);
+  noise(t+0.48,0.12,0.08,4000,'highpass');
+}
+function maybeLevelUp(){
+  if(!pendingLevel)return;
+  const lv=pendingLevel.to;
+  pendingLevel=null;
+  const rank=rankFor(lv);
+  const box=$('lvlUp');
+  if(!box)return;
+  $('lvlRank').textContent=rank.name;
+  $('lvlRank').className='lvlrank '+rank.cls;
+  $('lvlMsg').textContent='Level '+lv;
+  box.hidden=false;
+  box.classList.remove('boom');
+  void box.offsetWidth;
+  box.classList.add('boom');
+  if(navigator.vibrate)navigator.vibrate([40,30,40,30,120]);
+  try{levelFanfare()}catch(e){}
 }
 function render(){
   paintHero();
+  paintRank();
   const start=$('startBtn');
   const showStart=S.mode==='running'||S.mode==='paused'||(S.mode==='idle'&&S.totalMs>0);
   start.style.display=showStart?'block':'none';
@@ -946,6 +1238,9 @@ function render(){
   paintQuizCard();
   paintDay();
   maybeDayPop();
+  flushXpFlash();
+  maybeLevelUp();
+  maybeMissPop();
 }
 function finishRun(){
   if(S.mode==='done')return false;
@@ -992,7 +1287,8 @@ function addFive(){
     S.mode='idle';
     S.totalMs+=STEP;
   }
-  pushLog({t:Date.now(),kind:'add',ms:STEP,note});
+  const lost=grantXp(-(S.xpSet&&S.xpSet.penalty||0));
+  pushLog({t:Date.now(),kind:'add',ms:STEP,note,xp:lost});
   save();render();
   if(navigator.vibrate)navigator.vibrate(80);
 }
@@ -1402,7 +1698,11 @@ function claimQuest(q){
   q.claimDay=londonDay();
   q.claimN=n+1;
   q.uses=questUses(q)+1;
+  if(q.diff==='master')noteMasterClaim();
   for(let i=0;i<rule.spins&&S.questQueue.length<40;i++)S.questQueue.push({id:q.id,name:q.name,diff:q.diff});
+  const gain=S.xpSet&&S.xpSet.quest?S.xpSet.quest[q.diff]||0:0;
+  const got=grantXp(gain);
+  if(got)pushLog({t:Date.now(),kind:'xp',ms:0,note:diffName(q.diff)+' quest',xp:got});
   save();
   render();
 }
@@ -2021,6 +2321,13 @@ function grantDailyRewards(){
     pushLog({t:Date.now(),kind:'daily',ms:cut,note,rarity:''});
   }
   if(milestone)S.dailyPop={streak,milestone:true,spins,time:timeMs};
+  const base=grantXp(S.xpSet&&S.xpSet.daily||0);
+  if(base)pushLog({t:Date.now(),kind:'xp',ms:0,note:'Daily challenge',xp:base});
+  const hit=S.xpSet&&S.xpSet.miles&&S.xpSet.miles.find(m=>m.days===streak);
+  if(hit){
+    const extra=grantXp(hit.xp||0);
+    if(extra)pushLog({t:Date.now(),kind:'xp',ms:0,note:hit.days+' day streak',xp:extra});
+  }
 }
 function completeDaily(){
   syncDaily();
@@ -2054,13 +2361,17 @@ function finishMainQuiz(run){
   S.quizPlays+=1;
   const next=Math.min(3,S.quizPlays+1);
   S.quizBump=next>level?next:0;
+  const quizXp=right*((S.xpSet&&S.xpSet.quiz)||0)+(right>=15?((S.xpSet&&S.xpSet.perfect)||0):0);
+  const got=grantXp(quizXp);
+  if(got)pushLog({t:Date.now(),kind:'xp',ms:0,note:right>=15?'Times Table Quiz perfect':'Times Table Quiz',xp:got});
   syncDaily();
   const t=S.dailyToday;
   if(t&&S.dailyLast!==londonDay()&&((t.id==='quiz15'&&right>=15)||(t.id==='quiz13'&&right>=13)))completeDaily();
-  save();
+  else save();
   paintQuiz();
   paintQuizCard();
   paintDay();
+  render();
 }
 function finishFocus(run){
   const right=run.qs.length-run.wrong;
@@ -2164,6 +2475,44 @@ function paintChallenges(){
   $('chalMiles').innerHTML=set.miles.map((m,i)=>mileEditor(m,i)).join('')||'<p class="daybest">No streak bonuses yet.</p>';
   if($('chalRules'))$('chalRules').innerHTML=DIFFS.map(ruleEditor).join('');
   if($('chalLevels'))$('chalLevels').innerHTML=[0,1,2].map(levelEditor).join('');
+  paintXp();
+}
+function xpStep(label,field,i){
+  const n=field==='m'?S.xpSet.miles[i].xp:field.indexOf('q-')===0?S.xpSet.quest[field.slice(2)]:S.xpSet[field];
+  return '<div class="chreward"><span class="chlab">'+esc(label)+'</span>'+stepBtn('xp',field,-1,i)+'<span class="chnum">'+n+'</span>'+stepBtn('xp',field,1,i)+'</div>';
+}
+function paintXp(){
+  const box=$('chalXp');
+  if(!box||!S.xpSet)return;
+  const x=S.xpSet;
+  box.innerHTML=DIFFS.map(d=>xpStep(diffName(d)+' quest','q-'+d)).join('')
+    +xpStep('Quiz, each right answer','quiz')
+    +xpStep('Perfect quiz bonus','perfect')
+    +xpStep('Daily challenge','daily')
+    +x.miles.map((m,i)=>xpStep(m.days+' day streak','m',i)).join('')
+    +xpStep('+5 penalty XP','penalty')
+    +'<div class="chrow"><div class="txt"><b>No Master quest</b><small>A London day with none adds time and costs XP</small></div><button type="button" class="chtog'+(x.missOn?' on':'')+'" data-xp-toggle="missOn">'+(x.missOn?'On':'Off')+'</button></div>'
+    +xpStep('Minutes added','missMin')
+    +xpStep('XP lost','missXp')
+    +'<div class="chrow"><div class="txt"><b>Holiday pause</b><small>Skip that penalty until you turn this off</small></div><button type="button" class="chtog'+(x.pause?' on':'')+'" data-xp-toggle="pause">'+(x.pause?'On':'Off')+'</button></div>';
+}
+function bumpXp(field,dir,i){
+  const x=S.xpSet;
+  if(!x)return;
+  if(field.indexOf('q-')===0){
+    const d=field.slice(2);
+    if(!Object.prototype.hasOwnProperty.call(x.quest,d))return;
+    x.quest[d]=clampInt(x.quest[d]+dir,0,500,x.quest[d]);
+  }else if(field==='m'){
+    const m=x.miles[i];
+    if(!m)return;
+    m.xp=clampInt(m.xp+dir,0,500,m.xp);
+  }else if(field==='quiz')x.quiz=clampInt(x.quiz+dir,0,50,x.quiz);
+  else if(field==='perfect')x.perfect=clampInt(x.perfect+dir,0,200,x.perfect);
+  else if(field==='daily')x.daily=clampInt(x.daily+dir,0,500,x.daily);
+  else if(field==='penalty')x.penalty=clampInt(x.penalty+dir,0,100,x.penalty);
+  else if(field==='missMin')x.missMin=clampInt(x.missMin+dir,0,60,x.missMin);
+  else if(field==='missXp')x.missXp=clampInt(x.missXp+dir,0,200,x.missXp);
 }
 function levelEditor(i){
   const nums=S.quizLevels[i];
@@ -2252,6 +2601,8 @@ $('daySpin').onclick=()=>{
   openSpin('Daily Challenge',null,'daily');
 };
 $('dayPopOk').onclick=()=>{S.dailyPop=null;save();$('dayPop').hidden=true};
+$('lvlOk').onclick=()=>{$('lvlUp').hidden=true;$('lvlUp').classList.remove('boom')};
+$('missOk').onclick=()=>{S.xpNotice=null;save();$('missPop').hidden=true};
 $('addCustom').onclick=()=>{
   const name=$('customName').value.trim();
   if(!name)return;
@@ -2286,8 +2637,15 @@ $('viewChallenges').onclick=ev=>{
     S.dailySet.miles.splice(+t.dataset.delM,1);
   }else if(t.dataset.lv){
     if(!toggleLevel(+t.dataset.lv,+t.dataset.table))return;
+  }else if(t.dataset.xpToggle){
+    const k=t.dataset.xpToggle;
+    if(k==='missOn')S.xpSet.missOn=!S.xpSet.missOn;
+    else if(k==='pause')S.xpSet.pause=!S.xpSet.pause;
+    else return;
   }else if(t.dataset.scope==='qrule'){
     bumpRule(t.dataset.i,t.dataset.field,+t.dataset.dir);
+  }else if(t.dataset.scope==='xp'){
+    bumpXp(t.dataset.field,+t.dataset.dir,t.dataset.i==null?null:+t.dataset.i);
   }else if(t.dataset.scope){
     bumpReward(t.dataset.scope,t.dataset.field,+t.dataset.dir,t.dataset.i==null?null:+t.dataset.i);
   }else return;
@@ -2295,6 +2653,7 @@ $('viewChallenges').onclick=ev=>{
   paintChallenges();
   paintDay();
   paintQuizCard();
+  paintRank();
 };
 $('viewChallenges').addEventListener('change',ev=>{
   const sel=ev.target;
@@ -2314,6 +2673,7 @@ $('viewChallenges').addEventListener('change',ev=>{
   paintDay();
 });
 sndLabel();
+checkMasterDays();
 render();
 tick();
 setInterval(tick,250);
@@ -2356,7 +2716,9 @@ async function checkUpdate(){
   finally{updateChecking=false}
 }
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible')checkUpdate();
+  if(document.visibilityState!=='visible')return;
+  checkMasterDays();
+  checkUpdate();
 });
 checkUpdate();
 </script>
