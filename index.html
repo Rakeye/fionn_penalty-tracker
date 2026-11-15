@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="app-version" content="20261114b">
+<meta name="app-version" content="20261115a">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -306,16 +306,21 @@
   .qmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .qdiff{
     flex:none;min-width:0;min-height:44px;padding:0 12px;border-radius:999px;
-    font-size:.95rem;letter-spacing:.04em;
+    font-size:.95rem;letter-spacing:.04em;text-transform:uppercase;
   }
   .qdiff.easy{background:#5dff4a;color:#06210a}
   .qdiff.medium{background:linear-gradient(180deg,#8eb6ff,#5b4dff);color:#fff}
   .qdiff.hard{background:linear-gradient(180deg,#ffe14a,#ff9a1a);color:#1a1200}
+  .qdiff.master{
+    background:linear-gradient(180deg,#fff8d0 0%,#ffe14a 40%,#f5a400 78%,#c86a00 100%);
+    color:#1a1200;
+    box-shadow:inset 0 1px 0 #fff, 0 0 0 2px #7a3d00;
+  }
   .qtoday,.qreward{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;letter-spacing:0;text-transform:none}
   .qtoday{font-size:.95rem;color:#efeaff}
   .qreward{font-size:1.02rem;color:#ffe14a}
-  .adddiffs{display:flex;gap:8px;margin:0 0 10px}
-  .adddiffs .qdiff{flex:1}
+  .adddiffs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
+  .adddiffs .qdiff{flex:1;min-width:0}
   .adddiffs .qdiff.on{box-shadow:0 0 0 3px #fff,0 4px 0 #12081f}
   .chrow .qdiff{min-height:0;padding:2px 10px;font-size:.85rem}
   .chlab{flex:1;min-width:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;font-size:.95rem;letter-spacing:0;text-transform:none;color:#efeaff}
@@ -587,6 +592,7 @@
       <button type="button" class="qdiff easy" data-add-diff="easy">Easy</button>
       <button type="button" class="qdiff medium on" data-add-diff="medium">Medium</button>
       <button type="button" class="qdiff hard" data-add-diff="hard">Hard</button>
+      <button type="button" class="qdiff master" data-add-diff="master">★ Master</button>
     </div>
     <button class="bigbtn" id="addQuest">Add quest</button>
     <details id="history"><summary>History</summary><ul id="logList"></ul></details>
@@ -641,25 +647,28 @@
 </div>
 
 <script>
-const APP_VERSION="20261114b";
+const APP_VERSION="20261115a";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
 const fmt=t=>new Date(t).toLocaleString([], {weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const QUEST_NAMES=['Tidy your bedroom','Read a book for 15 minutes','Help set or clear the table','Put your laundry away','Do 20 star jumps','Draw a picture for someone','Help with the dishes','Make your bed','Feed or help with a pet','Write a thank-you or sorry note','Practise spelling or times tables','Sort your toys or Lego'];
-const DIFFS=['easy','medium','hard'];
+const MASTER_QUESTS=['20 mins piano','20 mins reading','20 mins writing a story','20 mins designing a game'];
+const DIFFS=['easy','medium','hard','master'];
 function normDiff(v){return DIFFS.indexOf(v)>=0?v:''}
 function guessDiff(name){
   const n=String(name||'').trim().toLowerCase();
+  if(MASTER_QUESTS.some(q=>q.toLowerCase()===n))return 'master';
   if(n==='do 20 star jumps'||n==='make your bed'||n==='write a thank-you or sorry note')return 'easy';
   if(n==='tidy your bedroom'||n==='read a book for 15 minutes'||n==='help with the dishes'||n==='practise spelling or times tables')return 'hard';
   if(/\b(star jumps?|make your bed|thank-you|sorry note)\b/.test(n))return 'easy';
   if(/\b(read|reading|book|spell|times tables?|homework|tidy|bedroom|dishes)\b/.test(n))return 'hard';
   return 'medium';
 }
-function diffName(d){return d==='hard'?'Hard':d==='easy'?'Easy':'Medium'}
-function defaultQuestRules(){return {easy:{max:3,spins:1},medium:{max:2,spins:1},hard:{max:1,spins:2}}}
+function diffName(d){return d==='master'?'Master':d==='hard'?'Hard':d==='easy'?'Easy':'Medium'}
+function diffMark(d){return (d==='master'?'★ ':'')+diffName(d)}
+function defaultQuestRules(){return {easy:{max:3,spins:1},medium:{max:2,spins:1},hard:{max:1,spins:2},master:{max:1,spins:3}}}
 function clampInt(n,min,max,fb){
   n=Math.floor(Number(n));
   if(!Number.isFinite(n))n=fb;
@@ -683,7 +692,22 @@ const BUILTINS=[
   {id:'questOne',title:'Claim one chosen quest',detail:'One quest from the list, the same all day.'},
   {id:'focus',title:'Focus quiz, one times table',detail:'10 questions. 8 or more to pass.'}
 ];
-function defaultQuests(){return QUEST_NAMES.map((name,i)=>({id:'qd'+i,name,uses:0,diff:guessDiff(name),claimDay:'',claimN:0}));}
+function defaultQuests(){return QUEST_NAMES.concat(MASTER_QUESTS).map((name,i)=>({id:'qd'+i,name,uses:0,diff:guessDiff(name),claimDay:'',claimN:0}));}
+function withMasterQuests(list,alreadySeeded){
+  if(alreadySeeded)return list;
+  const names={};
+  const ids={};
+  list.forEach(q=>{names[q.name.trim().toLowerCase()]=1;ids[q.id]=1});
+  MASTER_QUESTS.forEach((name,i)=>{
+    if(names[name.toLowerCase()])return;
+    let id='qm'+i;
+    while(ids[id])id+='x';
+    ids[id]=1;
+    names[name.toLowerCase()]=1;
+    list.push({id,name,uses:0,diff:'master',claimDay:'',claimN:0});
+  });
+  return list;
+}
 function questUses(q){
   const n=Math.floor(Number(q&&q.uses)||0);
   return n>0?Math.min(9999,n):0;
@@ -721,7 +745,7 @@ function normQuizLevels(o){
     return nums.length>=2?nums:QUIZ_LEVELS[i].slice();
   });
 }
-function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null};}
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null};}
 function normQuizRun(o){
   const q=o&&o.quizRun;
   if(!q||!Array.isArray(q.qs)||q.qs.length!==15)return null;
@@ -746,7 +770,8 @@ function normQuizRun(o){
 }
 function norm(o){
   const S=blank();
-  S.quests=normQuests(o);
+  S.quests=withMasterQuests(normQuests(o),!!(o&&o.masterSeed));
+  S.masterSeed=true;
   S.questRules=normQuestRules(o);
   S.questQueue=normQuestQueue(o,S.quests);
   S.quizRun=normQuizRun(o);
@@ -803,7 +828,7 @@ const existing=readKey(KEY);
 let S=existing?norm(existing):fromOld(readKey('fionnTracker.v2')||readKey('fionnTracker.v1'));
 function sortQuests(){S.quests.sort((a,b)=>questUses(b)-questUses(a))}
 const save=()=>{sortQuests();localStorage.setItem(KEY,JSON.stringify(S))};
-if(!existing)save();
+if(!existing||!existing.masterSeed)save();
 function owed(){
   if(S.mode==='running'&&typeof S.endsAt==='number')return Math.max(0,S.endsAt-Date.now());
   if(S.mode==='paused')return Math.max(0,S.remainingMs);
@@ -1283,11 +1308,11 @@ const HARD_W={COMMON:36,UNCOMMON:33,RARE:16,EPIC:8,LEGENDARY:5,MYTHIC:2};
 let wheelRot=0,spinning=false,spinGen=0,cueTimers=[];
 function weightsFor(kind){
   if(kind==='quiz'||kind==='daily'||kind==='medium')return PRIZES.map(p=>({...p,w:QUIZ_W[p.name]}));
-  if(kind==='hard')return PRIZES.map(p=>({...p,w:HARD_W[p.name]}));
+  if(kind==='hard'||kind==='master')return PRIZES.map(p=>({...p,w:HARD_W[p.name]}));
   return PRIZES;
 }
 function wheelMode(kind){
-  if(kind==='hard')return 'hard';
+  if(kind==='hard'||kind==='master')return 'hard';
   if(kind==='quiz'||kind==='daily'||kind==='medium')return 'quiz';
   return 'normal';
 }
@@ -1296,6 +1321,7 @@ function boostTitle(kind){
   if(kind==='quiz')return 'Quiz boost';
   if(kind==='medium')return 'Medium boost';
   if(kind==='hard')return 'Hard boost';
+  if(kind==='master')return 'Master';
   if(kind==='easy')return 'Easy';
   return '';
 }
@@ -1312,7 +1338,7 @@ function prizeLayout(list){
 function paintBoost(kind,table){
   const boost=$('quizBoost');
   const title=boostTitle(kind);
-  $('wheelBox').classList.toggle('boosted',kind==='quiz'||kind==='daily'||kind==='medium'||kind==='hard');
+  $('wheelBox').classList.toggle('boosted',kind==='quiz'||kind==='daily'||kind==='medium'||kind==='hard'||kind==='master');
   boost.hidden=!title;
   if(!title)return;
   boost.innerHTML='<b>'+title+'</b><span class="qodds">'+table.map(p=>'<i style="color:'+p.color+'">'+p.w+'%</i>').join('')+'</span>';
@@ -1358,7 +1384,7 @@ function renderQuests(){
     const maxed=today>=rule.max;
     const pending=S.questQueue.filter(x=>x.id===q.id).length;
     const spin=pending?'<div class="qrow"><button type="button" class="slab qspin" data-qspin>'+(pending===1?'Spin the reward':'Spin · '+pending+' left')+'</button></div>':'';
-    return `<article class="qcard${hot?' hot':''}" data-qid="${esc(q.id)}"><div class="qtop"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${badge}</div></div><div class="qmeta"><button type="button" class="qdiff ${q.diff}" data-cycle aria-label="Difficulty ${diffName(q.diff)}, tap to change">${diffName(q.diff)}</button><span class="qtoday">${today}/${rule.max} today</span></div><p class="qreward">${esc(rewardLine(q.diff))}</p><div class="qrow"><button type="button" class="slab claim" data-claim${maxed?' disabled':''}>${maxed?'Done for today':'Claim'}</button></div>${spin}</article>`;
+    return `<article class="qcard${hot?' hot':''}" data-qid="${esc(q.id)}"><div class="qtop"><button class="qx" data-del aria-label="Remove ${esc(q.name)}">×</button><div class="qhead"><div class="qname">${esc(q.name)}${mark}</div>${badge}</div></div><div class="qmeta"><button type="button" class="qdiff ${q.diff}" data-cycle aria-label="Difficulty ${diffName(q.diff)}, tap to change">${diffMark(q.diff)}</button><span class="qtoday">${today}/${rule.max} today</span></div><p class="qreward">${esc(rewardLine(q.diff))}</p><div class="qrow"><button type="button" class="slab claim" data-claim${maxed?' disabled':''}>${maxed?'Done for today':'Claim'}</button></div>${spin}</article>`;
   }).join('');
 }
 function claimsToday(q){return q.claimDay===londonDay()?(q.claimN||0):0}
@@ -1466,7 +1492,7 @@ function showReveal(prize,questName,cut){
 function openSpin(questName,questId,logKind){
   if(logKind==='quiz'&&!(S.quizSpins>0))return;
   if(logKind==='daily'&&!(S.dailySpins>0))return;
-  const questSpin=logKind==='easy'||logKind==='medium'||logKind==='hard';
+  const questSpin=DIFFS.indexOf(logKind)>=0;
   if(questSpin&&!S.questQueue.some(x=>x.id===questId&&x.diff===logKind))return;
   if(spinning||S.mode==='done')return;
   if(catchUp())return;
@@ -2162,8 +2188,8 @@ function toggleLevel(level,table){
 function oddsBits(kind){return weightsFor(kind).map(p=>p.w).join(' / ')}
 function ruleEditor(diff){
   const r=S.questRules[diff];
-  const odds=diff==='easy'?'Normal odds · '+oddsBits('easy'):diff==='medium'?'Quiz boost · '+oddsBits('medium'):'Hard boost · '+oddsBits('hard');
-  return '<div class="chrow"><div class="txt"><b><span class="qdiff '+diff+'">'+diffName(diff)+'</span></b><small>'+esc(odds)+'</small></div></div>'
+  const odds=diff==='easy'?'Normal odds · '+oddsBits('easy'):diff==='medium'?'Quiz boost · '+oddsBits('medium'):diff==='master'?'Hard wheel · '+oddsBits('master'):'Hard boost · '+oddsBits('hard');
+  return '<div class="chrow"><div class="txt"><b><span class="qdiff '+diff+'">'+diffMark(diff)+'</span></b><small>'+esc(odds)+'</small></div></div>'
     +'<div class="chreward"><span class="chlab">Claims a day</span>'+stepBtn('qrule','max',-1,diff)+'<span class="chnum">'+r.max+'</span>'+stepBtn('qrule','max',1,diff)+'</div>'
     +'<div class="chreward"><span class="chlab">Spins each</span>'+stepBtn('qrule','spins',-1,diff)+'<span class="chnum">'+r.spins+'</span>'+stepBtn('qrule','spins',1,diff)+'</div>';
 }
