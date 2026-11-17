@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="app-version" content="20261115d">
+<meta name="app-version" content="20261117a">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -536,7 +536,7 @@
       repeating-linear-gradient(-18deg,transparent 0 18px,rgba(255,255,255,.045) 18px 20px),
       linear-gradient(180deg,#2a1468 0%,#14083a 58%,#070414 100%);
   }
-  .quizbox.on{display:flex}
+  .quizbox.on{display:flex;align-items:flex-start}
   .quizpanel{
     width:min(100%,440px);display:flex;flex-direction:column;align-items:stretch;
     padding:6px 16px 18px;border-radius:18px;
@@ -559,8 +559,8 @@
     text-shadow:0 4px 0 #1a0a40;
   }
   #quizAns{
-    font-family:var(--timer);font-size:2.8rem;text-align:center;letter-spacing:.06em;
-    min-height:88px;margin-bottom:8px;
+    font-family:var(--timer);font-size:2.2rem;text-align:center;letter-spacing:.06em;
+    min-height:64px;margin-bottom:8px;
   }
   .quizfb{
     min-height:4.4em;margin:0 0 8px;text-align:center;
@@ -569,12 +569,48 @@
   }
   .quizfb.ok{color:#5dff4a}
   .quizfb.no{color:#ffd2ea}
-  #quizSpin[hidden],#quizPlay[hidden],#quizEnd[hidden],#quizFb[hidden]{display:none}
-  #quizGo,#quizSpin{color:#1a1200}
-  #quizGo::before,#quizSpin::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
+  #quizSpin[hidden],#quizPlay[hidden],#quizEnd[hidden],#quizFb[hidden],#quizGo[hidden],#speedIntro[hidden],#speedEnd[hidden],#speedGate[hidden],#vcoin[hidden],#vaward[hidden]{display:none}
+  #quizGo,#quizSpin,#speedGo,#speedStart,#speedDone,#speedSpin,#speedSpinCard,#markPaid{color:#1a1200}
+  #quizGo::before,#quizSpin::before,#speedGo::before,#speedStart::before,#speedDone::before,#speedSpin::before,#speedSpinCard::before,#markPaid::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
+  .pad{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 8px}
+  .pad button{
+    min-width:0;min-height:58px;padding:0;border-radius:14px;
+    background:#241448;color:#fff;font-family:var(--timer);font-size:1.7rem;letter-spacing:0;text-transform:none;
+    box-shadow:0 4px 0 #090318;
+  }
+  .pad button:active{transform:translateY(2px)}
+  #padGo,.pad button[data-key="del"]{font-family:var(--display);font-size:1.25rem}
+  #padGo{background:#ffe14a;color:#1a1200}
+  .speedclock{margin:0;text-align:center;font-family:var(--timer);font-size:clamp(2.8rem,14vw,3.8rem);line-height:.9;color:#ffe14a;text-shadow:0 4px 0 #1a0a40}
+  .quizbox.speed .quizq{font-size:clamp(2.4rem,11vw,3.4rem);margin-bottom:6px}
+  .vtiers,.vowed,.vaward,.speedrule{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;letter-spacing:0;text-transform:none}
+  .vtiers{margin:8px 0;text-align:center;color:#ffe14a;font-size:1.05rem;line-height:1.35}
+  .speedrule{margin:0 0 10px;text-align:center;color:#efeaff;font-size:.95rem;line-height:1.3}
+  .vowed{margin:-4px 0 12px;text-align:center;color:#ffe14a;font-size:1.05rem}
+  .vcoin{
+    width:128px;height:128px;margin:2px auto 6px;border-radius:50%;
+    display:grid;place-items:center;color:#1a1200;
+    background:radial-gradient(circle at 32% 28%,#fff8c4,#ffe14a 42%,#f0a000 72%,#b86a00);
+    box-shadow:inset 0 -10px 0 rgba(90,40,0,.25),inset 0 8px 0 rgba(255,255,255,.45),0 8px 0 #6a3a00;
+  }
+  .vcoin b{font-size:4.2rem;line-height:1}
+  .vcoin.go{animation:coinpop .7s cubic-bezier(.2,1.3,.3,1) both}
+  @keyframes coinpop{0%{transform:scale(.15) rotate(-18deg);opacity:0}60%{transform:scale(1.12) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+  #speedEnd .vic{font-size:clamp(2.15rem,10.5vw,3.3rem);line-height:.9;margin-bottom:8px}
+  .vaward{margin:0 0 8px;padding:8px 10px;border-radius:14px;background:rgba(8,4,24,.9);text-align:center;font-size:1.28rem;line-height:1.3;color:#ffe14a}
+  .speedpen{margin:0 0 4px;min-height:1.2em;text-align:center;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;letter-spacing:0;text-transform:none;color:#ff5d7a;font-size:1.05rem}
+  .speedgate{margin:12px 0 4px;text-align:center;font-size:clamp(2.6rem,12vw,3.8rem);line-height:.9;color:#ffe14a;text-shadow:0 4px 0 #1a0a40}
+  #speedGate .quizlevel{color:#efeaff}
+  #speedBtn{color:#041018;margin:0 0 12px}
+  #speedBtn::before{background:linear-gradient(180deg,#f4fdff,#7ee7ff 26%,#ffe14a 72%,#3ad0ff);box-shadow:inset 0 2px 0 #fff}
+  #speedBtn b{display:block;position:relative;z-index:1;font-size:1.45rem;line-height:1}
+  #speedBtn small{display:block;position:relative;z-index:1;margin-top:3px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:.88rem;font-weight:800;letter-spacing:0;text-transform:none;color:#062038;white-space:normal}
+  #speedSpinCard{margin-top:-4px}
   #quizDone{color:#fff}
   #quizDone::before{background:linear-gradient(180deg,#6e63ff,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
   li.loot-quiz{--rarity:#3aa0ff}
+  li.loot-speed{--rarity:#3ad0ff}
+  li.loot-paid{--rarity:#ffe14a}
   li.loot-xp{--rarity:#5dff4a}
   li.loot-xp.down{--rarity:#ff5d7a}
   li.loot-miss{--rarity:#ff9a1a}
@@ -638,7 +674,7 @@
   .skillpop.boom .vic,.skillpop.boom .skillask,.skillpop.boom .skillprize{animation:vshake .75s linear}
   @keyframes rainbg{0%{background-position:0% 40%}50%{background-position:100% 60%}100%{background-position:0% 40%}}
   @media (prefers-reduced-motion:reduce){
-    .confetti i,.bigbtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup,.xppop.go,.lvlup.boom .vic,.lvlup.boom .lvlrank,.qdiff.insanity,.qdiff.insanity::before,.qdiff.insanity::after,.qdiff.insanity .rainbow,.qxp.insanity,.qxp.insanity::before,.qxp.insanity::after,.qxp.insanity .rainbow,.qcard.insanity,.pbar i,.qskill::before,.skillpop,.skillpop.boom .vic,.skillpop.boom .skillask,.skillpop.boom .skillprize{animation:none;transition:none}
+    .confetti i,.bigbtn::before,.over button::before,.over.boom .vic,.over.boom .big,.over.boom button,.over.boom .flash,.levelup,.xppop.go,.lvlup.boom .vic,.lvlup.boom .lvlrank,.qdiff.insanity,.qdiff.insanity::before,.qdiff.insanity::after,.qdiff.insanity .rainbow,.qxp.insanity,.qxp.insanity::before,.qxp.insanity::after,.qxp.insanity .rainbow,.qcard.insanity,.pbar i,.qskill::before,.skillpop,.skillpop.boom .vic,.skillpop.boom .skillask,.skillpop.boom .skillprize,.vcoin.go{animation:none;transition:none}
   }
 </style>
 </head>
@@ -652,15 +688,56 @@
   <button id="doneBtn">✓ DONE</button>
 </div>
 <div class="quizbox" id="quizBox" aria-hidden="true">
+  <div class="confetti" id="speedBits" hidden aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <div class="quizpanel">
     <button type="button" id="quizBack" class="quizback">Back</button>
     <div id="quizPlay">
-      <p class="quizlevel" id="quizLevel"></p>
-      <p class="quizprog" id="quizProg">1/15</p>
-      <p class="quizq" id="quizQ">2 × 2</p>
-      <input id="quizAns" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" autocapitalize="off" autocorrect="off" maxlength="3" aria-label="Your answer">
-      <p class="quizfb" id="quizFb" hidden></p>
-      <button type="button" class="bigbtn" id="quizGo">Check</button>
+      <p class="speedclock" id="speedClock" hidden>0:00.0</p>
+      <p class="speedpen" id="speedPen" hidden></p>
+      <div id="speedGate" hidden>
+        <p class="speedgate" id="speedGateTitle">Level 2!</p>
+        <p class="quizlevel" id="speedGateSub"></p>
+        <button type="button" class="bigbtn" id="speedGo">Go</button>
+      </div>
+      <div id="speedIntro" hidden>
+        <p class="speedgate">Speed Run</p>
+        <p class="speedrule">4 levels back to back, 5 questions each. A wrong answer adds 5 seconds.</p>
+        <p class="vtiers" id="speedTiers"></p>
+        <p class="speedrule" id="speedIntroRule"></p>
+        <button type="button" class="bigbtn" id="speedStart">Go</button>
+      </div>
+      <div id="quizAsk">
+        <p class="quizlevel" id="quizLevel"></p>
+        <p class="quizprog" id="quizProg">1/15</p>
+        <p class="quizq" id="quizQ">2 × 2</p>
+        <input id="quizAns" readonly inputmode="none" autocomplete="off" maxlength="3" aria-label="Your answer">
+        <p class="quizfb" id="quizFb" hidden></p>
+        <div class="pad" id="quizPad">
+          <button type="button" data-key="1">1</button>
+          <button type="button" data-key="2">2</button>
+          <button type="button" data-key="3">3</button>
+          <button type="button" data-key="4">4</button>
+          <button type="button" data-key="5">5</button>
+          <button type="button" data-key="6">6</button>
+          <button type="button" data-key="7">7</button>
+          <button type="button" data-key="8">8</button>
+          <button type="button" data-key="9">9</button>
+          <button type="button" data-key="del" aria-label="Delete">Del</button>
+          <button type="button" data-key="0">0</button>
+          <button type="button" data-key="go" id="padGo">Go</button>
+        </div>
+        <button type="button" class="bigbtn" id="quizGo">Check</button>
+      </div>
+    </div>
+    <div id="speedEnd" hidden>
+      <p class="vic" id="speedTitle">Speed Run</p>
+      <p class="quizq" id="speedTime">0:00</p>
+      <p class="quizfb" id="speedScore"></p>
+      <div class="vcoin" id="vcoin" hidden><b>V</b></div>
+      <p class="vaward" id="vaward" hidden></p>
+      <p class="quizfb" id="speedMsg"></p>
+      <button type="button" class="bigbtn" id="speedSpin" hidden>Spin the wheel</button>
+      <button type="button" class="bigbtn" id="speedDone">Done</button>
     </div>
     <div id="quizEnd" hidden>
       <p class="levelup" id="quizBump" hidden>Level up!</p>
@@ -728,6 +805,9 @@
     <p class="questLead">Things Fionn can do to earn penalty time back.</p>
     <p class="questTotal" id="questTotal">Penalty 0 min</p>
     <button type="button" class="quizcard" id="quizBtn"><span class="quiztop"><b id="quizTitle">Times Table Quiz</b><span class="qxp quiz" id="quizXp">up to +40 XP</span></span><small id="quizSub">15 questions · up to 3 spins</small></button>
+    <button type="button" class="bigbtn" id="speedBtn"><b id="speedBtnLabel">⚡ Speed Run</b><small id="speedSub">No personal best yet</small></button>
+    <p class="vowed" id="vowed">🪙 0 V-Bucks owed</p>
+    <button type="button" class="bigbtn" id="speedSpinCard" hidden>Spin the reward</button>
     <div id="questList"></div>
     <input id="questName" placeholder="Add a quest" autocomplete="off" maxlength="60">
     <div class="adddiffs" id="addDiffs" role="group" aria-label="Difficulty">
@@ -754,6 +834,8 @@
     <div id="chalXp"></div>
     <p class="chh">Quiz levels</p>
     <div id="chalLevels"></div>
+    <p class="chh" id="speedHead">Speed Run</p>
+    <div id="chalSpeed"></div>
     <p class="chh">Daily reward</p>
     <div id="chalDaily"></div>
     <p class="chh">Streak bonuses</p>
@@ -824,7 +906,7 @@
 </div>
 
 <script>
-const APP_VERSION="20261115d";
+const APP_VERSION="20261117a";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
@@ -937,7 +1019,8 @@ function normQuestQueue(o,quests){
   if(!o||!Array.isArray(o.questQueue))return [];
   return o.questQueue.filter(x=>x&&ids[x.id]&&String(x.name||'').trim()).slice(-40).map(x=>({id:String(x.id).slice(0,40),name:String(x.name).trim().slice(0,60),diff:normDiff(x.diff)||'medium'}));
 }
-const QUIZ_LEVELS=[[2,5,10,11],[3,4,6,7],[7,9,12]];
+const QUIZ_LEVELS=[[2,5,10,11],[3,4,6,7],[7,9,12],[3,4,6,7,8,9,12]];
+const SPEED_PEN=5000;
 function normTableList(row){
   const nums=[];
   const seen={};
@@ -950,13 +1033,58 @@ function normTableList(row){
 }
 function normQuizLevels(o){
   const src=o&&o.quizLevels;
-  if(!Array.isArray(src)||src.length!==3)return QUIZ_LEVELS.map(a=>a.slice());
-  return src.map((row,i)=>{
-    const nums=normTableList(row);
-    return nums.length>=2?nums:QUIZ_LEVELS[i].slice();
-  });
+  const out=QUIZ_LEVELS.map(a=>a.slice());
+  if(!Array.isArray(src))return out;
+  for(let i=0;i<out.length;i++){
+    if(src[i]==null)continue;
+    const nums=normTableList(src[i]);
+    if(nums.length>=2)out[i]=nums;
+  }
+  return out;
 }
-function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,insanitySeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null,xp:0,level:1,xpSet:null,xpStart:'',xpCheck:'',masterDays:[],xpNotice:null,skillCue:''};}
+function defaultSpeedSet(){return {xp:2,pb:25,spinAt:18,spins:1,pbSpins:3,runs:2,need:16,vbBase:200,vbAt:300,vbStep:30,vbEach:100,vbBeat:100,vbPbOnly:true}}
+function normSpeedSet(o){
+  const d=defaultSpeedSet();
+  const src=o&&o.speedSet;
+  if(!src||typeof src!=='object')return d;
+  d.xp=clampInt(src.xp,0,50,d.xp);
+  d.pb=clampInt(src.pb,0,200,d.pb);
+  d.spinAt=clampInt(src.spinAt,1,20,d.spinAt);
+  d.spins=clampInt(src.spins,0,3,d.spins);
+  d.pbSpins=clampInt(src.pbSpins,0,5,d.pbSpins);
+  d.runs=clampInt(src.runs,0,10,d.runs);
+  d.need=clampInt(src.need,1,20,d.need);
+  d.vbBase=clampInt(src.vbBase,0,5000,d.vbBase);
+  d.vbAt=clampInt(src.vbAt,60,900,d.vbAt);
+  d.vbStep=clampInt(src.vbStep,10,120,d.vbStep);
+  d.vbEach=clampInt(src.vbEach,0,1000,d.vbEach);
+  d.vbBeat=clampInt(src.vbBeat,0,1000,d.vbBeat);
+  d.vbPbOnly=src.vbPbOnly!==false;
+  return d;
+}
+function normSpeedRun(o){
+  const q=o&&o.speedRun;
+  if(!q||!Array.isArray(q.qs)||q.qs.length!==20||!Array.isArray(q.lv)||q.lv.length!==20)return null;
+  const qs=[];
+  const lv=[];
+  const seen={};
+  for(let n=0;n<20;n++){
+    const pair=q.qs[n];
+    const a=Math.floor(Number(pair&&pair[0]));
+    const b=Math.floor(Number(pair&&pair[1]));
+    const level=Math.floor(Number(q.lv[n]));
+    const key=level+':'+a+'x'+b;
+    if(a<2||a>12||b<2||b>12||level<1||level>4||seen[key])return null;
+    if(n<5&&level!==1||n>=5&&n<10&&level!==2||n>=10&&n<15&&level!==3||n>=15&&level!==4)return null;
+    seen[key]=1;
+    qs.push([a,b]);
+    lv.push(level);
+  }
+  const i=Math.max(0,Math.min(19,Math.floor(Number(q.i)||0)));
+  const phase=q.phase==='feedback'?'feedback':q.phase==='level'?'level':'ask';
+  return {qs,lv,i,wrong:Math.max(0,Math.min(20,Math.floor(Number(q.wrong)||0))),phase,lastOk:!!q.lastOk,elapsed:Math.max(0,Math.floor(Number(q.elapsed)||0)),runningSince:0,pen:Math.max(0,Math.floor(Number(q.pen)||0)),date:/^\d{4}-\d{2}-\d{2}$/.test(q.date)?q.date:''};
+}
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,insanitySeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,speedRun:null,speedPb:0,speedDay:'',speedN:0,speedSpins:0,speedSet:null,vbucks:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null,xp:0,level:1,xpSet:null,xpStart:'',xpCheck:'',masterDays:[],xpNotice:null,skillCue:''};}
 function defaultXpSet(){return {quest:{easy:10,medium:25,hard:50,master:100,insanity:150},quiz:2,perfect:10,daily:20,miles:[{days:3,xp:25},{days:7,xp:50},{days:14,xp:100},{days:30,xp:200}],penalty:10,missMin:10,missXp:25,missOn:true,pause:false}}
 function normXpSet(o){
   const d=defaultXpSet();
@@ -998,7 +1126,7 @@ function normQuizRun(o){
   }
   const i=Math.max(0,Math.min(14,Math.floor(Number(q.i)||0)));
   const wrong=Math.max(0,Math.min(15,Math.floor(Number(q.wrong)||0)));
-  const level=Math.min(3,Math.max(1,Math.floor(Number(q.level)||1)));
+  const level=Math.min(4,Math.max(1,Math.floor(Number(q.level)||1)));
   const tables=normTableList(q.tables);
   const rec={qs,i,wrong,phase:q.phase==='feedback'?'feedback':'ask',lastOk:!!q.lastOk,level,date:/^\d{4}-\d{2}-\d{2}$/.test(q.date)?q.date:''};
   if(tables.length>=2)rec.tables=tables;
@@ -1018,7 +1146,14 @@ function norm(o){
   S.quizPlays=Math.max(0,Math.min(99,Math.floor(Number(o&&o.quizPlays)||0)));
   S.quizPlayDay=/^\d{4}-\d{2}-\d{2}$/.test(o&&o.quizPlayDay)?o.quizPlayDay:'';
   S.quizNote=String(o&&o.quizNote||'').slice(0,80);
-  S.quizBump=o&&(o.quizBump===2||o.quizBump===3)?o.quizBump:0;
+  S.quizBump=o&&(o.quizBump===2||o.quizBump===3||o.quizBump===4)?o.quizBump:0;
+  S.speedRun=normSpeedRun(o);
+  S.speedPb=Math.max(0,Math.floor(Number(o&&o.speedPb)||0));
+  S.speedDay=/^\d{4}-\d{2}-\d{2}$/.test(o&&o.speedDay)?o.speedDay:'';
+  S.speedN=Math.max(0,Math.min(99,Math.floor(Number(o&&o.speedN)||0)));
+  S.speedSpins=Math.max(0,Math.min(10,Math.floor(Number(o&&o.speedSpins)||0)));
+  S.speedSet=normSpeedSet(o);
+  S.vbucks=Math.max(0,Math.min(100000,Math.floor(Number(o&&o.vbucks)||0)));
   if(S.quizSpins>0)S.quizRun=null;
   applyDaily(S,o);
   S.xpSet=normXpSet(o);
@@ -1169,6 +1304,8 @@ function logLine(e){
   else if(e.kind==='clear')label='🧹 Cleared '+minsLabel(e.ms);
   else if(e.kind==='quest')label='Side quest: '+esc(e.note||'Spin the wheel')+', '+(e.rarity?esc(e.rarity)+' ':'')+'-'+clock(e.ms);
   else if(e.kind==='quiz')label=esc(e.note||'Times Table Quiz')+', '+(e.rarity?esc(e.rarity)+' ':'')+'-'+clock(e.ms);
+  else if(e.kind==='speed')label=e.rarity?esc(e.note||'Speed Run')+', '+esc(e.rarity)+' -'+clock(e.ms):esc(e.note||'Speed Run');
+  else if(e.kind==='paid')label=esc(e.note||'Paid V-Bucks');
   else if(e.kind==='manual')label=e.note==='credit'?'Manual +'+clock(e.ms)+' credit':'Manual '+(e.note==='−'?'−':'+')+clock(e.ms);
   else if(e.kind==='daily'){
     label=esc(e.note||'Daily Challenge');
@@ -1180,7 +1317,7 @@ function logLine(e){
   else if(e.kind==='skill')label='🏆 Mastered: '+esc(e.note||'Skill Check');
   else return '';
   if(e.xp&&e.kind!=='xp'&&e.kind!=='miss')label+=' · '+(e.xp>0?'+':'')+e.xp+' XP';
-  const note=e.kind==='quest'||e.kind==='quiz'||e.kind==='manual'||e.kind==='daily'||e.kind==='xp'||e.kind==='miss'||e.kind==='skill'?'':(e.note?' · '+esc(e.note):'');
+  const note=e.kind==='quest'||e.kind==='quiz'||e.kind==='speed'||e.kind==='paid'||e.kind==='manual'||e.kind==='daily'||e.kind==='xp'||e.kind==='miss'||e.kind==='skill'?'':(e.note?' · '+esc(e.note):'');
   const used=e.kind==='served'||e.kind==='clear'?' used':'';
   const rar=e.rarity?esc(String(e.rarity).toLowerCase()):'';
   const down=e.xp<0?' down':'';
@@ -1876,18 +2013,19 @@ const QUIZ_W={COMMON:42,UNCOMMON:32,RARE:14,EPIC:7,LEGENDARY:3,MYTHIC:2};
 const HARD_W={COMMON:36,UNCOMMON:33,RARE:16,EPIC:8,LEGENDARY:5,MYTHIC:2};
 let wheelRot=0,spinning=false,spinGen=0,cueTimers=[];
 function weightsFor(kind){
-  if(kind==='quiz'||kind==='daily'||kind==='medium')return PRIZES.map(p=>({...p,w:QUIZ_W[p.name]}));
+  if(kind==='quiz'||kind==='daily'||kind==='medium'||kind==='speed')return PRIZES.map(p=>({...p,w:QUIZ_W[p.name]}));
   if(kind==='hard'||kind==='master'||kind==='insanity')return PRIZES.map(p=>({...p,w:HARD_W[p.name]}));
   return PRIZES;
 }
 function wheelMode(kind){
   if(kind==='hard'||kind==='master'||kind==='insanity')return 'hard';
-  if(kind==='quiz'||kind==='daily'||kind==='medium')return 'quiz';
+  if(kind==='quiz'||kind==='daily'||kind==='medium'||kind==='speed')return 'quiz';
   return 'normal';
 }
 function boostTitle(kind){
   if(kind==='daily')return 'Daily boost';
   if(kind==='quiz')return 'Quiz boost';
+  if(kind==='speed')return 'Speed boost';
   if(kind==='medium')return 'Medium boost';
   if(kind==='hard')return 'Hard boost';
   if(kind==='master')return 'Master';
@@ -1908,7 +2046,7 @@ function prizeLayout(list){
 function paintBoost(kind,table){
   const boost=$('quizBoost');
   const title=boostTitle(kind);
-  $('wheelBox').classList.toggle('boosted',kind==='quiz'||kind==='daily'||kind==='medium'||kind==='hard'||kind==='master'||kind==='insanity');
+  $('wheelBox').classList.toggle('boosted',kind==='quiz'||kind==='daily'||kind==='medium'||kind==='speed'||kind==='hard'||kind==='master'||kind==='insanity');
   boost.hidden=!title;
   if(!title)return;
   boost.innerHTML='<b>'+title+'</b><span class="qodds">'+table.map(p=>'<i style="color:'+p.color+'">'+p.w+'%</i>').join('')+'</span>';
@@ -2096,6 +2234,7 @@ function showReveal(prize,questName,cut){
 }
 function openSpin(questName,questId,logKind){
   if(logKind==='quiz'&&!(S.quizSpins>0))return;
+  if(logKind==='speed'&&!(S.speedSpins>0))return;
   if(logKind==='daily'&&!(S.dailySpins>0))return;
   const questSpin=DIFFS.indexOf(logKind)>=0;
   if(questSpin&&!S.questQueue.some(x=>x.id===questId&&x.diff===logKind))return;
@@ -2139,6 +2278,7 @@ function openSpin(questName,questId,logKind){
       }
     }
     if(logKind==='quiz'&&S.quizSpins>0)S.quizSpins--;
+    if(logKind==='speed'&&S.speedSpins>0)S.speedSpins--;
     if(logKind==='daily'&&S.dailySpins>0){
       S.dailySpins--;
       if(S.dailyQueue&&S.dailyQueue.length)note=S.dailyQueue.shift();
@@ -2213,14 +2353,78 @@ function spinsForWrong(w){
   return 0;
 }
 function quizPlaysToday(){return S.quizPlayDay===londonDay()?S.quizPlays:0}
-function nextQuizLevel(){return Math.min(3,quizPlaysToday()+1)}
+function nextQuizLevel(){
+  const n=quizPlaysToday();
+  return n>=QUIZ_LEVELS.length-1?QUIZ_LEVELS.length:n+1;
+}
 function tablesFor(level){
-  const row=S.quizLevels[Math.min(3,Math.max(1,level))-1];
+  const row=S.quizLevels[Math.min(QUIZ_LEVELS.length,Math.max(1,level))-1];
   return row&&row.length?row.slice():QUIZ_LEVELS[0].slice();
 }
 function levelLine(level,tables){
   const tabs=tables&&tables.length?tables:tablesFor(level);
-  return 'Level '+level+' of 3, '+tabs.join(', ')+' tables';
+  return 'Level '+level+' of '+QUIZ_LEVELS.length+', '+tabs.join(', ')+' tables';
+}
+function speedClockText(ms,tenths){
+  ms=Math.max(0,Math.floor(Number(ms)||0));
+  if(tenths){
+    const d=Math.floor(ms/100);
+    const s=Math.floor(d/10);
+    return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')+'.'+(d%10);
+  }
+  const s=Math.floor(ms/1000);
+  return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+}
+function speedElapsed(run){
+  if(!run)return 0;
+  const live=run.runningSince?Date.now()-run.runningSince:0;
+  return Math.max(0,(run.elapsed||0)+live+(run.pen||0));
+}
+function pauseSpeed(){
+  const run=S.speedRun;
+  if(!run||!run.runningSince)return;
+  run.elapsed=(run.elapsed||0)+(Date.now()-run.runningSince);
+  run.runningSince=0;
+}
+function resumeSpeed(){
+  const run=S.speedRun;
+  if(!run||run.runningSince)return;
+  run.runningSince=Date.now();
+}
+function saveSpeed(){
+  const live=!!(S.speedRun&&S.speedRun.runningSince);
+  pauseSpeed();
+  save();
+  if(live)resumeSpeed();
+}
+function parkSpeed(){
+  stopSpeedClock();
+  if(S.speedRun&&S.speedRun.runningSince){pauseSpeed();save()}
+}
+let speedTimer=0;
+function paintSpeedClock(){
+  const el=$('speedClock');
+  const run=S.speedRun;
+  if(!el||el.hidden||!run)return;
+  el.textContent=speedClockText(speedElapsed(run),true);
+}
+function armSpeedClock(){
+  paintSpeedClock();
+  if(speedTimer)return;
+  speedTimer=setInterval(paintSpeedClock,100);
+}
+function stopSpeedClock(){
+  if(speedTimer)clearInterval(speedTimer);
+  speedTimer=0;
+}
+function speedRunsToday(){return S.speedDay===londonDay()?(S.speedN||0):0}
+function speedCardLine(){
+  const best=S.speedPb?'Best '+speedClockText(S.speedPb,false):'No personal best yet';
+  const left=Math.max(0,(S.speedSet&&S.speedSet.runs||0)-speedRunsToday());
+  const live=S.speedRun&&S.speedRun.date===londonDay();
+  const head=live?'Continue':(left?left+' reward'+(left===1?'':'s')+' left today':'Practice only');
+  const spins=S.speedSpins>0?(S.speedSpins===1?' · 1 spin ready':' · '+S.speedSpins+' spins ready'):'';
+  return best+' · '+head+spins;
 }
 function quizLabel(){return S.quizNote||('Times Table Quiz L'+nextQuizLevel()+' '+S.quizRight+'/15')}
 function paintQuizCard(){
@@ -2234,6 +2438,13 @@ function paintQuizCard(){
   else if(S.quizRun)line+=' · Continue '+(S.quizRun.i+1)+'/15';
   sub.textContent=line;
   if($('quizXp'))$('quizXp').textContent=quizXpText();
+  if($('speedSub'))$('speedSub').textContent=speedCardLine();
+  if($('speedBtnLabel'))$('speedBtnLabel').textContent=S.speedRun&&S.speedRun.date===londonDay()?'⚡ Continue':'⚡ Speed Run';
+  if($('speedSpinCard')){
+    $('speedSpinCard').hidden=!(S.speedSpins>0);
+    $('speedSpinCard').textContent=S.speedSpins===1?'Spin the reward':'Spin the reward · '+S.speedSpins+' left';
+  }
+  if($('vowed'))$('vowed').textContent='🪙 '+(S.vbucks||0)+' V-Bucks owed';
 }
 function newQuiz(){
   const level=nextQuizLevel();
@@ -2248,16 +2459,43 @@ function newQuiz(){
   S.quizBump=0;
   save();
 }
+function quizFace(){return $('quizBox').dataset.face||'main'}
+function activeRun(){
+  const face=quizFace();
+  if(face==='focus')return S.focusRun;
+  if(face==='speed')return S.speedRun;
+  return S.quizRun;
+}
 function paintQuiz(){
-  const focus=$('quizBox').dataset.face==='focus';
-  const run=focus?S.focusRun:S.quizRun;
+  const face=quizFace();
+  const focus=face==='focus';
+  const speed=face==='speed';
+  const run=activeRun();
+  $('quizBox').classList.toggle('speed',speed);
+  $('speedIntro').hidden=true;
+  $('speedClock').hidden=!speed||!run;
+  $('speedPen').hidden=true;
+  $('speedGate').hidden=true;
+  $('speedEnd').hidden=true;
+  $('speedBits').hidden=true;
+  $('quizEnd').hidden=true;
+  if(speed&&$('quizBox').dataset.speed==='intro'){
+    paintSpeedIntro();
+    return;
+  }
+  if(speed&&!run){
+    $('quizPlay').hidden=true;
+    paintSpeedEnd();
+    return;
+  }
   $('quizPlay').hidden=!run;
-  $('quizEnd').hidden=!!run;
+  if(!speed)$('quizEnd').hidden=!!run;
   if(run){
     const a=run.qs[run.i][0],b=run.qs[run.i][1],ans=a*b;
-    const key=run.i+':'+run.phase+':'+(focus?'f':'m');
+    const key=run.i+':'+run.phase+':'+face;
     $('quizLevel').hidden=!!focus;
-    if(!focus)$('quizLevel').textContent=levelLine(run.level||1,run.tables);
+    if(speed)$('quizLevel').textContent='Level '+run.lv[run.i]+' of 4';
+    else if(!focus)$('quizLevel').textContent=levelLine(run.level||1,run.tables);
     $('quizProg').textContent=(run.i+1)+'/'+run.qs.length;
     $('quizQ').textContent=a+' × '+b;
     const fb=$('quizFb');
@@ -2279,6 +2517,23 @@ function paintQuiz(){
       $('quizGo').textContent='Check';
       $('quizAns').disabled=false;
     }
+    if(speed){
+      const pen=run.pen||0;
+      $('speedPen').hidden=!pen;
+      $('speedPen').textContent=pen?'Penalties +'+Math.round(pen/1000)+'s':'';
+      if(run.phase==='level'){
+        $('speedGate').hidden=false;
+        $('quizAsk').hidden=true;
+        $('speedGateTitle').textContent='Level '+run.lv[run.i]+'!';
+        $('speedGateSub').textContent=tablesFor(run.lv[run.i]).join(', ')+' tables';
+        paintSpeedClock();
+        return;
+      }
+    }
+    $('quizAsk').hidden=false;
+    $('quizPad').hidden=run.phase!=='ask';
+    $('quizGo').hidden=run.phase==='ask';
+    if(speed)paintSpeedClock();
     return;
   }
   if(focus){
@@ -2310,50 +2565,277 @@ function paintQuiz(){
     $('quizSpin').hidden=true;
   }
 }
+function shufflePairs(tables,count){
+  const pool=[];
+  tables.forEach(a=>{for(let b=2;b<=12;b++)pool.push([a,b])});
+  for(let n=pool.length-1;n>0;n--){
+    const j=Math.floor(Math.random()*(n+1));
+    const t=pool[n];pool[n]=pool[j];pool[j]=t;
+  }
+  return pool.slice(0,count);
+}
+function newSpeed(){
+  const qs=[];
+  const lv=[];
+  for(let level=1;level<=4;level++){
+    shufflePairs(tablesFor(level),5).forEach(pair=>{qs.push(pair);lv.push(level)});
+  }
+  S.speedRun={qs,lv,i:0,wrong:0,phase:'ask',lastOk:false,elapsed:0,runningSince:0,pen:0,date:londonDay()};
+}
+function pbFanfare(){
+  if(!S.sound)return;
+  unlockAudio();
+  if(!ctx)return;
+  ensureRack();
+  setAudible(true);
+  const t=ctx.currentTime+0.02;
+  chord([523.25,659.25,783.99],t,0.3,0.48);
+  chord([659.25,830.61,987.77],t+0.28,0.36,0.52);
+  chord([783.99,987.77,1174.66],t+0.58,0.7,0.58);
+}
+let speedLast=null;
+function vbTier(ms,set){
+  const at=(set.vbAt||0)*1000;
+  const step=(set.vbStep||0)*1000;
+  if(!(at>0)||!(step>0)||ms>=at)return null;
+  const steps=Math.floor((at-ms)/step);
+  return {amount:(set.vbBase||0)+steps*(set.vbEach||0),label:'Under '+speedClockText(at-steps*step,false)};
+}
+function vbTierLine(set){
+  const bits=[];
+  for(let i=0;i<6;i++){
+    const t=set.vbAt-i*set.vbStep;
+    if(t<=0)break;
+    bits.push((i?'': 'Beat ')+speedClockText(t*1000,false)+' = '+(set.vbBase+i*set.vbEach));
+  }
+  return bits.join(', ')+(set.vbAt-6*set.vbStep>0?'…':'');
+}
+function paintSpeedIntro(){
+  const set=S.speedSet||defaultSpeedSet();
+  $('quizPlay').hidden=false;
+  $('quizAsk').hidden=true;
+  $('speedIntro').hidden=false;
+  $('speedTiers').textContent='Beat your best: +'+(set.vbBeat||0)+' V-Bucks';
+  const line=vbTierLine(set);
+  let extra=S.speedPb?' Best so far '+speedClockText(S.speedPb,false)+'.':' Your first best sets the time. The +'+(set.vbBeat||0)+' starts when you beat it.';
+  $('speedIntroRule').textContent=line+(line.endsWith('…')?'':'.')+extra;
+}
+function paintSpeedEnd(){
+  const last=speedLast;
+  const box=$('speedEnd');
+  if(!box)return;
+  box.hidden=false;
+  $('quizPlay').hidden=true;
+  $('quizEnd').hidden=true;
+  const coin=$('vcoin');
+  if(!last){
+    $('speedTitle').textContent='Speed Run';
+    $('speedTime').textContent='0:00';
+    $('speedScore').textContent='';
+    $('speedMsg').textContent='';
+    $('speedSpin').hidden=true;
+    $('speedBits').hidden=true;
+    coin.hidden=true;
+    $('vaward').hidden=true;
+    return;
+  }
+  const pb=!!last.pb;
+  $('speedTitle').textContent=pb?'NEW PERSONAL BEST!':'Speed Run';
+  $('speedTime').textContent=speedClockText(last.ms,false);
+  $('speedScore').textContent=last.right+'/'+last.total+' correct';
+  const bits=[];
+  if(last.pen)bits.push('Penalties +'+Math.round(last.pen/1000)+'s');
+  if(last.rewarded){
+    if(last.xp)bits.push('+'+last.xp+' XP');
+    if(last.spins)bits.push(last.spins+' boosted spin'+(last.spins===1?'':'s'));
+    if(!last.xp&&!last.spins)bits.push('No bonus this time.');
+  }else bits.push('Practice run. Today’s rewards are used.');
+  if(!last.qualified)bits.push('Need '+last.need+'/20 for a personal best.');
+  $('speedMsg').textContent=bits.join(' · ');
+  $('speedSpin').hidden=!(S.speedSpins>0);
+  $('speedSpin').textContent=S.speedSpins===1?'Spin the wheel':'Spin the wheel · '+S.speedSpins+' left';
+  $('speedBits').hidden=!pb;
+  box.classList.toggle('pb',pb);
+  if(last.vb){
+    coin.hidden=false;
+    coin.classList.remove('go');
+    void coin.offsetWidth;
+    coin.classList.add('go');
+    $('vaward').hidden=false;
+    $('vaward').textContent=last.vbText;
+  }else{
+    coin.hidden=true;
+    coin.classList.remove('go');
+    $('vaward').hidden=true;
+    $('vaward').textContent='';
+  }
+}
+function finishSpeed(run){
+  pauseSpeed();
+  stopSpeedClock();
+  const ms=(run.elapsed||0)+(run.pen||0);
+  const right=run.qs.length-run.wrong;
+  const total=run.qs.length;
+  const set=S.speedSet||defaultSpeedSet();
+  const had=S.speedPb>0;
+  const qualified=right>=set.need;
+  const pb=qualified&&(!had||ms<S.speedPb);
+  const beat=qualified&&had&&ms<S.speedPb;
+  if(pb)S.speedPb=ms;
+  const today=londonDay();
+  if(S.speedDay!==today){S.speedN=0;S.speedDay=today}
+  const rewarded=S.speedN<set.runs;
+  S.speedN+=1;
+  let xp=0;
+  let spins=0;
+  if(rewarded){
+    xp=grantXp(right*(set.xp||0)+(pb?(set.pb||0):0));
+    const n=pb?(set.pbSpins||0):(right>=set.spinAt?(set.spins||0):0);
+    if(n>0){spins=n;S.speedSpins=Math.min(10,(S.speedSpins||0)+n)}
+  }
+  const tier=vbTier(ms,set);
+  const tierAmt=tier&&qualified&&(!set.vbPbOnly||pb)?tier.amount:0;
+  const beatAmt=beat?(set.vbBeat||0):0;
+  const vb=tierAmt+beatAmt;
+  if(vb)S.vbucks=Math.min(100000,(S.vbucks||0)+vb);
+  const parts=[];
+  if(beatAmt)parts.push('New PB +'+beatAmt);
+  if(tierAmt)parts.push(tier.label+' +'+tierAmt);
+  const vbText=vb?parts.join(', ')+' = '+vb+' V-Bucks':'';
+  let note='Speed Run '+right+'/'+total+' in '+speedClockText(ms,false);
+  if(pb)note+=' PB!';
+  if(vb)note+=' +'+vb+' V-Bucks';
+  pushLog({t:Date.now(),kind:'speed',ms:0,note,xp:xp||0});
+  S.speedRun=null;
+  $('quizBox').dataset.speed='';
+  speedLast={right,total,ms,pen:run.pen||0,pb,qualified,need:set.need,rewarded,xp,spins,vb,vbText};
+  save();
+  paintSpeedEnd();
+  paintQuizCard();
+  render();
+  if(pb){
+    if(navigator.vibrate)navigator.vibrate([40,30,60,30,140]);
+    try{pbFanfare()}catch(e){}
+  }
+}
+function openSpeed(){
+  if(S.mode==='done')return;
+  parkSpeed();
+  $('quizBox').dataset.face='speed';
+  $('quizBox').classList.add('on');
+  $('quizBox').setAttribute('aria-hidden','false');
+  if(S.speedRun&&S.speedRun.date===londonDay()){
+    $('quizBox').dataset.speed='';
+    resumeSpeed();
+    paintQuiz();
+    armSpeedClock();
+    return;
+  }
+  $('quizBox').dataset.speed='intro';
+  stopSpeedClock();
+  paintQuiz();
+}
 function openQuiz(){
   if(S.mode==='done')return;
+  parkSpeed();
   $('quizBox').dataset.face='main';
+  $('quizBox').dataset.speed='';
   if(!(S.quizSpins>0)&&!S.quizRun)newQuiz();
   $('quizBox').classList.add('on');
   $('quizBox').setAttribute('aria-hidden','false');
   paintQuiz();
-  if(S.quizRun&&S.quizRun.phase==='ask'){
-    $('quizAns').focus();
-  }
 }
 function closeQuiz(){
+  if(quizFace()==='speed'){
+    pauseSpeed();
+    stopSpeedClock();
+    if(S.speedRun)save();
+  }
   $('quizBox').classList.remove('on');
   $('quizBox').setAttribute('aria-hidden','true');
+  $('speedBits').hidden=true;
   paintQuizCard();
 }
+function padDigit(key){
+  const run=activeRun();
+  if(!run||run.phase!=='ask')return;
+  const el=$('quizAns');
+  if(key==='del')el.value=el.value.slice(0,-1);
+  else if(key==='go')quizCheck();
+  else if(el.value.length<3)el.value+=key;
+}
 function quizCheck(){
-  const focus=$('quizBox').dataset.face==='focus';
-  const run=focus?S.focusRun:S.quizRun;
-  if(!run)return;
+  const face=quizFace();
+  const focus=face==='focus';
+  const speed=face==='speed';
+  const run=activeRun();
+  if(!run||run.phase==='level')return;
   if(run.phase==='feedback'){
     if(run.i>=run.qs.length-1){
       if(focus)finishFocus(run);
+      else if(speed)finishSpeed(run);
       else finishMainQuiz(run);
       return;
     }
     run.i++;
-    run.phase='ask';
-    save();
+    if(speed&&run.lv[run.i]!==run.lv[run.i-1])run.phase='level';
+    else run.phase='ask';
+    if(speed)saveSpeed();
+    else save();
     paintQuiz();
-    $('quizAns').focus();
     return;
   }
   const raw=$('quizAns').value.trim();
   if(!/^\d{1,3}$/.test(raw))return;
   const a=run.qs[run.i][0],b=run.qs[run.i][1];
   run.lastOk=Number(raw)===a*b;
-  if(!run.lastOk)run.wrong++;
+  if(!run.lastOk){
+    run.wrong++;
+    if(speed)run.pen=(run.pen||0)+SPEED_PEN;
+  }
   run.phase='feedback';
-  save();
+  if(speed)saveSpeed();
+  else save();
   paintQuiz();
 }
 $('spinBtn').onclick=()=>openSpin('Spin the wheel');
 $('quizBtn').onclick=openQuiz;
+$('speedBtn').onclick=openSpeed;
+$('speedStart').onclick=()=>{
+  if($('quizBox').dataset.speed!=='intro')return;
+  newSpeed();
+  $('quizBox').dataset.speed='';
+  resumeSpeed();
+  paintQuiz();
+  armSpeedClock();
+};
+$('speedGo').onclick=()=>{
+  const run=S.speedRun;
+  if(!run||run.phase!=='level')return;
+  run.phase='ask';
+  saveSpeed();
+  paintQuiz();
+};
+$('speedDone').onclick=closeQuiz;
+$('speedSpin').onclick=()=>{
+  if(!(S.speedSpins>0)||spinning)return;
+  openSpin('Speed Run',null,'speed');
+};
+$('speedSpinCard').onclick=()=>{
+  if(!(S.speedSpins>0)||spinning)return;
+  openSpin('Speed Run',null,'speed');
+};
+$('quizPad').onclick=ev=>{
+  const b=ev.target.closest('[data-key]');
+  if(!b)return;
+  padDigit(b.dataset.key);
+};
+$('quizBox').addEventListener('keydown',ev=>{
+  if(!$('quizBox').classList.contains('on'))return;
+  if(/^[0-9]$/.test(ev.key)){ev.preventDefault();padDigit(ev.key)}
+  else if(ev.key==='Backspace'){ev.preventDefault();padDigit('del')}
+  else if(ev.key==='Enter'){ev.preventDefault();quizCheck()}
+});
 $('quizBack').onclick=closeQuiz;
 $('quizDone').onclick=closeQuiz;
 $('quizGo').onclick=quizCheck;
@@ -2666,7 +3148,7 @@ function noteDailyQuest(questId){
 }
 function finishMainQuiz(run){
   const right=run.qs.length-run.wrong;
-  const level=Math.min(3,Math.max(1,Math.floor(Number(run.level)||1)));
+  const level=Math.min(QUIZ_LEVELS.length,Math.max(1,Math.floor(Number(run.level)||1)));
   S.quizRight=right;
   S.quizSpins=spinsForWrong(run.wrong);
   S.quizNote='Times Table Quiz L'+level+' '+right+'/15';
@@ -2674,7 +3156,7 @@ function finishMainQuiz(run){
   const today=londonDay();
   if(S.quizPlayDay!==today){S.quizPlays=0;S.quizPlayDay=today}
   S.quizPlays+=1;
-  const next=Math.min(3,S.quizPlays+1);
+  const next=Math.min(QUIZ_LEVELS.length,S.quizPlays+1);
   S.quizBump=next>level?next:0;
   const quizXp=right*((S.xpSet&&S.xpSet.quiz)||0)+(right>=15?((S.xpSet&&S.xpSet.perfect)||0):0);
   const got=grantXp(quizXp);
@@ -2712,13 +3194,14 @@ function newFocus(table){
 }
 function openFocus(){
   if(S.mode==='done')return;
+  parkSpeed();
   $('quizBox').dataset.face='focus';
+  $('quizBox').dataset.speed='';
   const table=S.dailyToday&&S.dailyToday.table||2;
   if(!S.focusRun||S.focusRun.table!==table)newFocus(table);
   $('quizBox').classList.add('on');
   $('quizBox').setAttribute('aria-hidden','false');
   paintQuiz();
-  if(S.focusRun&&S.focusRun.phase==='ask')$('quizAns').focus();
 }
 function paintDay(){
   if(!$('dayCard'))return;
@@ -2791,7 +3274,8 @@ function paintChallenges(){
   $('chalMiles').innerHTML=set.miles.map((m,i)=>mileEditor(m,i)).join('')||'<p class="daybest">No streak bonuses yet.</p>';
   if($('chalRules'))$('chalRules').innerHTML=DIFFS.map(ruleEditor).join('');
   paintInsanity();
-  if($('chalLevels'))$('chalLevels').innerHTML=[0,1,2].map(levelEditor).join('');
+  if($('chalLevels'))$('chalLevels').innerHTML=[0,1,2,3].map(levelEditor).join('');
+  paintSpeedSettings();
   paintXp();
 }
 function paintInsanity(){
@@ -2861,9 +3345,47 @@ function levelEditor(i){
   for(let n=2;n<=12;n++)chips+='<button type="button" class="lvchip'+(nums.indexOf(n)>=0?' on':'')+'" data-lv="'+(i+1)+'" data-table="'+n+'">'+n+'</button>';
   return '<div class="chrow"><div class="txt"><b>Level '+(i+1)+'</b><small>'+esc(nums.join(', '))+'</small></div></div><div class="lvrow">'+chips+'</div>';
 }
+function paintSpeedSettings(){
+  const box=$('chalSpeed');
+  if(!box||!S.speedSet)return;
+  const s=S.speedSet;
+  const owed=S.vbucks||0;
+  const row=(lab,field,shown)=>'<div class="chreward"><span class="chlab">'+lab+'</span>'+stepBtn('speed',field,-1)+'<span class="chnum">'+shown+'</span>'+stepBtn('speed',field,1)+'</div>';
+  box.innerHTML='<div class="chrow"><div class="txt"><b>V-Bucks owed</b><small>'+owed+' for Gus to pay</small></div></div>'
+    +(owed?'<button type="button" class="bigbtn" id="markPaid">Mark paid</button>':'')
+    +row('XP each correct','xp',s.xp)
+    +row('New PB bonus XP','pb',s.pb)
+    +row('Spins on a new PB','pbSpins',s.pbSpins)
+    +row('Spins if not a PB','spins',s.spins)
+    +row('Score for that spin','spinAt',s.spinAt+'/20')
+    +row('Rewarded runs a day','runs',s.runs)
+    +row('Correct for a PB','need',s.need+'/20')
+    +row('Beat your best','vbBeat',s.vbBeat)
+    +row('Time prize','vbBase',s.vbBase)
+    +row('Time prize under','vbAt',speedClockText(s.vbAt*1000,false))
+    +row('Then every','vbStep',speedClockText(s.vbStep*1000,false))
+    +row('Extra each step','vbEach',s.vbEach)
+    +'<div class="chrow"><div class="txt"><b>Time prize on a new PB</b><small>'+(s.vbPbOnly?'Only when the run is a personal best':'Any fast enough run')+'</small></div><button type="button" class="chtog'+(s.vbPbOnly?' on':'')+'" data-speed-toggle="vbPbOnly">'+(s.vbPbOnly?'On':'Off')+'</button></div>';
+}
+function bumpSpeed(field,dir){
+  const x=S.speedSet;
+  if(!x)return;
+  if(field==='xp')x.xp=clampInt(x.xp+dir,0,50,x.xp);
+  else if(field==='pb')x.pb=clampInt(x.pb+dir,0,200,x.pb);
+  else if(field==='pbSpins')x.pbSpins=clampInt(x.pbSpins+dir,0,5,x.pbSpins);
+  else if(field==='spins')x.spins=clampInt(x.spins+dir,0,3,x.spins);
+  else if(field==='spinAt')x.spinAt=clampInt(x.spinAt+dir,1,20,x.spinAt);
+  else if(field==='runs')x.runs=clampInt(x.runs+dir,0,10,x.runs);
+  else if(field==='need')x.need=clampInt(x.need+dir,1,20,x.need);
+  else if(field==='vbBeat')x.vbBeat=clampInt(x.vbBeat+dir*50,0,1000,x.vbBeat);
+  else if(field==='vbBase')x.vbBase=clampInt(x.vbBase+dir*50,0,5000,x.vbBase);
+  else if(field==='vbAt')x.vbAt=clampInt(x.vbAt+dir*30,60,900,x.vbAt);
+  else if(field==='vbStep')x.vbStep=clampInt(x.vbStep+dir*10,10,120,x.vbStep);
+  else if(field==='vbEach')x.vbEach=clampInt(x.vbEach+dir*50,0,1000,x.vbEach);
+}
 function toggleLevel(level,table){
   const i=level-1;
-  if(i<0||i>2)return false;
+  if(i<0||i>3)return false;
   const row=S.quizLevels[i].slice();
   const at=row.indexOf(table);
   if(at>=0){
@@ -3048,6 +3570,16 @@ $('viewChallenges').onclick=ev=>{
     bumpInsanity(t.dataset.i,t.dataset.field,+t.dataset.dir);
   }else if(t.dataset.scope==='xp'){
     bumpXp(t.dataset.field,+t.dataset.dir,t.dataset.i==null?null:+t.dataset.i);
+  }else if(t.id==='markPaid'){
+    const n=S.vbucks||0;
+    if(!n)return;
+    S.vbucks=0;
+    pushLog({t:Date.now(),kind:'paid',ms:0,note:'Paid '+n+' V-Bucks'});
+    $('logList').innerHTML=S.log.slice().reverse().map(logLine).filter(Boolean).join('')||'<li class="meta">None yet 👍</li>';
+  }else if(t.dataset.speedToggle==='vbPbOnly'){
+    S.speedSet.vbPbOnly=!S.speedSet.vbPbOnly;
+  }else if(t.dataset.scope==='speed'){
+    bumpSpeed(t.dataset.field,+t.dataset.dir);
   }else if(t.dataset.scope){
     bumpReward(t.dataset.scope,t.dataset.field,+t.dataset.dir,t.dataset.i==null?null:+t.dataset.i);
   }else return;
@@ -3137,7 +3669,15 @@ async function checkUpdate(){
   finally{updateChecking=false}
 }
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState!=='visible')return;
+  if(document.visibilityState!=='visible'){
+    if(S.speedRun&&S.speedRun.runningSince){pauseSpeed();save()}
+    stopSpeedClock();
+    return;
+  }
+  if($('quizBox').classList.contains('on')&&quizFace()==='speed'&&S.speedRun&&$('quizBox').dataset.speed!=='intro'){
+    resumeSpeed();
+    armSpeedClock();
+  }
   checkMasterDays();
   checkUpdate();
 });
