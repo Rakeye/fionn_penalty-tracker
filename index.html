@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="app-version" content="20261117b">
+<meta name="app-version" content="20261117c">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -557,6 +557,7 @@
   .lvchip{min-width:44px;min-height:44px;padding:0;border-radius:12px;background:#241448;color:#efeaff;box-shadow:inset 0 0 0 2px rgba(255,225,74,.35);font-size:1rem}
   .lvchip.on{background:#ffe14a;color:#1a1200;box-shadow:none}
   .quizprog{margin:0 0 6px;text-align:center;color:var(--yellow);letter-spacing:.14em;font-size:1.15rem}
+  .quizprog.speedline{letter-spacing:.02em;font-size:1.05rem}
   .quizq{
     margin:0 0 12px;text-align:center;font-family:var(--timer);
     font-size:clamp(3rem,14vw,4.8rem);line-height:.95;letter-spacing:.03em;
@@ -613,6 +614,7 @@
   #speedBtn::before{background:linear-gradient(180deg,#f4fdff,#7ee7ff 26%,#ffe14a 72%,#3ad0ff);box-shadow:inset 0 2px 0 #fff}
   #speedBtn b{display:block;position:relative;z-index:1;font-size:1.45rem;line-height:1}
   #speedBtn small{display:block;position:relative;z-index:1;margin-top:3px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:.88rem;font-weight:800;letter-spacing:0;text-transform:none;color:#062038;white-space:normal}
+  #speedXp{display:table;margin:4px auto 0;padding:1px 10px;border-radius:999px;background:#1a1200;color:#ffe14a}
   #speedSpinCard{margin-top:-4px}
   #quizDone{color:#fff}
   #quizDone::before{background:linear-gradient(180deg,#6e63ff,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
@@ -709,7 +711,7 @@
       </div>
       <div id="speedIntro" hidden>
         <p class="speedgate">Speed Run</p>
-        <p class="speedrule">4 levels back to back, 5 questions each. A wrong answer adds 5 seconds.</p>
+        <p class="speedrule" id="speedIntroLead">6 levels back to back, 10 questions each. A wrong answer adds 5 seconds.</p>
         <p class="vtiers" id="speedTiers"></p>
         <p class="speedrule" id="speedIntroRule"></p>
         <button type="button" class="bigbtn" id="speedStart">Go</button>
@@ -813,7 +815,7 @@
     <p class="questLead">Things Fionn can do to earn penalty time back.</p>
     <p class="questTotal" id="questTotal">Penalty 0 min</p>
     <button type="button" class="quizcard" id="quizBtn"><span class="quiztop"><b id="quizTitle">Times Table Quiz</b><span class="qxp quiz" id="quizXp">up to +40 XP</span></span><small id="quizSub">15 questions · up to 3 spins</small></button>
-    <button type="button" class="bigbtn" id="speedBtn"><b id="speedBtnLabel">⚡ Speed Run</b><small id="speedSub">No personal best yet</small></button>
+    <button type="button" class="bigbtn" id="speedBtn"><b id="speedBtnLabel">⚡ Speed Run</b><small id="speedXp">up to +145 XP</small><small id="speedSub">No personal best yet</small></button>
     <p class="vowed" id="vowed">🪙 0 V-Bucks owed</p>
     <button type="button" class="bigbtn" id="speedSpinCard" hidden>Spin the reward</button>
     <div id="questList"></div>
@@ -914,7 +916,7 @@
 </div>
 
 <script>
-const APP_VERSION="20261117b";
+const APP_VERSION="20261117c";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
@@ -1027,8 +1029,9 @@ function normQuestQueue(o,quests){
   if(!o||!Array.isArray(o.questQueue))return [];
   return o.questQueue.filter(x=>x&&ids[x.id]&&String(x.name||'').trim()).slice(-40).map(x=>({id:String(x.id).slice(0,40),name:String(x.name).trim().slice(0,60),diff:normDiff(x.diff)||'medium'}));
 }
-const QUIZ_LEVELS=[[2,5,10,11],[3,4,6,7],[7,9,12],[3,4,6,7,8,9,12]];
+const QUIZ_LEVELS=[[2,5,10,11],[3,4,6,7],[7,9,12],[3,4,6,7,8,9,12],[7,8,9,12],[2,3,4,5,6,7,8,9,10,11,12]];
 const SPEED_PEN=5000;
+const SPEED_PER=10;
 function normTableList(row){
   const nums=[];
   const seen={};
@@ -1050,20 +1053,21 @@ function normQuizLevels(o){
   }
   return out;
 }
-function defaultSpeedSet(){return {xp:2,pb:25,spinAt:18,spins:1,pbSpins:3,runs:2,need:16,vbBase:200,vbAt:300,vbStep:30,vbEach:100,vbBeat:100,vbPbOnly:true}}
+function defaultSpeedSet(){return {xp:2,pb:25,spinAt:54,spins:1,pbSpins:3,runs:2,need:48,vbBase:200,vbAt:600,vbStep:30,vbEach:100,vbBeat:100,vbPbOnly:true}}
+function speedTotal(){return QUIZ_LEVELS.length*SPEED_PER}
 function normSpeedSet(o){
   const d=defaultSpeedSet();
   const src=o&&o.speedSet;
   if(!src||typeof src!=='object')return d;
   d.xp=clampInt(src.xp,0,50,d.xp);
   d.pb=clampInt(src.pb,0,200,d.pb);
-  d.spinAt=clampInt(src.spinAt,1,20,d.spinAt);
+  d.spinAt=clampInt(src.spinAt,1,speedTotal(),d.spinAt);
   d.spins=clampInt(src.spins,0,3,d.spins);
   d.pbSpins=clampInt(src.pbSpins,0,5,d.pbSpins);
   d.runs=clampInt(src.runs,0,10,d.runs);
-  d.need=clampInt(src.need,1,20,d.need);
+  d.need=clampInt(src.need,1,speedTotal(),d.need);
   d.vbBase=clampInt(src.vbBase,0,5000,d.vbBase);
-  d.vbAt=clampInt(src.vbAt,60,900,d.vbAt);
+  d.vbAt=clampInt(src.vbAt,60,1800,d.vbAt);
   d.vbStep=clampInt(src.vbStep,10,120,d.vbStep);
   d.vbEach=clampInt(src.vbEach,0,1000,d.vbEach);
   d.vbBeat=clampInt(src.vbBeat,0,1000,d.vbBeat);
@@ -1072,27 +1076,27 @@ function normSpeedSet(o){
 }
 function normSpeedRun(o){
   const q=o&&o.speedRun;
-  if(!q||!Array.isArray(q.qs)||q.qs.length!==20||!Array.isArray(q.lv)||q.lv.length!==20)return null;
+  const total=speedTotal();
+  if(!q||!Array.isArray(q.qs)||q.qs.length!==total||!Array.isArray(q.lv)||q.lv.length!==total)return null;
   const qs=[];
   const lv=[];
   const seen={};
-  for(let n=0;n<20;n++){
+  for(let n=0;n<total;n++){
     const pair=q.qs[n];
     const a=Math.floor(Number(pair&&pair[0]));
     const b=Math.floor(Number(pair&&pair[1]));
     const level=Math.floor(Number(q.lv[n]));
     const key=level+':'+a+'x'+b;
-    if(a<2||a>12||b<2||b>12||level<1||level>4||seen[key])return null;
-    if(n<5&&level!==1||n>=5&&n<10&&level!==2||n>=10&&n<15&&level!==3||n>=15&&level!==4)return null;
+    if(a<2||a>12||b<2||b>12||level!==Math.floor(n/SPEED_PER)+1||seen[key])return null;
     seen[key]=1;
     qs.push([a,b]);
     lv.push(level);
   }
-  const i=Math.max(0,Math.min(19,Math.floor(Number(q.i)||0)));
+  const i=Math.max(0,Math.min(total-1,Math.floor(Number(q.i)||0)));
   const phase=q.phase==='feedback'?'feedback':q.phase==='level'?'level':'ask';
-  return {qs,lv,i,wrong:Math.max(0,Math.min(20,Math.floor(Number(q.wrong)||0))),phase,lastOk:!!q.lastOk,elapsed:Math.max(0,Math.floor(Number(q.elapsed)||0)),runningSince:0,pen:Math.max(0,Math.floor(Number(q.pen)||0)),date:/^\d{4}-\d{2}-\d{2}$/.test(q.date)?q.date:''};
+  return {qs,lv,i,wrong:Math.max(0,Math.min(total,Math.floor(Number(q.wrong)||0))),phase,lastOk:!!q.lastOk,elapsed:Math.max(0,Math.floor(Number(q.elapsed)||0)),runningSince:0,pen:Math.max(0,Math.floor(Number(q.pen)||0)),date:/^\d{4}-\d{2}-\d{2}$/.test(q.date)?q.date:''};
 }
-function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,insanitySeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,speedRun:null,speedPb:0,speedDay:'',speedN:0,speedSpins:0,speedSet:null,vbucks:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null,xp:0,level:1,xpSet:null,xpStart:'',xpCheck:'',masterDays:[],xpNotice:null,skillCue:''};}
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,insanitySeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,speedRun:null,speedPb:0,speedDay:'',speedN:0,speedSpins:0,speedSet:null,speedFmt:60,vbucks:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null,xp:0,level:1,xpSet:null,xpStart:'',xpCheck:'',masterDays:[],xpNotice:null,skillCue:''};}
 function defaultXpSet(){return {quest:{easy:10,medium:25,hard:50,master:100,insanity:150},quiz:2,perfect:10,daily:20,miles:[{days:3,xp:25},{days:7,xp:50},{days:14,xp:100},{days:30,xp:200}],penalty:10,missMin:10,missXp:25,missOn:true,pause:false}}
 function normXpSet(o){
   const d=defaultXpSet();
@@ -1154,13 +1158,27 @@ function norm(o){
   S.quizPlays=Math.max(0,Math.min(99,Math.floor(Number(o&&o.quizPlays)||0)));
   S.quizPlayDay=/^\d{4}-\d{2}-\d{2}$/.test(o&&o.quizPlayDay)?o.quizPlayDay:'';
   S.quizNote=String(o&&o.quizNote||'').slice(0,80);
-  S.quizBump=o&&(o.quizBump===2||o.quizBump===3||o.quizBump===4)?o.quizBump:0;
+  S.quizBump=o&&o.quizBump>=2&&o.quizBump<=QUIZ_LEVELS.length?o.quizBump:0;
   S.speedRun=normSpeedRun(o);
   S.speedPb=Math.max(0,Math.floor(Number(o&&o.speedPb)||0));
   S.speedDay=/^\d{4}-\d{2}-\d{2}$/.test(o&&o.speedDay)?o.speedDay:'';
   S.speedN=Math.max(0,Math.min(99,Math.floor(Number(o&&o.speedN)||0)));
   S.speedSpins=Math.max(0,Math.min(10,Math.floor(Number(o&&o.speedSpins)||0)));
   S.speedSet=normSpeedSet(o);
+  S.speedFmt=60;
+  if(o&&o.speedFmt!==60){
+    const src=o.speedSet;
+    if(src&&typeof src==='object'){
+      if(S.speedSet.need<=20)S.speedSet.need=clampInt(S.speedSet.need*3,1,speedTotal(),48);
+      if(S.speedSet.spinAt<=20)S.speedSet.spinAt=clampInt(S.speedSet.spinAt*3,1,speedTotal(),54);
+      if(src.vbAt!=null)S.speedSet.vbAt=clampInt(Math.floor(Number(src.vbAt))*2,60,1800,600);
+    }
+    S.speedRun=null;
+    if(S.speedPb>0){
+      S.speedPb=0;
+      speedFormatNote='Speed Run reset (new 60-question format)';
+    }
+  }
   S.vbucks=Math.max(0,Math.min(100000,Math.floor(Number(o&&o.vbucks)||0)));
   if(S.quizSpins>0)S.quizRun=null;
   applyDaily(S,o);
@@ -1223,11 +1241,17 @@ function fromOld(o){
   return norm(S);
 }
 function readKey(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+let speedFormatNote='';
 const existing=readKey(KEY);
 let S=existing?norm(existing):fromOld(readKey('fionnTracker.v2')||readKey('fionnTracker.v1'));
 function sortQuests(){S.quests.sort((a,b)=>questUses(b)-questUses(a))}
 const save=()=>{sortQuests();localStorage.setItem(KEY,JSON.stringify(S))};
 if(!existing||!existing.masterSeed||!existing.insanitySeed)save();
+if(speedFormatNote){
+  pushLog({t:Date.now(),kind:'speed',ms:0,note:speedFormatNote});
+  speedFormatNote='';
+  save();
+}
 function owed(){
   if(S.mode==='running'&&typeof S.endsAt==='number')return Math.max(0,S.endsAt-Date.now());
   if(S.mode==='paused')return Math.max(0,S.remainingMs);
@@ -2129,6 +2153,11 @@ function quizXpText(){
   const n=Math.max(0,Math.round((Number(x.quiz)||0)*15+(Number(x.perfect)||0)));
   return 'up to +'+n+' XP';
 }
+function speedXpText(){
+  const s=S.speedSet||defaultSpeedSet();
+  const n=Math.max(0,Math.round((Number(s.xp)||0)*speedTotal()+(Number(s.pb)||0)));
+  return 'up to +'+n+' XP';
+}
 function rewardLine(diff){
   const r=S.questRules[diff]||S.questRules.medium;
   const word=r.spins===1?'spin':'spins';
@@ -2446,6 +2475,7 @@ function paintQuizCard(){
   else if(S.quizRun)line+=' · Continue '+(S.quizRun.i+1)+'/15';
   sub.textContent=line;
   if($('quizXp'))$('quizXp').textContent=quizXpText();
+  if($('speedXp'))$('speedXp').textContent=speedXpText();
   if($('speedSub'))$('speedSub').textContent=speedCardLine();
   if($('speedBtnLabel'))$('speedBtnLabel').textContent=S.speedRun&&S.speedRun.date===londonDay()?'⚡ Continue':'⚡ Speed Run';
   if($('speedSpinCard')){
@@ -2501,10 +2531,15 @@ function paintQuiz(){
   if(run){
     const a=run.qs[run.i][0],b=run.qs[run.i][1],ans=a*b;
     const key=run.i+':'+run.phase+':'+face;
-    $('quizLevel').hidden=!!focus;
-    if(speed)$('quizLevel').textContent='Level '+run.lv[run.i]+' of 4';
-    else if(!focus)$('quizLevel').textContent=levelLine(run.level||1,run.tables);
-    $('quizProg').textContent=(run.i+1)+'/'+run.qs.length;
+    $('quizLevel').hidden=!!focus||speed;
+    if(speed){
+      $('quizProg').classList.add('speedline');
+      $('quizProg').textContent='Level '+run.lv[run.i]+' of '+QUIZ_LEVELS.length+' • Q '+(run.i+1)+'/'+run.qs.length;
+    }else{
+      $('quizProg').classList.remove('speedline');
+      if(!focus)$('quizLevel').textContent=levelLine(run.level||1,run.tables);
+      $('quizProg').textContent=(run.i+1)+'/'+run.qs.length;
+    }
     $('quizQ').textContent=a+' × '+b;
     const fb=$('quizFb');
     if($('quizPlay').dataset.key!==key){
@@ -2585,8 +2620,8 @@ function shufflePairs(tables,count){
 function newSpeed(){
   const qs=[];
   const lv=[];
-  for(let level=1;level<=4;level++){
-    shufflePairs(tablesFor(level),5).forEach(pair=>{qs.push(pair);lv.push(level)});
+  for(let level=1;level<=QUIZ_LEVELS.length;level++){
+    shufflePairs(tablesFor(level),SPEED_PER).forEach(pair=>{qs.push(pair);lv.push(level)});
   }
   S.speedRun={qs,lv,i:0,wrong:0,phase:'ask',lastOk:false,elapsed:0,runningSince:0,pen:0,date:londonDay()};
 }
@@ -2623,6 +2658,7 @@ function paintSpeedIntro(){
   $('quizPlay').hidden=false;
   $('quizAsk').hidden=true;
   $('speedIntro').hidden=false;
+  if($('speedIntroLead'))$('speedIntroLead').textContent=QUIZ_LEVELS.length+' levels back to back, '+SPEED_PER+' questions each. A wrong answer adds 5 seconds.';
   $('speedTiers').textContent='Beat your best: +'+(set.vbBeat||0)+' V-Bucks';
   const line=vbTierLine(set);
   let extra=S.speedPb?' Best so far '+speedClockText(S.speedPb,false)+'.':' Your first best sets the time. The +'+(set.vbBeat||0)+' starts when you beat it.';
@@ -2658,7 +2694,7 @@ function paintSpeedEnd(){
     if(last.spins)bits.push(last.spins+' boosted spin'+(last.spins===1?'':'s'));
     if(!last.xp&&!last.spins)bits.push('No bonus this time.');
   }else bits.push('Practice run. Today’s rewards are used.');
-  if(!last.qualified)bits.push('Need '+last.need+'/20 for a personal best.');
+  if(!last.qualified)bits.push('Need '+last.need+'/'+(last.total||speedTotal())+' for a personal best.');
   $('speedMsg').textContent=bits.join(' · ');
   $('speedSpin').hidden=!(S.speedSpins>0);
   $('speedSpin').textContent=S.speedSpins===1?'Spin the wheel':'Spin the wheel · '+S.speedSpins+' left';
@@ -3309,7 +3345,7 @@ function paintChallenges(){
   $('chalMiles').innerHTML=set.miles.map((m,i)=>mileEditor(m,i)).join('')||'<p class="daybest">No streak bonuses yet.</p>';
   if($('chalRules'))$('chalRules').innerHTML=DIFFS.map(ruleEditor).join('');
   paintInsanity();
-  if($('chalLevels'))$('chalLevels').innerHTML=[0,1,2,3].map(levelEditor).join('');
+  if($('chalLevels'))$('chalLevels').innerHTML=QUIZ_LEVELS.map((_,i)=>levelEditor(i)).join('');
   paintSpeedSettings();
   paintXp();
 }
@@ -3392,9 +3428,9 @@ function paintSpeedSettings(){
     +row('New PB bonus XP','pb',s.pb)
     +row('Spins on a new PB','pbSpins',s.pbSpins)
     +row('Spins if not a PB','spins',s.spins)
-    +row('Score for that spin','spinAt',s.spinAt+'/20')
+    +row('Score for that spin','spinAt',s.spinAt+'/'+speedTotal())
     +row('Rewarded runs a day','runs',s.runs)
-    +row('Correct for a PB','need',s.need+'/20')
+    +row('Correct for a PB','need',s.need+'/'+speedTotal())
     +row('Beat your best','vbBeat',s.vbBeat)
     +row('Time prize','vbBase',s.vbBase)
     +row('Time prize under','vbAt',speedClockText(s.vbAt*1000,false))
@@ -3411,18 +3447,18 @@ function bumpSpeed(field,dir){
   else if(field==='pb')x.pb=clampInt(x.pb+dir,0,200,x.pb);
   else if(field==='pbSpins')x.pbSpins=clampInt(x.pbSpins+dir,0,5,x.pbSpins);
   else if(field==='spins')x.spins=clampInt(x.spins+dir,0,3,x.spins);
-  else if(field==='spinAt')x.spinAt=clampInt(x.spinAt+dir,1,20,x.spinAt);
+  else if(field==='spinAt')x.spinAt=clampInt(x.spinAt+dir,1,speedTotal(),x.spinAt);
   else if(field==='runs')x.runs=clampInt(x.runs+dir,0,10,x.runs);
-  else if(field==='need')x.need=clampInt(x.need+dir,1,20,x.need);
+  else if(field==='need')x.need=clampInt(x.need+dir,1,speedTotal(),x.need);
   else if(field==='vbBeat')x.vbBeat=clampInt(x.vbBeat+dir*50,0,1000,x.vbBeat);
   else if(field==='vbBase')x.vbBase=clampInt(x.vbBase+dir*50,0,5000,x.vbBase);
-  else if(field==='vbAt')x.vbAt=clampInt(x.vbAt+dir*30,60,900,x.vbAt);
+  else if(field==='vbAt')x.vbAt=clampInt(x.vbAt+dir*30,60,1800,x.vbAt);
   else if(field==='vbStep')x.vbStep=clampInt(x.vbStep+dir*10,10,120,x.vbStep);
   else if(field==='vbEach')x.vbEach=clampInt(x.vbEach+dir*50,0,1000,x.vbEach);
 }
 function toggleLevel(level,table){
   const i=level-1;
-  if(i<0||i>3)return false;
+  if(i<0||i>=QUIZ_LEVELS.length)return false;
   const row=S.quizLevels[i].slice();
   const at=row.indexOf(table);
   if(at>=0){
