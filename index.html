@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="app-version" content="20261117a">
+<meta name="app-version" content="20261117b">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -31,7 +31,8 @@
     --timer:"Anton","Arial Narrow",Impact,Haettenschweiler,sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;height:100%;height:100dvh;overflow:hidden}
+  html,body{margin:0;height:100%;height:100dvh;overflow:hidden;touch-action:manipulation}
+  html,body,button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipulation}
   body{
     color:var(--ink);
     font-family:var(--display);
@@ -146,8 +147,11 @@
   .row{display:flex;gap:10px;margin-bottom:12px}
   .row>*{flex:1;min-width:0}
   .row .bigbtn{margin-bottom:0}
-  input{
+  input,select,textarea{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:16px;
+  }
+  input{
     width:100%;min-height:56px;padding:0 12px;margin-bottom:10px;
     border-radius:14px;border:3px solid #7d5cff;
     background:rgba(10,6,28,.78);color:#fff;font-size:16px;font-weight:700;
@@ -571,12 +575,16 @@
   .quizfb.no{color:#ffd2ea}
   #quizSpin[hidden],#quizPlay[hidden],#quizEnd[hidden],#quizFb[hidden],#quizGo[hidden],#speedIntro[hidden],#speedEnd[hidden],#speedGate[hidden],#vcoin[hidden],#vaward[hidden]{display:none}
   #quizGo,#quizSpin,#speedGo,#speedStart,#speedDone,#speedSpin,#speedSpinCard,#markPaid{color:#1a1200}
+  #resetSpeed{color:#fff}
+  #resetSpeed::before{background:linear-gradient(180deg,#ff8aa8,#e4235a 55%,#9d123c);box-shadow:inset 0 2px 0 rgba(255,255,255,.35)}
   #quizGo::before,#quizSpin::before,#speedGo::before,#speedStart::before,#speedDone::before,#speedSpin::before,#speedSpinCard::before,#markPaid::before{background:linear-gradient(180deg,#fff6a0,#ffe14a 46%,#f5b400);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
   .pad{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 8px}
   .pad button{
     min-width:0;min-height:58px;padding:0;border-radius:14px;
     background:#241448;color:#fff;font-family:var(--timer);font-size:1.7rem;letter-spacing:0;text-transform:none;
     box-shadow:0 4px 0 #090318;
+    touch-action:manipulation;user-select:none;-webkit-user-select:none;
+    -webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
   }
   .pad button:active{transform:translateY(2px)}
   #padGo,.pad button[data-key="del"]{font-family:var(--display);font-size:1.25rem}
@@ -906,7 +914,7 @@
 </div>
 
 <script>
-const APP_VERSION="20261117a";
+const APP_VERSION="20261117b";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
@@ -2825,11 +2833,38 @@ $('speedSpinCard').onclick=()=>{
   if(!(S.speedSpins>0)||spinning)return;
   openSpin('Speed Run',null,'speed');
 };
-$('quizPad').onclick=ev=>{
+let lastTouchEnd=0;
+['gesturestart','gesturechange','gestureend'].forEach(type=>{
+  document.addEventListener(type,ev=>{ev.preventDefault()},{passive:false});
+});
+document.addEventListener('touchend',ev=>{
+  const now=Date.now();
+  if(now-lastTouchEnd<300)ev.preventDefault();
+  lastTouchEnd=now;
+},{passive:false});
+let padDownAt=0;
+function onPadDown(ev){
+  if(ev.pointerType==='mouse'&&ev.button!==0)return;
   const b=ev.target.closest('[data-key]');
   if(!b)return;
+  if(ev.cancelable)ev.preventDefault();
+  padDownAt=Date.now();
   padDigit(b.dataset.key);
-};
+}
+if(window.PointerEvent)$('quizPad').addEventListener('pointerdown',onPadDown);
+else $('quizPad').addEventListener('touchstart',onPadDown,{passive:false});
+$('quizPad').addEventListener('click',ev=>{
+  if(Date.now()-padDownAt<700){ev.preventDefault();return}
+  const b=ev.target.closest('[data-key]');
+  if(b)padDigit(b.dataset.key);
+});
+let goDownAt=0;
+$('quizGo').addEventListener('pointerdown',ev=>{
+  if(ev.pointerType==='mouse'&&ev.button!==0)return;
+  if(ev.cancelable)ev.preventDefault();
+  goDownAt=Date.now();
+  quizCheck();
+});
 $('quizBox').addEventListener('keydown',ev=>{
   if(!$('quizBox').classList.contains('on'))return;
   if(/^[0-9]$/.test(ev.key)){ev.preventDefault();padDigit(ev.key)}
@@ -2838,7 +2873,7 @@ $('quizBox').addEventListener('keydown',ev=>{
 });
 $('quizBack').onclick=closeQuiz;
 $('quizDone').onclick=closeQuiz;
-$('quizGo').onclick=quizCheck;
+$('quizGo').onclick=()=>{if(Date.now()-goDownAt<700)return;quizCheck()};
 $('quizAns').addEventListener('input',()=>{$('quizAns').value=$('quizAns').value.replace(/\D/g,'').slice(0,3)});
 $('quizAns').addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();quizCheck()}});
 $('quizSpin').onclick=()=>{
@@ -3365,7 +3400,9 @@ function paintSpeedSettings(){
     +row('Time prize under','vbAt',speedClockText(s.vbAt*1000,false))
     +row('Then every','vbStep',speedClockText(s.vbStep*1000,false))
     +row('Extra each step','vbEach',s.vbEach)
-    +'<div class="chrow"><div class="txt"><b>Time prize on a new PB</b><small>'+(s.vbPbOnly?'Only when the run is a personal best':'Any fast enough run')+'</small></div><button type="button" class="chtog'+(s.vbPbOnly?' on':'')+'" data-speed-toggle="vbPbOnly">'+(s.vbPbOnly?'On':'Off')+'</button></div>';
+    +'<div class="chrow"><div class="txt"><b>Time prize on a new PB</b><small>'+(s.vbPbOnly?'Only when the run is a personal best':'Any fast enough run')+'</small></div><button type="button" class="chtog'+(s.vbPbOnly?' on':'')+'" data-speed-toggle="vbPbOnly">'+(s.vbPbOnly?'On':'Off')+'</button></div>'
+    +'<div class="chrow"><div class="txt"><b>Personal best</b><small>'+(S.speedPb?'Best '+speedClockText(S.speedPb,false):'No personal best yet')+' · '+speedRunsToday()+' rewarded today</small></div></div>'
+    +'<button type="button" class="bigbtn" id="resetSpeed">Reset Speed Run</button>';
 }
 function bumpSpeed(field,dir){
   const x=S.speedSet;
@@ -3570,6 +3607,12 @@ $('viewChallenges').onclick=ev=>{
     bumpInsanity(t.dataset.i,t.dataset.field,+t.dataset.dir);
   }else if(t.dataset.scope==='xp'){
     bumpXp(t.dataset.field,+t.dataset.dir,t.dataset.i==null?null:+t.dataset.i);
+  }else if(t.id==='resetSpeed'){
+    if(!window.confirm('Reset the Speed Run best? The next good run starts a fresh baseline, with no +100 bonus. Today’s reward count goes back to zero. V-Bucks owed stay.'))return;
+    S.speedPb=0;
+    S.speedN=0;
+    pushLog({t:Date.now(),kind:'speed',ms:0,note:'Speed Run reset'});
+    $('logList').innerHTML=S.log.slice().reverse().map(logLine).filter(Boolean).join('')||'<li class="meta">None yet 👍</li>';
   }else if(t.id==='markPaid'){
     const n=S.vbucks||0;
     if(!n)return;
