@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="app-version" content="20261117c">
+<meta name="app-version" content="20261117d">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -610,11 +610,11 @@
   .speedpen{margin:0 0 4px;min-height:1.2em;text-align:center;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:800;letter-spacing:0;text-transform:none;color:#ff5d7a;font-size:1.05rem}
   .speedgate{margin:12px 0 4px;text-align:center;font-size:clamp(2.6rem,12vw,3.8rem);line-height:.9;color:#ffe14a;text-shadow:0 4px 0 #1a0a40}
   #speedGate .quizlevel{color:#efeaff}
-  #speedBtn{color:#041018;margin:0 0 12px}
+  #speedBtn{color:#041018;margin:0 0 12px;text-align:center}
   #speedBtn::before{background:linear-gradient(180deg,#f4fdff,#7ee7ff 26%,#ffe14a 72%,#3ad0ff);box-shadow:inset 0 2px 0 #fff}
   #speedBtn b{display:block;position:relative;z-index:1;font-size:1.45rem;line-height:1}
   #speedBtn small{display:block;position:relative;z-index:1;margin-top:3px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:.88rem;font-weight:800;letter-spacing:0;text-transform:none;color:#062038;white-space:normal}
-  #speedXp{display:table;margin:4px auto 0;padding:1px 10px;border-radius:999px;background:#1a1200;color:#ffe14a}
+  #speedBtn #speedXp{display:flex;position:relative;z-index:1;width:max-content;max-width:100%;margin:4px auto 0}
   #speedSpinCard{margin-top:-4px}
   #quizDone{color:#fff}
   #quizDone::before{background:linear-gradient(180deg,#6e63ff,#3a2ad4);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
@@ -815,7 +815,7 @@
     <p class="questLead">Things Fionn can do to earn penalty time back.</p>
     <p class="questTotal" id="questTotal">Penalty 0 min</p>
     <button type="button" class="quizcard" id="quizBtn"><span class="quiztop"><b id="quizTitle">Times Table Quiz</b><span class="qxp quiz" id="quizXp">up to +40 XP</span></span><small id="quizSub">15 questions · up to 3 spins</small></button>
-    <button type="button" class="bigbtn" id="speedBtn"><b id="speedBtnLabel">⚡ Speed Run</b><small id="speedXp">up to +145 XP</small><small id="speedSub">No personal best yet</small></button>
+    <button type="button" class="bigbtn" id="speedBtn"><b id="speedBtnLabel">⚡ Speed Run</b><span class="qxp quiz" id="speedXp">up to +145 XP</span><small id="speedSub">No personal best yet</small></button>
     <p class="vowed" id="vowed">🪙 0 V-Bucks owed</p>
     <button type="button" class="bigbtn" id="speedSpinCard" hidden>Spin the reward</button>
     <div id="questList"></div>
@@ -916,7 +916,7 @@
 </div>
 
 <script>
-const APP_VERSION="20261117c";
+const APP_VERSION="20261117d";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
