@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#2f6bff">
-<meta name="app-version" content="20261117d">
+<meta name="app-version" content="20261122a">
 <meta name="apple-mobile-web-app-title" content="TimeOut">
 <title>TimeOutTastic</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -277,7 +277,11 @@
   .chnum{min-width:2.2ch;text-align:center;font-size:1.15rem}
   .daypop{position:fixed;inset:0;z-index:28;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(8,4,24,.78)}
   .daypop:not([hidden]){display:flex}
-  .daysheet{width:min(100%,380px);position:relative;text-align:center;padding:22px 16px 8px;border-radius:18px;background:linear-gradient(180deg,#3a2088,#1a0c44);box-shadow:0 0 0 3px #ffe14a,0 12px 0 #090318}
+  .daysheet{width:min(100%,380px);position:relative;text-align:center;padding:22px 16px 8px;border-radius:18px;background:linear-gradient(180deg,#3a2088,#1a0c44);box-shadow:0 0 0 3px #ffe14a,0 12px 0 #090318;max-height:min(82dvh,760px);overflow:auto}
+  .missline{margin:8px 0 6px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:1.05rem;font-weight:800;line-height:1.3;letter-spacing:0;text-transform:none;color:#fff}
+  .missundo{width:100%;min-height:52px;margin:0 0 8px;padding:8px 12px;border-radius:14px;background:#241448;color:#ffe14a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:.95rem;font-weight:800;letter-spacing:0;text-transform:none;line-height:1.25;white-space:normal;box-shadow:inset 0 0 0 2px rgba(255,225,74,.5)}
+  .misshead{margin:14px 0 6px;color:var(--yellow);font-size:.92rem;letter-spacing:.08em;text-transform:uppercase}
+  .missnone{margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-weight:700;color:#efeaff;font-size:.92rem}
   .daypopk{margin:0;color:var(--yellow);letter-spacing:.12em;font-size:1.2rem}
   .daypopn{margin:4px 0;font-family:var(--timer);font-size:4.2rem;line-height:.9;text-shadow:0 4px 0 #1a0a40}
   #dayPopOk{color:#1a1200}
@@ -887,7 +891,8 @@
 <div class="daypop" id="missPop" hidden>
   <div class="daysheet">
     <p class="daypopk">No Master quest</p>
-    <p class="daytask" id="missMsg"></p>
+    <div id="missDays"></div>
+    <div id="missUndo"></div>
     <button type="button" class="bigbtn" id="missOk">OK</button>
   </div>
 </div>
@@ -916,7 +921,7 @@
 </div>
 
 <script>
-const APP_VERSION="20261117d";
+const APP_VERSION="20261122a";
 const KEY='fionnTracker.v3';
 const STEP=5*60*1000;
 const $=id=>document.getElementById(id);
@@ -1096,7 +1101,26 @@ function normSpeedRun(o){
   const phase=q.phase==='feedback'?'feedback':q.phase==='level'?'level':'ask';
   return {qs,lv,i,wrong:Math.max(0,Math.min(total,Math.floor(Number(q.wrong)||0))),phase,lastOk:!!q.lastOk,elapsed:Math.max(0,Math.floor(Number(q.elapsed)||0)),runningSince:0,pen:Math.max(0,Math.floor(Number(q.pen)||0)),date:/^\d{4}-\d{2}-\d{2}$/.test(q.date)?q.date:''};
 }
-function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,insanitySeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,speedRun:null,speedPb:0,speedDay:'',speedN:0,speedSpins:0,speedSet:null,speedFmt:60,vbucks:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null,xp:0,level:1,xpSet:null,xpStart:'',xpCheck:'',masterDays:[],xpNotice:null,skillCue:''};}
+function blank(){return {sound:false,totalMs:0,mode:'idle',endsAt:null,remainingMs:0,runMs:0,servedMs:0,alerted:false,log:[],quests:defaultQuests(),questRules:null,questQueue:[],masterSeed:true,insanitySeed:true,quizRun:null,quizSpins:0,quizRight:0,quizLevels:null,quizPlays:0,quizPlayDay:'',quizNote:'',quizBump:0,speedRun:null,speedPb:0,speedDay:'',speedN:0,speedSpins:0,speedSet:null,speedFmt:60,vbucks:0,dailySpins:0,dailyStreak:0,dailyBest:0,dailyLast:'',dailyDone:[],dailyToday:null,dailyQueue:[],dailyPop:null,focusRun:null,focusLast:null,dailySet:null,xp:0,level:1,xpSet:null,xpStart:'',xpCheck:'',masterDays:[],missLog:[],xpNotice:null,skillCue:''};}
+function normMissLog(o){
+  const src=Array.isArray(o&&o.missLog)?o.missLog:[];
+  const by={};
+  src.forEach(e=>{
+    if(!e||!/^\d{4}-\d{2}-\d{2}$/.test(e.day))return;
+    by[e.day]={day:e.day,ms:Math.max(0,Math.min(86400000,Math.floor(Number(e.ms)||0))),xp:Math.max(0,Math.min(5000,Math.floor(Math.abs(Number(e.xp)||0)))),undone:!!e.undone};
+  });
+  return Object.keys(by).sort().map(k=>by[k]).slice(-30);
+}
+function normXpNotice(note){
+  if(!note||!(Number(note.days)>0))return null;
+  const seen={};
+  const dates=[];
+  (Array.isArray(note.dates)?note.dates:[]).forEach(d=>{
+    if(/^\d{4}-\d{2}-\d{2}$/.test(d)&&!seen[d]){seen[d]=1;dates.push(d)}
+  });
+  const kept=dates.slice(-3);
+  return {days:kept.length?kept.length:clampInt(note.days,1,3,1),min:clampInt(note.min,0,60,10),xp:clampInt(note.xp,0,200,25),dates:kept};
+}
 function defaultXpSet(){return {quest:{easy:10,medium:25,hard:50,master:100,insanity:150},quiz:2,perfect:10,daily:20,miles:[{days:3,xp:25},{days:7,xp:50},{days:14,xp:100},{days:30,xp:200}],penalty:10,missMin:10,missXp:25,missOn:true,pause:false}}
 function normXpSet(o){
   const d=defaultXpSet();
@@ -1194,8 +1218,8 @@ function norm(o){
     if(/^\d{4}-\d{2}-\d{2}$/.test(d)&&!seenDay[d]){seenDay[d]=1;S.masterDays.push(d)}
   });
   if(S.masterDays.length>120)S.masterDays=S.masterDays.slice(-120);
-  const note=o&&o.xpNotice;
-  S.xpNotice=note&&note.days>0?{days:clampInt(note.days,1,3,1),min:clampInt(note.min,0,60,10),xp:clampInt(note.xp,0,200,25)}:null;
+  S.missLog=normMissLog(o);
+  S.xpNotice=normXpNotice(o&&o.xpNotice);
   S.skillCue='';
   if(o&&typeof o.skillCue==='string'){
     const cue=o.skillCue.slice(0,40);
@@ -1345,7 +1369,10 @@ function logLine(e){
     else if(e.ms)label+=', -'+clock(e.ms);
   }
   else if(e.kind==='xp')label=(e.xp>0?'+'+e.xp:String(e.xp))+' XP · '+esc(e.note||'XP');
-  else if(e.kind==='miss')label='No Master quest +'+clock(e.ms)+' / -'+Math.abs(e.xp||0)+' XP';
+  else if(e.kind==='miss'){
+    if(String(e.note||'').indexOf('Missed day undone')===0)label=esc(e.note);
+    else label='No Master quest'+(/^\d{4}-\d{2}-\d{2}$/.test(e.note)?' ('+esc(ukDayShort(e.note))+')':'')+' +'+clock(e.ms)+' / -'+Math.abs(e.xp||0)+' XP';
+  }
   else if(e.kind==='skill')label='🏆 Mastered: '+esc(e.note||'Skill Check');
   else return '';
   if(e.xp&&e.kind!=='xp'&&e.kind!=='miss')label+=' · '+(e.xp>0?'+':'')+e.xp+' XP';
@@ -1459,7 +1486,12 @@ function paintRank(){
 }
 function masterClaimedOn(day){
   if(S.masterDays&&S.masterDays.indexOf(day)>=0)return true;
-  return S.quests.some(q=>(q.diff==='master'||q.diff==='insanity')&&q.claimDay===day&&q.claimN>0);
+  if(S.quests.some(q=>(q.diff==='master'||q.diff==='insanity')&&q.claimDay===day&&q.claimN>0))return true;
+  return S.log.some(e=>{
+    if(!e||londonDayOf(e.t)!==day)return false;
+    if(e.kind==='skill')return true;
+    return e.kind==='xp'&&(e.note==='Master quest'||e.note==='Insanity quest');
+  });
 }
 function skillPending(q){
   if(!q||q.diff!=='insanity'||q.mastered)return 0;
@@ -1472,9 +1504,9 @@ function skillQuestion(q){
   if(n.indexOf('tying a tie')>=0)return 'Can Fionn tie a tie on his own?';
   return 'Can Fionn do this on his own?';
 }
-function noteMasterClaim(){
-  const day=londonDay();
-  if(S.masterDays.indexOf(day)<0)S.masterDays.push(day);
+function noteMasterClaim(day){
+  const d=/^\d{4}-\d{2}-\d{2}$/.test(day)?day:londonDay();
+  if(S.masterDays.indexOf(d)<0)S.masterDays.push(d);
   if(S.masterDays.length>120)S.masterDays=S.masterDays.slice(-120);
 }
 function addTime(ms){
@@ -1493,11 +1525,16 @@ function addTime(ms){
     S.totalMs=(Number.isFinite(S.totalMs)?S.totalMs:0)+ms;
   }
 }
-function applyMissDay(){
+function applyMissDay(day){
   const ms=Math.max(0,(S.xpSet.missMin||0)*60000);
   if(ms)addTime(ms);
   const lost=grantXp(-(S.xpSet.missXp||0));
-  pushLog({t:Date.now(),kind:'miss',ms,note:'',xp:lost});
+  const xp=Math.abs(lost||0);
+  pushLog({t:Date.now(),kind:'miss',ms,note:day,xp:lost});
+  if(!Array.isArray(S.missLog))S.missLog=[];
+  S.missLog=S.missLog.filter(e=>e.day!==day);
+  S.missLog.push({day,ms,xp,undone:false});
+  if(S.missLog.length>30)S.missLog=S.missLog.slice(-30);
 }
 function checkMasterDays(){
   if(typeof spinning!=='undefined'&&spinning)return;
@@ -1519,19 +1556,72 @@ function checkMasterDays(){
     apply.forEach(applyMissDay);
     xpQuiet=false;
     S.xpCheck=isoFromNum(to);
-    if(apply.length)S.xpNotice={days:apply.length,min:S.xpSet.missMin,xp:S.xpSet.missXp};
+    if(apply.length)S.xpNotice={days:apply.length,min:S.xpSet.missMin,xp:S.xpSet.missXp,dates:apply.slice()};
     changed=true;
   }
   if(changed)save();
 }
+function missCopy(day,ms,xp){
+  return ukDay(day)+': no Master quest claimed. +'+clock(ms)+' and -'+xp+' XP';
+}
 function maybeMissPop(){
   const pop=$('missPop');
-  if(!pop)return;
+  if(!pop||!$('missDays'))return;
   const p=S.xpNotice;
   if(!p){pop.hidden=true;return}
-  const each=clock((p.min||0)*60000);
-  $('missMsg').textContent=p.days===1?'A day with no Master quest. +'+each+' and -'+p.xp+' XP.':p.days+' days with no Master quest. +'+each+' and -'+p.xp+' XP each.';
+  const dates=Array.isArray(p.dates)?p.dates.filter(d=>!(S.missLog||[]).some(e=>e.day===d&&e.undone)):[];
+  if(Array.isArray(p.dates)&&p.dates.length&&!dates.length){pop.hidden=true;return}
+  if(dates.length){
+    $('missDays').innerHTML=dates.map(d=>{
+      const e=(S.missLog||[]).find(x=>x.day===d);
+      const ms=e?e.ms:(p.min||0)*60000;
+      const xp=e?e.xp:(p.xp||0);
+      return '<p class="missline">'+esc(missCopy(d,ms,xp))+'</p>';
+    }).join('');
+    $('missUndo').innerHTML=dates.map(d=>'<button type="button" class="missundo" data-undo-miss="'+d+'">He did a Master quest that day (parent)</button>').join('');
+  }else{
+    const each=clock((p.min||0)*60000);
+    $('missDays').innerHTML='<p class="missline">'+esc(p.days===1?'A day with no Master quest. +'+each+' and -'+p.xp+' XP.':p.days+' days with no Master quest. +'+each+' and -'+p.xp+' XP each.')+'</p>';
+    $('missUndo').innerHTML='';
+  }
   pop.hidden=false;
+}
+function legacyMiss(){
+  const y=isoFromNum(dayNum(londonDay())-1);
+  if((S.missLog||[]).some(e=>e.day===y))return null;
+  const today=londonDay();
+  const hits=(S.log||[]).filter(e=>e&&e.kind==='miss'&&String(e.note||'').indexOf('Missed day undone')!==0&&londonDayOf(e.t)===today);
+  if(!hits.length)return null;
+  const entry=hits[hits.length-1];
+  return {day:y,ms:Math.max(0,Math.floor(Number(entry.ms)||0)),xp:Math.abs(Math.floor(Number(entry.xp)||0))};
+}
+function undoMissDay(day,fallback){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(day))return false;
+  if(!Array.isArray(S.missLog))S.missLog=[];
+  const entry=S.missLog.find(e=>e.day===day);
+  if(entry&&entry.undone)return false;
+  if(!entry&&!fallback)return false;
+  const ms=entry?entry.ms:Math.max(0,Math.floor(Number(fallback.ms)||0));
+  const xp=entry?entry.xp:Math.max(0,Math.floor(Number(fallback.xp)||0));
+  if(!window.confirm('He did a Master quest on '+ukDay(day)+'? This takes that penalty back off.'))return false;
+  reduceOwed(ms);
+  if(xp)grantXp(xp);
+  noteMasterClaim(day);
+  if(entry)entry.undone=true;
+  else{
+    S.missLog.push({day,ms,xp,undone:true});
+    if(S.missLog.length>30)S.missLog=S.missLog.slice(-30);
+  }
+  if(S.xpNotice&&Array.isArray(S.xpNotice.dates)){
+    S.xpNotice.dates=S.xpNotice.dates.filter(d=>d!==day);
+    S.xpNotice.days=S.xpNotice.dates.length;
+    if(!S.xpNotice.dates.length)S.xpNotice=null;
+  }
+  pushLog({t:Date.now(),kind:'miss',ms,note:'Missed day undone ('+ukDayShort(day)+')',xp});
+  save();
+  render();
+  paintChallenges();
+  return true;
 }
 function skillFanfare(){
   if(!S.sound)return;
@@ -2167,12 +2257,13 @@ function rewardLine(diff){
 function claimQuest(q){
   if(S.mode==='done'||spinning)return;
   const rule=S.questRules[q.diff]||S.questRules.medium;
-  const n=claimsToday(q);
+  const day=londonDay();
+  const n=q.claimDay===day?(q.claimN||0):0;
   if(n>=rule.max)return;
-  q.claimDay=londonDay();
+  q.claimDay=day;
   q.claimN=n+1;
   q.uses=questUses(q)+1;
-  if(q.diff==='master'||q.diff==='insanity')noteMasterClaim();
+  if(q.diff==='master'||q.diff==='insanity')noteMasterClaim(day);
   if(q.diff==='insanity'){
     const interval=Math.max(10,q.interval||100);
     const before=Math.floor((q.mins||0)/interval);
@@ -2312,6 +2403,10 @@ function openSpin(questName,questId,logKind){
       if(i>=0){
         const item=S.questQueue.splice(i,1)[0];
         note=item.name+' ('+diffName(item.diff)+')';
+        if(item.diff==='master'||item.diff==='insanity'){
+          const q=S.quests.find(x=>x.id===item.id);
+          noteMasterClaim(q&&/^\d{4}-\d{2}-\d{2}$/.test(q.claimDay)?q.claimDay:londonDay());
+        }
       }
     }
     if(logKind==='quiz'&&S.quizSpins>0)S.quizSpins--;
@@ -3085,6 +3180,22 @@ function londonDay(){
   if(typeof window.__londonDay==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(window.__londonDay))return window.__londonDay;
   return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 }
+function londonDayOf(t){
+  const n=Number(t);
+  if(!Number.isFinite(n))return '';
+  return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(n));
+}
+function ukParts(iso){
+  const dt=new Date(iso+'T12:00:00Z');
+  return {
+    long:new Intl.DateTimeFormat('en-GB',{weekday:'long',timeZone:'UTC'}).format(dt),
+    short:new Intl.DateTimeFormat('en-GB',{weekday:'short',timeZone:'UTC'}).format(dt),
+    day:dt.getUTCDate(),
+    mon:new Intl.DateTimeFormat('en-GB',{month:'short',timeZone:'UTC'}).format(dt)
+  };
+}
+function ukDay(iso){const p=ukParts(iso);return p.long+' '+p.day+' '+p.mon}
+function ukDayShort(iso){const p=ukParts(iso);return p.short+' '+p.day+' '+p.mon}
 function dayNum(iso){
   const p=String(iso).split('-');
   return Math.floor(Date.UTC(+p[0],+p[1]-1,+p[2])/86400000);
@@ -3390,7 +3501,21 @@ function paintXp(){
     +'<div class="chrow"><div class="txt"><b>No Master quest</b><small>A London day with none adds time and costs XP</small></div><button type="button" class="chtog'+(x.missOn?' on':'')+'" data-xp-toggle="missOn">'+(x.missOn?'On':'Off')+'</button></div>'
     +xpStep('Minutes added','missMin')
     +xpStep('XP lost','missXp')
-    +'<div class="chrow"><div class="txt"><b>Holiday pause</b><small>Skip that penalty until you turn this off</small></div><button type="button" class="chtog'+(x.pause?' on':'')+'" data-xp-toggle="pause">'+(x.pause?'On':'Off')+'</button></div>';
+    +'<div class="chrow"><div class="txt"><b>Holiday pause</b><small>Skip that penalty until you turn this off</small></div><button type="button" class="chtog'+(x.pause?' on':'')+'" data-xp-toggle="pause">'+(x.pause?'On':'Off')+'</button></div>'
+    +missSettingsHtml();
+}
+function missSettingsHtml(){
+  const rows=(S.missLog||[]).slice().reverse();
+  const legacy=legacyMiss();
+  let html='<p class="misshead">Recent missed days</p>';
+  if(!rows.length)html+='<p class="missnone">None yet.</p>';
+  html+=rows.map(e=>{
+    const detail=ukDay(e.day)+': +'+clock(e.ms)+' / -'+e.xp+' XP'+(e.undone?' · undone':'');
+    const btn=e.undone?'':'<button type="button" class="missundo" data-undo-miss="'+e.day+'">He did a Master quest that day (parent)</button>';
+    return '<div class="chrow"><div class="txt"><b>'+esc(ukDayShort(e.day))+'</b><small>'+esc(detail)+'</small></div></div>'+btn;
+  }).join('');
+  if(legacy)html+='<button type="button" class="missundo" id="undoYesterday">Undo yesterday\'s missed day</button>';
+  return html;
 }
 function bumpXp(field,dir,i){
   const x=S.xpSet;
@@ -3557,6 +3682,7 @@ function acceptSkill(){
   if(!q)return;
   q.checks=(q.checks||0)+1;
   q.mastered=true;
+  noteMasterClaim();
   const xp=grantXp(q.bonusXp||0);
   const spins=q.bonusSpins||0;
   for(let i=0;i<spins&&S.questQueue.length<40;i++)S.questQueue.push({id:q.id,name:q.name,diff:'insanity'});
@@ -3598,6 +3724,11 @@ $('skillOk').onclick=()=>{
   maybeSkillPop();
 };
 $('missOk').onclick=()=>{S.xpNotice=null;save();$('missPop').hidden=true};
+$('missPop').onclick=ev=>{
+  const b=ev.target.closest('[data-undo-miss]');
+  if(!b)return;
+  undoMissDay(b.dataset.undoMiss);
+};
 $('addCustom').onclick=()=>{
   const name=$('customName').value.trim();
   if(!name)return;
@@ -3630,6 +3761,11 @@ $('viewChallenges').onclick=ev=>{
     S.dailySet.custom=S.dailySet.custom.filter(c=>c.id!==t.dataset.delC);
   }else if(t.dataset.delM!=null){
     S.dailySet.miles.splice(+t.dataset.delM,1);
+  }else if(t.dataset.undoMiss){
+    undoMissDay(t.dataset.undoMiss);
+  }else if(t.id==='undoYesterday'){
+    const leg=legacyMiss();
+    if(leg)undoMissDay(leg.day,{ms:leg.ms,xp:leg.xp});
   }else if(t.dataset.lv){
     if(!toggleLevel(+t.dataset.lv,+t.dataset.table))return;
   }else if(t.dataset.xpToggle){
